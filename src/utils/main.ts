@@ -5,7 +5,7 @@ import SwaggerParser from "@apidevtools/swagger-parser";
 
 export function getServerVersion(): string {
   const { version } = JSON.parse(
-    readFileSync(join(resolve(), "package.json"), { encoding: "utf-8" })
+    readFileSync(join(resolve(), "package.json"), { encoding: "utf-8" }),
   );
   return version;
 }

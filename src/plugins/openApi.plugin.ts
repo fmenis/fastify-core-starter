@@ -38,7 +38,7 @@ async function openApi(fastify: FastifyInstance): Promise<void> {
         },
       ],
       tags: [{ name: "auth", description: "Auth related end-points" }].sort(
-        (a, b) => a.name.localeCompare(b.name)
+        (a, b) => a.name.localeCompare(b.name),
       ),
     },
   });

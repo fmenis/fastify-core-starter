@@ -17,7 +17,7 @@ export const configSchema = Type.Object(
     SERVER_PORT: Type.Number({ default: 3000 }),
     LOG_LEVEL: StringEnum(Object.values(levels.labels)),
   },
-  { additionalProperties: false }
+  { additionalProperties: false },
 );
 
 export type ConfigSchemaType = Static<typeof configSchema>;

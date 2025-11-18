@@ -37,7 +37,7 @@ async function init() {
         log.error(err);
       }
       log.debug(
-        `'${signal}' signal received. Gracefully closing fastify server`
+        `'${signal}' signal received. Gracefully closing fastify server`,
       );
       await fastify.close();
     });
@@ -52,7 +52,7 @@ async function init() {
     });
 
     fastify.log.debug(
-      `Service '${fastify.env.APP_NAME}' launched in '${fastify.env.APP_ENV}' environment`
+      `Service '${fastify.env.APP_NAME}' launched in '${fastify.env.APP_ENV}' environment`,
     );
   } catch (err) {
     fastify.log.error(err);

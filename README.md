@@ -7,8 +7,9 @@
 - [] solid codebase structure
 - [x] vscode debugging
 - [x] env variables validation
-- [] database migrations
+- [x] database migrations
 - [] package application with docker
+- [x] create local environment with docker
 - [x] valid openapi documentation
 - [] proper error handling
 - [] linting
