@@ -19,5 +19,3 @@
 - [] integration test
 
 ## Doubts
-
-- `dotenv` might be needed anyway

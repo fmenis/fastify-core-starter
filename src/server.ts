@@ -15,7 +15,7 @@ declare module "fastify" {
 
 const fastify = Fastify({
   logger: {
-    level: "debug",
+    level: process.env.LOG_LEVEL,
   },
 });
 
@@ -23,7 +23,6 @@ async function init() {
   try {
     await fastify.register(env, {
       confKey: "env",
-      dotenv: true,
       schema: configSchema,
     });
 
@@ -36,12 +35,12 @@ async function init() {
     await validateOpenApi(fastify);
 
     await fastify.listen({
-      port: fastify.env.SERVER_PORT!,
+      port: fastify.env.SERVER_PORT,
       host: fastify.env.SERVER_ADDRESS,
     });
 
     fastify.log.debug(
-      `Server launched in '${fastify.env.APP_ENV}' environment`
+      `Service '${fastify.env.APP_NAME}' launched in '${fastify.env.APP_ENV}' environment`
     );
   } catch (err) {
     fastify.log.error(err);
