@@ -17,6 +17,7 @@
     "build": "rimraf dist && tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@apidevtools/swagger-parser": "^12.1.0",
     "@fastify/env": "^5.0.3",
     "@fastify/swagger": "^9.6.1",
     "@fastify/swagger-ui": "^5.2.3",

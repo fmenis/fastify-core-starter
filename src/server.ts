@@ -2,6 +2,9 @@ import Fastify from "fastify";
 import env from "@fastify/env";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
+import { validateOpenApi } from "./utils/main.js";
+import openApiPlugin from "./plugins/openApi.plugin.js";
+
 import app from "./app.js";
 
 declare module "fastify" {
@@ -24,9 +27,13 @@ async function init() {
       schema: configSchema,
     });
 
+    await fastify.register(openApiPlugin);
+
     await fastify.register(app);
 
     await fastify.ready();
+
+    await validateOpenApi(fastify);
 
     await fastify.listen({
       port: fastify.env.SERVER_PORT!,
