@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import env from "@fastify/env";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
+import app from "./app.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -22,6 +23,8 @@ async function init() {
       dotenv: true,
       schema: configSchema,
     });
+
+    await fastify.register(app);
 
     await fastify.ready();
 
