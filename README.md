@@ -2,14 +2,14 @@
 
 ## Goals
 
-- [] modern nodejs features
+- [x] modern nodejs features
 - [x] typescript ready
 - [] solid codebase structure
 - [x] vscode debugging
 - [x] env variables validation
 - [] database migrations
 - [] package application with docker
-- [] valid openapi documentation
+- [x] valid openapi documentation
 - [] proper error handling
 - [] linting
 - [] proper logging
@@ -17,5 +17,6 @@
 - [] basic RBAC authorization
 - [] unit test
 - [] integration test
+- [] base security
 
 ## Doubts
