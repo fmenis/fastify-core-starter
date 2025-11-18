@@ -4,6 +4,7 @@ import sensible from "@fastify/sensible";
 import helmet from "@fastify/helmet";
 
 import knexPlugin from "./plugins/knex.plugin.js";
+import loadCommonSchemasPlugin from "./plugins/loadCommonSchemas.plugin.js";
 
 export default async function app(fastify: FastifyInstance): Promise<void> {
   fastify.register(cors);
@@ -11,4 +12,5 @@ export default async function app(fastify: FastifyInstance): Promise<void> {
   fastify.register(helmet);
 
   await fastify.register(knexPlugin);
+  await fastify.register(loadCommonSchemasPlugin);
 }
