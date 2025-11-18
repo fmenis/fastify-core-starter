@@ -16,6 +16,11 @@ export const configSchema = Type.Object(
     SERVER_ADDRESS: Type.String({ default: "127.0.0.1" }),
     SERVER_PORT: Type.Number({ default: 3000 }),
     LOG_LEVEL: StringEnum(Object.values(levels.labels)),
+    PG_HOST: Type.String(),
+    PG_PORT: Type.Number(),
+    PG_DB: Type.String(),
+    PG_USER: Type.String(),
+    PG_PW: Type.String(),
   },
   { additionalProperties: false },
 );

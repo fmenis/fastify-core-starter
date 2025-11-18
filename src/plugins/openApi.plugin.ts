@@ -5,7 +5,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 
 import { getServerVersion } from "../utils/main.js";
 
-async function openApi(fastify: FastifyInstance): Promise<void> {
+async function openApiPlugin(fastify: FastifyInstance): Promise<void> {
   const version = getServerVersion();
 
   await fastify.register(fastifySwagger, {
@@ -52,4 +52,4 @@ async function openApi(fastify: FastifyInstance): Promise<void> {
   });
 }
 
-export default fp(openApi);
+export default fp(openApiPlugin);
