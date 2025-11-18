@@ -1,0 +1,81 @@
+# ───────────────────────────────
+# Node / Dependencies
+# ───────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ───────────────────────────────
+# Build & TypeScript output
+# ───────────────────────────────
+dist/
+build/
+tsbuildinfo.tsbuildinfo
+*.tsbuildinfo
+
+# ───────────────────────────────
+# Environment / Secrets
+# ───────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ───────────────────────────────
+# Logs & Runtime Data
+# ───────────────────────────────
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ───────────────────────────────
+# Coverage & Reports
+# ───────────────────────────────
+coverage/
+lcov-report/
+
+# ───────────────────────────────
+# Cache
+# ───────────────────────────────
+.cache/
+.parcel-cache/
+.next/
+vite.config.ts.timestamp*
+.vite/
+eslintcache
+.eslintcache
+.stylelintcache
+
+# ───────────────────────────────
+# OS / Editor Noise
+# ───────────────────────────────
+.DS_Store
+Thumbs.db
+
+# VSCode
+# .vscode/*
+# !.vscode/settings.json
+# !.vscode/extensions.json
+# !.vscode/launch.json
+
+# JetBrains
+.idea/
+
+# ───────────────────────────────
+# Docker
+# ───────────────────────────────
+docker-data/
+*.tar
+
+# ───────────────────────────────
+# misc
+# ───────────────────────────────
+*.swp
+*.swo
+*.sqlite
+*.sqlite-journal

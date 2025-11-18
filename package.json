@@ -1,0 +1,32 @@
+{
+  "name": "fastify-core-starter",
+  "version": "0.0.0",
+  "description": "Base Fastify setup for Node.js applications",
+  "keywords": [
+    "fastify",
+    "boilerplate"
+  ],
+  "license": "ISC",
+  "author": "filippomeniswork@gmail.com",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/server.js",
+    "dev": "tsx watch --inspect src/server.ts",
+    "build": "rimraf dist && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@fastify/env": "^5.0.3",
+    "@sinclair/typebox": "^0.34.41",
+    "fastify": "^5.6.2",
+    "fastify-plugin": "^5.1.0",
+    "rimraf": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "fastify-tsconfig": "^3.0.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
