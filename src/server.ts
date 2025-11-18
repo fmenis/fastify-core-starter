@@ -7,6 +7,7 @@ import { validateOpenApi } from "./utils/main.js";
 import openApiPlugin from "./plugins/openApi.plugin.js";
 
 import app from "./app.js";
+import { buildServerOptions } from "./utils/server.options.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -14,11 +15,7 @@ declare module "fastify" {
   }
 }
 
-const fastify = Fastify({
-  logger: {
-    level: process.env.LOG_LEVEL,
-  },
-});
+const fastify = Fastify(buildServerOptions());
 
 async function init() {
   try {
