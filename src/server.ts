@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import env from "@fastify/env";
+import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
 import { validateOpenApi } from "./utils/main.js";
@@ -29,6 +30,17 @@ async function init() {
     await fastify.register(openApiPlugin);
 
     await fastify.register(app);
+
+    closeWithGrace({ delay: 2000 }, async ({ signal, err }) => {
+      const { log } = fastify;
+      if (err) {
+        log.error(err);
+      }
+      log.debug(
+        `'${signal}' signal received. Gracefully closing fastify server`
+      );
+      await fastify.close();
+    });
 
     await fastify.ready();
 
