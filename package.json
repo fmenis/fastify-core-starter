@@ -14,7 +14,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node -r dotenv/config dist/server.js",
     "dev": "tsx watch -r dotenv/config --inspect src/server.ts",
-    "build": "rimraf dist && tsc -p tsconfig.json"
+    "build": "rimraf dist && tsc -p tsconfig.json",
+    "applyMigrations": "node -r dotenv/config ./scripts/applyMigrations.ts",
+    "initStack": "cd ./local-stack && docker compose up -d"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
@@ -28,6 +30,8 @@
     "close-with-grace": "^2.3.0",
     "fastify": "^5.6.2",
     "fastify-plugin": "^5.1.0",
+    "pg": "^8.16.3",
+    "postgrator": "^8.0.0",
     "rimraf": "^6.1.0"
   },
   "devDependencies": {
