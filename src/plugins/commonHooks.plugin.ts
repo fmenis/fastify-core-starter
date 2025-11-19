@@ -6,9 +6,16 @@ import {
 } from "fastify";
 import fp from "fastify-plugin";
 
+import { trimObjectFields } from "../utils/main.js";
+
 declare module "fastify" {
   interface FastifyRequest {
     resource: any;
+  }
+
+  interface FastifyContextConfig {
+    trimBodyFields?: string[] | undefined;
+    public?: boolean;
   }
 }
 
@@ -18,6 +25,18 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
    */
   fastify.addHook("onRequest", async req => {
     req.resource = {};
+  });
+
+  /**
+   * Additional request logs and trim target body fields
+   */
+  fastify.addHook("preValidation", async (req: FastifyRequest) => {
+    if (req.routeOptions.config.trimBodyFields && req.body) {
+      req.body = trimObjectFields(
+        req.routeOptions.config.trimBodyFields,
+        req.body,
+      );
+    }
   });
 
   /**

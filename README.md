@@ -11,7 +11,7 @@
 - [] package application with docker
 - [x] create local environment with docker
 - [x] valid openapi documentation
-- [] proper error handling
+- [x] proper error handling
 - [] linting
 - [] proper logging
 - [] basic authentication with JWT
