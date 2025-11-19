@@ -29,4 +29,4 @@ async function knexPlugin(fastify: FastifyInstance): Promise<void> {
   fastify.decorate("knex", client);
 }
 
-export default fp(knexPlugin);
+export default fp(knexPlugin, { name: "knex" });

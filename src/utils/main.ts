@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import SwaggerParser from "@apidevtools/swagger-parser";
+import { DocumentationError } from "../common/interface.js";
 
 export function getServerVersion(): string {
   const { version } = JSON.parse(
@@ -20,4 +21,36 @@ export async function validateOpenApi(fastify: FastifyInstance): Promise<void> {
     fastify.log.error("OpenAPI validation failed");
     throw err;
   }
+}
+
+export function buildRouteFullDescription(params: {
+  api: string;
+  description: string;
+  errors?: DocumentationError[];
+  permission?: string;
+}): string {
+  const { description, errors = [], api, permission } = params;
+
+  let fullDescription = `${description} \n\n `;
+  const apiErrors = errors.filter(item => item.apis.includes(api));
+
+  if (apiErrors.length > 0) {
+    const formattedErrors = apiErrors
+      .map(
+        item => `- ${item.statusCode} - ${item.code}: ${item.description} \n\n`,
+      )
+      .sort();
+
+    fullDescription += ` **Custom errors**: \n\n ${formattedErrors.join(" ")}`;
+  } else {
+    fullDescription += ` **This api doesn't expose custom errors.** \n\n`;
+  }
+
+  if (permission) {
+    fullDescription += `**Required permission**: *${permission}*.`;
+  } else {
+    fullDescription += `**No permission required to consume the api**.`;
+  }
+
+  return fullDescription;
 }
