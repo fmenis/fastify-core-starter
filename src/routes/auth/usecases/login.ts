@@ -18,7 +18,8 @@ export default async function login(
   fastify: FastifyInstance,
   opts: RegisterOptions,
 ): Promise<void> {
-  const { accountRepository } = fastify;
+  const { accountRepository, commonClientErrors } = fastify;
+  const { throwNotFoundError, errors } = commonClientErrors;
 
   fastify.route({
     url: "/login",
@@ -27,11 +28,13 @@ export default async function login(
       description: buildRouteFullDescription({
         api: "login",
         description: "Authenticate user.",
-        errors: [], //##TODO,
+        errors,
       }),
       body: loginBodySchema,
       response: {
         200: loginResponseSchema,
+        400: fastify.getSchema("sBadRequest"),
+        404: fastify.getSchema("sNotFound"),
       },
     },
     handler: onLogin,
@@ -45,10 +48,9 @@ export default async function login(
 
     const account = await accountRepository.findByEmail(email);
 
-    // if (!account) {
-    //   reply.statusCode = 404;
-    //   return;
-    // }
+    if (!account) {
+      throwNotFoundError({ id: "fgfdsgsfg", name: "user" });
+    }
 
     return { jwt: "jwt" };
   }

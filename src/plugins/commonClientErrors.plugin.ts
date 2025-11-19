@@ -7,7 +7,7 @@ declare module "fastify" {
   interface FastifyInstance {
     commonClientErrors: {
       throwNotFoundError(data: { name: string; id: string }): void;
-      documentationErrors: DocumentationError[];
+      errors: DocumentationError[];
     };
   }
 }
@@ -27,11 +27,11 @@ async function commonClientErrorsPlugin(fastify: FastifyInstance) {
 
   fastify.decorate("commonClientErrors", {
     throwNotFoundError,
-    documentationErrors: [
+    errors: [
       {
         code: "*NOT_FOUND*",
         description: "occurs when the target entity is not present.",
-        apis: ["read", "list"],
+        apis: ["login"],
         statusCode: 404,
       },
     ],

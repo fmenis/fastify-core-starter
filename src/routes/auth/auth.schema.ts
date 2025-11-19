@@ -5,6 +5,7 @@ export const loginBodySchema = Type.Object(
     email: Type.String({
       minLength: 3,
       maxLength: 100,
+      format: "email",
       description: "User email.",
     }),
     password: Type.String({
