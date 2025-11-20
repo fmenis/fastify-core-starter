@@ -56,7 +56,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint \"src/**/*.{ts,tsx}\"",
+      "eslint .",
       "tsc --noEmit"
     ]
   }
