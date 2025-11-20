@@ -32,7 +32,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           source: "."
-          target: "/opt/custom-services/"
+          target: "/opt/custom-services/fastify-core-starter"
+          exclude: "node_modules/**"
 
       # - name: SSH into VPS & restart service
       #   uses: appleboy/ssh-action@v0.1.7
