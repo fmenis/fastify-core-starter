@@ -27,6 +27,6 @@ export default async function status(fastify: FastifyInstance) {
   });
 
   async function onStatus(): Promise<StatusResponseSchemaType> {
-    return { status: "asdfasdfasdf", version: await getServerVersion() };
+    return { status: "ok", version: await getServerVersion() };
   }
 }
