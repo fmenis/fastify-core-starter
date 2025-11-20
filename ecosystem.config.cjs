@@ -8,9 +8,9 @@ module.exports = {
       exp_backoff_restart_delay: 100,
       max_memory_restart: "500M",
       max_restarts: 10,
-      error_file: "/var/log/fastify-core-starter/err.log",
-      out_file: "/var/log/fastify-core-starter/out.log",
-      log_file: "/var/log/fastify-core-starter/combined.log",
+      error_file: "/var/logs/fastify-core-starter/err.log",
+      out_file: "/var/logs/fastify-core-starter/out.log",
+      log_file: "/var/logs/fastify-core-starter/combined.log",
     },
   ],
 };
