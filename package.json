@@ -15,6 +15,7 @@
     "start": "node -r dotenv/config dist/server.js",
     "dev": "tsx watch -r dotenv/config --inspect src/server.ts",
     "build": "rimraf dist && tsc -p tsconfig.json",
+    "prepare": "husky install",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier . --write",
     "applyMigrations": "node -r dotenv/config ./scripts/applyMigrations.ts",
@@ -46,9 +47,17 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.3.0",
     "fastify-tsconfig": "^3.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint \"src/**/*.{ts,tsx}\"",
+      "tsc --noEmit"
+    ]
   }
 }
