@@ -45,7 +45,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            cat > ~/app/.env <<EOF
+            cat > /opt/custom-services/fastify-core-starter/.env <<EOF
             NODE_ENV=production
             APP_ENV=production
             APP_NAME=fastify-core-starter
