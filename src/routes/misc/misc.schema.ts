@@ -2,7 +2,11 @@ import { Static, Type } from "@sinclair/typebox";
 
 export const statusResponseSchema = Type.Object(
   {
-    status: Type.Literal("ok", {
+    // status: Type.Literal("ok", {
+    //   description: "Service status.",
+    // }),
+    status: Type.String({
+      minLength: 2,
       description: "Service status.",
     }),
     version: Type.String({
