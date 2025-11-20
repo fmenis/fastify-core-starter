@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "fastify-core-starter",
       cwd: "/opt/fastify-core-starter",
-      script: "dis/server.js",
+      script: "dist/server.js",
       node_args: "-r dotenv/config",
       exp_backoff_restart_delay: 100,
       max_memory_restart: "500M",

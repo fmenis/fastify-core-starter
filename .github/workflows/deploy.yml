@@ -59,15 +59,17 @@ jobs:
             PG_PW=${{ secrets.PG_PW }}
             EOF
 
-      # - name: SSH into VPS & restart service
-      #   uses: appleboy/ssh-action@v0.1.7
-      #   with:
-      #     host: ${{ secrets.VPS_HOST }}
-      #     username: ${{ secrets.VPS_USER }}
-      #     key: ${{ secrets.VPS_SSH_KEY }}
-      #     port: 22
-      #     script: |
-      #       cd ~/app
-      #       npm ci
-      #       npm run build
-      #       pm2 restart fastify-app || pm2 start dist/server.js --name fastify-app
+      - name: SSH into VPS & restart service
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            cd /opt/custom-services/fastify-core-starter
+            npm ci
+            npm run build
+            npm run applyMigrations
+            pm2 startOrRestart ecosystem.config.cjs
+            pm2 save
