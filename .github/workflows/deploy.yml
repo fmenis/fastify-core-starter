@@ -47,16 +47,6 @@ jobs:
             --exclude local-stack \
             ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/custom-services/fastify-core-starter
 
-      # - name: Copy project to VPS
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.VPS_HOST }}
-      #     username: ${{ secrets.VPS_USER }}
-      #     key: ${{ secrets.VPS_SSH_KEY }}
-      #     port: 22
-      #     source: "."
-      #     target: "/opt/custom-services/fastify-core-starter"
-
       - name: Create .env file on VPS
         uses: appleboy/ssh-action@v0.1.7
         with:

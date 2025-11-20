@@ -1,15 +1,15 @@
 import { FastifyInstance } from "fastify";
 
-import login from "./usecases/login.usecase.js";
+import status from "./usecases/status.usecase.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {
     options.schema = {
       ...options.schema,
-      tags: ["auth"],
+      tags: ["misc"],
     };
   });
 
-  const prefix = "/v1/auth";
-  fastify.register(login, { prefix });
+  const prefix = "/v1";
+  fastify.register(status, { prefix });
 }

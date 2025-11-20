@@ -6,7 +6,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import { getServerVersion } from "../utils/main.js";
 
 async function openApiPlugin(fastify: FastifyInstance): Promise<void> {
-  const version = getServerVersion();
+  const version = await getServerVersion();
 
   await fastify.register(fastifySwagger, {
     openapi: {
@@ -37,9 +37,10 @@ async function openApiPlugin(fastify: FastifyInstance): Promise<void> {
           },
         },
       ],
-      tags: [{ name: "auth", description: "Auth related end-points" }].sort(
-        (a, b) => a.name.localeCompare(b.name),
-      ),
+      tags: [
+        { name: "auth", description: "Auth related end-points" },
+        { name: "misc", description: "Misc related end-points" },
+      ].sort((a, b) => a.name.localeCompare(b.name)),
     },
   });
 

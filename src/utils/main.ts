@@ -1,13 +1,14 @@
 import { FastifyInstance } from "fastify";
-import { readFileSync } from "node:fs";
+import { readFile } from "fs/promises";
 import { resolve, join } from "node:path";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { DocumentationError } from "../common/interface.js";
 
-export function getServerVersion(): string {
-  const { version } = JSON.parse(
-    readFileSync(join(resolve(), "package.json"), { encoding: "utf-8" }),
-  );
+export async function getServerVersion(): Promise<string> {
+  const content = await readFile(join(resolve(), "package.json"), {
+    encoding: "utf-8",
+  });
+  const { version } = JSON.parse(content);
   return version;
 }
 
