@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": false
+  },
+  "eslint.validate": ["javascript", "typescript"],
+  "eslint.useFlatConfig": true
+}

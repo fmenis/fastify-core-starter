@@ -15,6 +15,8 @@
     "start": "node -r dotenv/config dist/server.js",
     "dev": "tsx watch -r dotenv/config --inspect src/server.ts",
     "build": "rimraf dist && tsc -p tsconfig.json",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "format": "prettier . --write",
     "applyMigrations": "node -r dotenv/config ./scripts/applyMigrations.ts",
     "initStack": "cd ./local-stack && docker compose up -d"
   },
@@ -36,11 +38,17 @@
     "rimraf": "^6.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "fastify-tsconfig": "^3.0.0",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.47.0"
   }
 }

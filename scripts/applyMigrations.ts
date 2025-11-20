@@ -22,26 +22,26 @@ async function applyMigrations(): Promise<void> {
       database: process.env.PG_DB,
       schemaTable: "migrations",
       currentSchema: schema,
-      execQuery: (query) => client.query(query),
+      execQuery: query => client.query(query),
     });
 
-    postgrator.on("migration-started", (migration) =>
+    postgrator.on("migration-started", migration =>
       console.info(
-        `Start to execute '${migration.name}' (${migration.action}) migration...`
-      )
+        `Start to execute '${migration.name}' (${migration.action}) migration...`,
+      ),
     );
 
-    postgrator.on("migration-finished", (migration) =>
+    postgrator.on("migration-finished", migration =>
       console.info(
-        `Migration '${migration.name}' (${migration.action}) successfully applied! \n`
-      )
+        `Migration '${migration.name}' (${migration.action}) successfully applied! \n`,
+      ),
     );
 
     const results = await postgrator.migrate();
 
     if (results.length === 0) {
       console.info(
-        `No migrations run for schema '${schema}'. Db '${process.env.PG_DB}' already at the latest version.`
+        `No migrations run for schema '${schema}'. Db '${process.env.PG_DB}' already at the latest version.`,
       );
     } else {
       console.info(`${results.length} migration/s applied.`);

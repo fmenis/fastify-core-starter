@@ -12,10 +12,9 @@
 - [x] create local environment with docker
 - [x] valid openapi documentation
 - [x] proper error handling
-- [] linting
+- [x] linting
 - [] proper logging
 - [] basic authentication with JWT
-- [] basic RBAC authorization
 - [] unit test
 - [] integration test
 - [] base security

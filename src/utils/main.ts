@@ -55,6 +55,7 @@ export function buildRouteFullDescription(params: {
   return fullDescription;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function trimObjectFields(fields: any[], obj: any) {
   for (const key of Object.keys(obj)) {
     const value = obj[key];

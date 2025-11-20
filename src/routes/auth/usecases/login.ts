@@ -1,9 +1,4 @@
-import {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  RegisterOptions,
-} from "fastify";
+import { FastifyInstance, FastifyRequest /*, RegisterOptions*/ } from "fastify";
 
 import { buildRouteFullDescription } from "../../../utils/main.js";
 import {
@@ -12,11 +7,10 @@ import {
   loginResponseSchema,
   loginResponseSchemaType,
 } from "../auth.schema.js";
-import { Type } from "@sinclair/typebox";
 
 export default async function login(
   fastify: FastifyInstance,
-  opts: RegisterOptions,
+  // opts: RegisterOptions,
 ): Promise<void> {
   const { accountRepository, commonClientErrors } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
