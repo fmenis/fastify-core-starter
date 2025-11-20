@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "fastify-core-starter",
-      cwd: "/opt/fastify-core-starter",
+      cwd: "/opt/custom-services/fastify-core-starter",
       script: "dist/server.js",
       node_args: "-r dotenv/config",
       exp_backoff_restart_delay: 100,
