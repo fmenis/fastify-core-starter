@@ -11,7 +11,7 @@ import { buildServerOptions } from "./utils/server.options.js";
 
 declare module "fastify" {
   interface FastifyInstance {
-    env: ConfigSchemaType;
+    config: ConfigSchemaType;
   }
 }
 
@@ -20,7 +20,7 @@ const fastify = Fastify(buildServerOptions());
 async function init() {
   try {
     await fastify.register(env, {
-      confKey: "env",
+      confKey: "config",
       schema: configSchema,
     });
 
@@ -44,12 +44,12 @@ async function init() {
     await validateOpenApi(fastify);
 
     await fastify.listen({
-      port: fastify.env.SERVER_PORT,
-      host: fastify.env.SERVER_ADDRESS,
+      port: fastify.config.SERVER_PORT,
+      host: fastify.config.SERVER_ADDRESS,
     });
 
     fastify.log.debug(
-      `Service '${fastify.env.APP_NAME}' launched in '${fastify.env.APP_ENV}' environment`,
+      `Service '${fastify.config.APP_NAME}' launched in '${fastify.config.APP_ENV}' environment`,
     );
   } catch (err) {
     fastify.log.error(err);

@@ -11,7 +11,7 @@ export function buildServerOptions(): FastifyServerOptions {
         useDefaults: true,
       },
     },
-    trustProxy: true, //##TODO verify with nginx
+    trustProxy: true,
   };
 }
 

@@ -12,11 +12,11 @@ async function knexPlugin(fastify: FastifyInstance): Promise<void> {
   const client = knex({
     client: "pg",
     connection: {
-      host: fastify.env.PG_HOST,
-      port: fastify.env.PG_PORT,
-      user: fastify.env.PG_USER,
-      database: fastify.env.PG_DB,
-      password: fastify.env.PG_PW,
+      host: fastify.config.PG_HOST,
+      port: fastify.config.PG_PORT,
+      user: fastify.config.PG_USER,
+      database: fastify.config.PG_DB,
+      password: fastify.config.PG_PW,
     },
     debug: true,
   });

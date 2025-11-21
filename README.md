@@ -20,3 +20,5 @@
 - [] base security
 
 ## Doubts
+
+- creating a git-driven zero-downtime deployment workflow using systemd

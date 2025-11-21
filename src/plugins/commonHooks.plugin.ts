@@ -33,6 +33,23 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
    * Additional request logs and trim target body fields
    */
   fastify.addHook("preValidation", async (req: FastifyRequest) => {
+    //##TODO
+    // const { body, log, user } = req
+
+    // if (user) {
+    //   log.debug(
+    //     {
+    //       id: user.id,
+    //       email: user.email,
+    //     },
+    //     'user'
+    //   )
+    // }
+
+    // if (fastify.config.ENABLE_BODY_LOG && body) {
+    //   log.debug(body, 'parsed body')
+    // }
+
     if (req.routeOptions.config.trimBodyFields && req.body) {
       req.body = trimObjectFields(
         req.routeOptions.config.trimBodyFields,
