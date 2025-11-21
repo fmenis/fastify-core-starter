@@ -61,7 +61,7 @@ jobs:
             APP_NAME=fastify-core-starter
             SERVER_ADDRESS=localhost
             SERVER_PORT=3000
-            LOG_LEVEL=info
+            LOG_LEVEL=debug
             PG_HOST=${{ secrets.PG_HOST }}
             PG_PORT=${{ secrets.PG_PORT }}
             PG_DB=${{ secrets.PG_DB }}
