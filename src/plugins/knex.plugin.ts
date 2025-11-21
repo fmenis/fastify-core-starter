@@ -22,8 +22,8 @@ async function knexPlugin(fastify: FastifyInstance): Promise<void> {
   });
 
   fastify.addHook("onClose", async instance => {
-    //##TODO don't triggered in dev
     await instance.knex.destroy();
+    instance.log.debug("Connection pool closed");
   });
 
   fastify.decorate("knex", client);
