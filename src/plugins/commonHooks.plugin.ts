@@ -106,6 +106,35 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
       reply.status(statusCode).send(clientError);
     },
   );
+
+  fastify.setNotFoundHandler(
+    {
+      preHandler: fastify.rateLimit(),
+    },
+    function (request: FastifyRequest, reply: FastifyReply) {
+      request.log.warn(
+        {
+          request: {
+            method: request.method,
+            url: request.url,
+            query: request.query,
+            params: request.params,
+          },
+        },
+        "Resource not found",
+      );
+
+      reply.code(404);
+
+      return {
+        message: `Route ${request.method}:${request.originalUrl} not found`,
+        error: "Route Not Found",
+        statusCode: 404,
+        internalCode: "ROUTE_NOT_FOUND",
+        details: {},
+      };
+    },
+  );
 }
 
 export default fp(commonHooksPlugin);
