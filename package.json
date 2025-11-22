@@ -1,6 +1,6 @@
 {
   "name": "fastify-core-starter",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Base Fastify setup for Node.js applications",
   "keywords": [
     "fastify",
