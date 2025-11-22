@@ -4,7 +4,7 @@ import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
 import { validateOpenApi } from "./utils/main.js";
-import openApiPlugin from "./plugins/openApi.plugin.js";
+import swaggerPlugin from "./plugins/swagger.plugin.js";
 
 import app from "./app.js";
 import { buildServerOptions } from "./utils/server.options.js";
@@ -24,7 +24,7 @@ async function init() {
       schema: configSchema,
     });
 
-    await fastify.register(openApiPlugin);
+    await fastify.register(swaggerPlugin);
 
     await fastify.register(app);
 

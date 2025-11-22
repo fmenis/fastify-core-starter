@@ -57,8 +57,9 @@ jobs:
           script: |
             cat > /opt/fastify-service/.env <<EOF
             NODE_ENV=production
-            APP_ENV=production
+            APP_ENV=development
             APP_NAME=fastify-core-starter
+            API_DOMAIN=api.filippomenis.it
             SERVER_ADDRESS=localhost
             SERVER_PORT=3000
             LOG_LEVEL=debug

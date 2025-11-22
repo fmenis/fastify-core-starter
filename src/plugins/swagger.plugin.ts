@@ -4,8 +4,9 @@ import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 
 import { getServerVersion } from "../utils/main.js";
+import { APP_ENV } from "../common/enum.js";
 
-async function openApiPlugin(fastify: FastifyInstance): Promise<void> {
+async function swaggerPlugin(fastify: FastifyInstance): Promise<void> {
   const version = await getServerVersion();
 
   await fastify.register(fastifySwagger, {
@@ -21,22 +22,22 @@ async function openApiPlugin(fastify: FastifyInstance): Promise<void> {
       },
       externalDocs: {
         description: "Find more info here",
-        url: "https://github.com/fmenis/fastify-base-server-ts",
+        url: "https://github.com/fmenis/fastify-core-starter",
       },
-      servers: [
-        {
-          url: `http://{domain}:{port}`,
-          description: "Service api",
-          variables: {
-            port: {
-              default: process.env.SERVER_PORT!,
-            },
-            domain: {
-              default: process.env.SERVER_ADDRESS!,
-            },
-          },
-        },
-      ],
+      servers:
+        process.env.APP_ENV === APP_ENV.LOCAL
+          ? [
+              {
+                url: `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`,
+                description: "Service api",
+              },
+            ]
+          : [
+              {
+                url: `https://${process.env.API_DOMAIN}`,
+                description: "Service api",
+              },
+            ],
       tags: [
         { name: "auth", description: "Auth related end-points" },
         { name: "misc", description: "Misc related end-points" },
@@ -53,4 +54,4 @@ async function openApiPlugin(fastify: FastifyInstance): Promise<void> {
   });
 }
 
-export default fp(openApiPlugin);
+export default fp(swaggerPlugin);

@@ -1,5 +1,10 @@
 import { FastifyServerOptions } from "fastify";
+
 import { stdTimeFunctions, LoggerOptions } from "pino";
+
+//##TODO
+// import addFormatsPkg from "ajv-formats";
+// const addFormats = addFormatsPkg as unknown as (ajv: any) => void;
 
 export function buildServerOptions(): FastifyServerOptions {
   return {
@@ -10,6 +15,7 @@ export function buildServerOptions(): FastifyServerOptions {
         removeAdditional: false,
         useDefaults: true,
       },
+      // plugins: [addFormats],
     },
     trustProxy: true,
   };
