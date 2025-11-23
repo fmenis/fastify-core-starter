@@ -9,12 +9,15 @@ import {
 } from "../auth.schema.js";
 
 export default async function login(fastify: FastifyInstance): Promise<void> {
-  const { accountRepository, commonClientErrors, authProducer } = fastify;
+  const { accountRepository, commonClientErrors } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
   fastify.route({
     url: "/login",
     method: "POST",
+    config: {
+      public: true,
+    },
     schema: {
       description: buildRouteFullDescription({
         api: "login",
@@ -38,8 +41,6 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
     const { email } = req.body;
 
     const account = await accountRepository.findByEmail(email);
-
-    await authProducer.queueResetPasswordEmailJob({ email });
 
     if (!account) {
       throwNotFoundError({ id: "fgfdsgsfg", name: "user" });

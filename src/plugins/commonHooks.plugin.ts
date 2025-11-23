@@ -22,34 +22,12 @@ declare module "fastify" {
 }
 
 async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
-  /**
-   * Empty object that can be utilized to pass data between hooks
-   */
+  // empty object that can be utilized to pass data between hooks
   fastify.addHook("onRequest", async req => {
     req.resource = {};
   });
 
-  /**
-   * Additional request logs and trim target body fields
-   */
   fastify.addHook("preValidation", async (req: FastifyRequest) => {
-    //##TODO
-    // const { body, log, user } = req
-
-    // if (user) {
-    //   log.debug(
-    //     {
-    //       id: user.id,
-    //       email: user.email,
-    //     },
-    //     'user'
-    //   )
-    // }
-
-    // if (fastify.config.ENABLE_BODY_LOG && body) {
-    //   log.debug(body, 'parsed body')
-    // }
-
     if (req.routeOptions.config.trimBodyFields && req.body) {
       req.body = trimObjectFields(
         req.routeOptions.config.trimBodyFields,
@@ -58,9 +36,24 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
     }
   });
 
-  /**
-   * Set common routes stuff
-   */
+  fastify.addHook("preHandler", async req => {
+    const { body, log, user } = req;
+
+    if (user) {
+      log.debug(
+        {
+          id: user.id,
+          email: user.email,
+        },
+        "user",
+      );
+    }
+
+    if (body) {
+      req.log.debug({ body: req.body }, "Incoming request body");
+    }
+  });
+
   fastify.addHook("onRoute", options => {
     options.schema = {
       ...options.schema,
@@ -71,7 +64,6 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
     };
   });
 
-  //##TODO validate with all errors
   fastify.setErrorHandler(
     (error: FastifyError, _req: FastifyRequest, reply: FastifyReply) => {
       let statusCode = error.statusCode ?? 500;
