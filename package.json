@@ -18,7 +18,9 @@
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier . --write",
     "applyMigrations": "node -r dotenv/config ./scripts/applyMigrations.ts",
-    "initStack": "cd ./local-stack && docker compose up -d"
+    "initStack": "cd ./local-stack && docker compose up -d",
+    "shutdownStack": "cd ./local-stack && docker compose down",
+    "rebuildStack": "./local-stack/rebuild-db.sh"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
