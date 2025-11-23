@@ -50,6 +50,9 @@ export default [
       // Best practice for Fastify/Node devs
       "no-console": "off",
 
+      // Throwing literals (TypeScript version preferred)
+      "@typescript-eslint/only-throw-error": "error",
+
       // Prettier integration (turn off conflicting rules)
       ...prettier.rules,
     },

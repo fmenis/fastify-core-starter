@@ -14,11 +14,11 @@
 - [x] proper error handling
 - [x] linting
 - [] package application with docker
-- [] proper logging
+- [x] proper logging
 - [] basic authentication with JWT
 - [] unit test
 - [] integration test
-- [] base security
+- [x] base security
 
 ## Doubts
 
