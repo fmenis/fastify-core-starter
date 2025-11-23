@@ -33,10 +33,10 @@ function buildLoggerOptions(): LoggerOptions {
     base: undefined,
     redact: {
       paths: [
-        "password",
-        "oldPassword",
-        "newPassword",
-        "newPasswordConfirmation",
+        "body.password",
+        "body.oldPassword",
+        "body.newPassword",
+        "body.newPasswordConfirmation",
       ],
       censor: "**GDPR COMPLIANT**",
     },
