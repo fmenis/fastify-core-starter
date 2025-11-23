@@ -24,6 +24,8 @@ export const configSchema = Type.Object(
     PG_DB: Type.String(),
     PG_USER: Type.String(),
     PG_PW: Type.String(),
+    REDIS_HOST: Type.String(),
+    REDIS_PORT: Type.Number(),
   },
   { additionalProperties: false },
 );

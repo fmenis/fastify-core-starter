@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest /*, RegisterOptions*/ } from "fastify";
+import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { buildRouteFullDescription } from "../../../utils/main.js";
 import {
@@ -8,11 +8,8 @@ import {
   loginResponseSchemaType,
 } from "../auth.schema.js";
 
-export default async function login(
-  fastify: FastifyInstance,
-  // opts: RegisterOptions,
-): Promise<void> {
-  const { accountRepository, commonClientErrors } = fastify;
+export default async function login(fastify: FastifyInstance): Promise<void> {
+  const { accountRepository, commonClientErrors, authProducer } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
   fastify.route({
@@ -41,6 +38,8 @@ export default async function login(
     const { email } = req.body;
 
     const account = await accountRepository.findByEmail(email);
+
+    await authProducer.queueResetPasswordEmailJob({ email });
 
     if (!account) {
       throwNotFoundError({ id: "fgfdsgsfg", name: "user" });

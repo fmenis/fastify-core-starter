@@ -1,6 +1,6 @@
 import { HttpError } from "@fastify/sensible";
 import { FastifyInstance } from "fastify";
-import Fp from "fastify-plugin";
+import fp from "fastify-plugin";
 import { DocumentationError } from "../common/interface.js";
 
 declare module "fastify" {
@@ -38,4 +38,4 @@ async function commonClientErrorsPlugin(fastify: FastifyInstance) {
   });
 }
 
-export default Fp(commonClientErrorsPlugin);
+export default fp(commonClientErrorsPlugin);

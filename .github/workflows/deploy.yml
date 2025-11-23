@@ -68,6 +68,8 @@ jobs:
             PG_DB=${{ secrets.PG_DB }}
             PG_USER=${{ secrets.PG_USER }}
             PG_PW=${{ secrets.PG_PW }}
+            REDIS_HOST=localhost
+            REDIS_PORT=6379
             EOF
 
       - name: SSH into VPS & restart service

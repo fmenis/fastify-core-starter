@@ -5,6 +5,7 @@ import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 
 import knexPlugin from "./plugins/knex.plugin.js";
+import bullmqPlugin from "./plugins/bullmq.plugin.js";
 import loadCommonSchemasPlugin from "./plugins/loadCommonSchemas.plugin.js";
 import apiPlugin from "./routes/index.js";
 import commonClientErrorsPlugin from "./plugins/commonClientErrors.plugin.js";
@@ -20,6 +21,7 @@ export default async function app(fastify: FastifyInstance): Promise<void> {
   });
 
   await fastify.register(knexPlugin);
+  await fastify.register(bullmqPlugin);
   await fastify.register(loadCommonSchemasPlugin);
   await fastify.register(commonClientErrorsPlugin);
   await fastify.register(commonHooksPlugin);
