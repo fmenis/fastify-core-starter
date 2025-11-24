@@ -1,4 +1,4 @@
-import IORedis, { Redis, RedisOptions } from "ioredis";
+import { Redis, RedisOptions } from "ioredis";
 
 const options: RedisOptions = {
   host: process.env.REDIS_HOST,
@@ -6,6 +6,6 @@ const options: RedisOptions = {
   maxRetriesPerRequest: null,
 };
 
-export const redisProducerClient: Redis = new IORedis(options);
+export const redisProducerClient: Redis = new Redis(options);
 
-export const redisWorkerClient: Redis = new IORedis(options);
+export const redisWorkerClient: Redis = new Redis(options);
