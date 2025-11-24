@@ -7,9 +7,10 @@ import {
   loginResponseSchema,
   loginResponseSchemaType,
 } from "../auth.schema.js";
+import { JOB_NAME } from "../queue/auth.worker.js";
 
 export default async function login(fastify: FastifyInstance): Promise<void> {
-  const { accountRepository, commonClientErrors } = fastify;
+  const { accountRepository, commonClientErrors, bullmq } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
   fastify.route({
@@ -36,11 +37,18 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
 
   async function onLogin(
     req: FastifyRequest<{ Body: loginBodySchemaType }>,
-    // reply: FastifyReply,
   ): Promise<loginResponseSchemaType | undefined> {
     const { email } = req.body;
 
     const account = await accountRepository.findByEmail(email);
+
+    await bullmq.queue.add(
+      JOB_NAME.SEND_RESET_PASSWORD_EMAIL,
+      {
+        email,
+      },
+      { delay: 2000 },
+    );
 
     if (!account) {
       throwNotFoundError({ id: "fgfdsgsfg", name: "user" });

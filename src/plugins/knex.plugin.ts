@@ -1,6 +1,8 @@
 import fp from "fastify-plugin";
 import { FastifyInstance } from "fastify";
-import knex, { Knex } from "knex";
+import { Knex } from "knex";
+
+import { knexInstance } from "../lib/knex.js";
 
 declare module "fastify" {
   export interface FastifyInstance {
@@ -9,21 +11,11 @@ declare module "fastify" {
 }
 
 async function knexPlugin(fastify: FastifyInstance): Promise<void> {
-  const client = knex({
-    client: "pg",
-    connection: {
-      host: fastify.config.PG_HOST,
-      port: fastify.config.PG_PORT,
-      user: fastify.config.PG_USER,
-      database: fastify.config.PG_DB,
-      password: fastify.config.PG_PW,
-    },
-    debug: true,
-  });
+  const client = knexInstance;
 
   fastify.addHook("onClose", async instance => {
     await instance.knex.destroy();
-    instance.log.debug("Connection pool closed");
+    instance.log.debug("Postgres connection pool closed");
   });
 
   fastify.decorate("knex", client);

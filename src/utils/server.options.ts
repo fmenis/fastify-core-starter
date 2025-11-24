@@ -1,6 +1,6 @@
 import { FastifyServerOptions } from "fastify";
 
-import { stdTimeFunctions, LoggerOptions } from "pino";
+import { loggerOptions } from "../lib/logger.js";
 
 //##TODO
 // import addFormatsPkg from "ajv-formats";
@@ -8,7 +8,7 @@ import { stdTimeFunctions, LoggerOptions } from "pino";
 
 export function buildServerOptions(): FastifyServerOptions {
   return {
-    logger: buildLoggerOptions(),
+    logger: loggerOptions,
     ajv: {
       customOptions: {
         allErrors: true,
@@ -19,28 +19,4 @@ export function buildServerOptions(): FastifyServerOptions {
     },
     trustProxy: true,
   };
-}
-
-function buildLoggerOptions(): LoggerOptions {
-  const options: LoggerOptions = {
-    level: process.env.LOG_LEVEL,
-    timestamp: () => stdTimeFunctions.isoTime(),
-    formatters: {
-      level(label) {
-        return { level: label };
-      },
-    },
-    base: undefined,
-    redact: {
-      paths: [
-        "body.password",
-        "body.oldPassword",
-        "body.newPassword",
-        "body.newPasswordConfirmation",
-      ],
-      censor: "**GDPR COMPLIANT**",
-    },
-  };
-
-  return options;
 }
