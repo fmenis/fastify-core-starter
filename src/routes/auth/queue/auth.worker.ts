@@ -5,6 +5,10 @@ import { knexInstance } from "../../../lib/knex.js";
 import { loggerInstance } from "../../../lib/logger.js";
 import { QUEUE_NAME } from "../../../common/constants.js";
 
+export enum JOB_NAME {
+  SEND_RESET_PASSWORD_EMAIL = "sendResetPasswordEmail",
+}
+
 export const emailWorker = new Worker(
   QUEUE_NAME,
   async (job: Job): Promise<void> => {
