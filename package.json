@@ -20,7 +20,8 @@
     "applyMigrations": "node --env-file .env ./scripts/applyMigrations.ts",
     "initStack": "cd ./local-stack && docker compose up -d",
     "shutdownStack": "cd ./local-stack && docker compose down",
-    "rebuildStack": "./local-stack/rebuild-db.sh"
+    "rebuildStack": "./local-stack/rebuild-db.sh",
+    "prepare": "husky"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
@@ -52,9 +53,16 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.3.0",
     "fastify-tsconfig": "^3.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --max-warnings=0 --fix"
+    ]
   }
 }
