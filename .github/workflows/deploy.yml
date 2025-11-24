@@ -38,7 +38,7 @@ jobs:
       - name: Copy project to VPS with rsync
         run: |
           mkdir -p /opt/fastify-service
-          rsync -avz -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+          rsync -avzh --delete-after -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
             --exclude node_modules \
             --exclude .git \
             --exclude .vscode \
