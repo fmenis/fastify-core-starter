@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import Fp from "fastify-plugin";
 import { Queue, QueueOptions } from "bullmq";
 import { redisProducerClient, redisWorkerClient } from "../lib/redis.js";
+import { QUEUE_NAME } from "../common/constants.js";
 
 declare module "fastify" {
   export interface FastifyInstance {
@@ -12,8 +13,6 @@ declare module "fastify" {
 }
 
 function bullmqPlugin(fastify: FastifyInstance): void {
-  const queueName = "my-queue";
-
   const options: QueueOptions = {
     connection: redisProducerClient,
     defaultJobOptions: {
@@ -27,7 +26,7 @@ function bullmqPlugin(fastify: FastifyInstance): void {
     },
   };
 
-  const myQueue = new Queue(queueName, options);
+  const myQueue = new Queue(QUEUE_NAME, options);
 
   //##TODO queueEvents
 

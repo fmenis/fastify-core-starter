@@ -3,18 +3,19 @@ import { Worker, Job } from "bullmq";
 import { redisWorkerClient } from "../../../lib/redis.js";
 import { knexInstance } from "../../../lib/knex.js";
 import { loggerInstance } from "../../../lib/logger.js";
-
-export enum JOB_NAME {
-  SEND_RESET_PASSWORD_EMAIL = "sendResetPasswordEmail",
-}
+import { QUEUE_NAME } from "../../../common/constants.js";
 
 export const emailWorker = new Worker(
-  "my-queue",
+  QUEUE_NAME,
   async (job: Job): Promise<void> => {
     return sendResetPasswordEmail(job.data);
   },
   { connection: redisWorkerClient },
 );
+
+emailWorker.on("error", err => {
+  loggerInstance.error(err);
+});
 
 type Data = {
   email: string;
