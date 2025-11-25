@@ -9,14 +9,15 @@ declare module "fastify" {
 }
 
 export function createAccountRepository(fastify: FastifyInstance) {
-  const knex = fastify.knex;
+  const { prisma } = fastify;
 
   return {
     async findByEmail(email: string): Promise<Account | null> {
-      const account: Account = await knex("account")
-        .select("*")
-        .where({ email })
-        .first();
+      const account = await prisma.account.findUnique({
+        where: {
+          email,
+        },
+      });
 
       return account;
     },
@@ -30,6 +31,6 @@ export default fp(
   },
   {
     name: "account-repository",
-    dependencies: ["knex"],
+    dependencies: ["prisma"],
   },
 );

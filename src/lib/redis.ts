@@ -9,3 +9,5 @@ const options: RedisOptions = {
 export const redisProducerClient: Redis = new Redis(options);
 
 export const redisWorkerClient: Redis = new Redis(options);
+
+//TODO verify connection

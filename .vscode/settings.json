@@ -5,5 +5,9 @@
     "source.organizeImports": "never"
   },
   "eslint.validate": ["javascript", "typescript"],
-  "eslint.useFlatConfig": true
+  "eslint.useFlatConfig": true,
+  "prisma.pinToPrisma6": true,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }

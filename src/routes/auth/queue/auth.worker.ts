@@ -1,7 +1,7 @@
 import { Worker, Job } from "bullmq";
 
 import { redisWorkerClient } from "../../../lib/redis.js";
-import { knexInstance } from "../../../lib/knex.js";
+import prisma from "../../../lib/prisma.js";
 import { loggerInstance } from "../../../lib/logger.js";
 import { QUEUE_NAME } from "../../../common/constants.js";
 
@@ -28,10 +28,7 @@ type Data = {
 export async function sendResetPasswordEmail(data: Data): Promise<void> {
   const { email } = data;
 
-  const account = await knexInstance("account")
-    .select("*")
-    .where({ email: data.email })
-    .first();
+  const account = await prisma.account.findUnique({ where: { email } });
 
   if (!account) {
     loggerInstance.warn(`Account with email '${email}' not found!`);
