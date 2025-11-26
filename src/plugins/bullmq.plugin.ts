@@ -28,7 +28,7 @@ function bullmqPlugin(fastify: FastifyInstance): void {
 
   const myQueue = new Queue(QUEUE_NAME, options);
 
-  //##TODO queueEvents
+  //TODO queueEvents
 
   fastify.addHook("onClose", async () => {
     await redisProducerClient.quit();
@@ -41,4 +41,4 @@ function bullmqPlugin(fastify: FastifyInstance): void {
   });
 }
 
-export default Fp(bullmqPlugin);
+export default Fp(bullmqPlugin, { name: "bullmq" });

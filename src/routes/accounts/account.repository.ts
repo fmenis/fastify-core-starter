@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
-import { Account } from "./account.interface.js";
+import { Account, CreateAccount } from "./account.interface.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -12,6 +12,14 @@ export function createAccountRepository(fastify: FastifyInstance) {
   const { prisma } = fastify;
 
   return {
+    async createAccount(params: CreateAccount): Promise<Account> {
+      const account = await prisma.account.create({
+        data: params,
+      });
+
+      return account;
+    },
+
     async findByEmail(email: string): Promise<Account | null> {
       const account = await prisma.account.findUnique({
         where: {

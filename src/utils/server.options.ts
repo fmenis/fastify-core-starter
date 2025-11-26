@@ -2,7 +2,7 @@ import { FastifyServerOptions } from "fastify";
 
 import { loggerOptions } from "../lib/logger.js";
 
-//##TODO
+//TODO
 // import addFormatsPkg from "ajv-formats";
 // const addFormats = addFormatsPkg as unknown as (ajv: any) => void;
 

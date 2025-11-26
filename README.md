@@ -1,25 +1,95 @@
 # Fastify Core Starter
 
-## Goals
+A production-ready Fastify boilerplate with TypeScript, designed to kickstart modern Node.js applications with best practices and essential features out of the box.
 
-- [x] modern nodejs features
-- [x] typescript ready
-- [x] solid codebase structure
-- [x] vscode debugging
-- [x] env variables validation
-- [x] queues management (bullmq)
-- [x] database migrations
-- [x] create local environment with docker
-- [x] valid openapi documentation
-- [x] proper error handling
-- [x] linting
-- [] package application with docker
-- [x] proper logging
-- [] basic authentication with JWT
-- [] unit test
-- [] integration test
-- [x] base security
+Note: This project is still a work in progress with plenty of room for improvement. Any contributions, suggestions, or feedback would be greatly appreciated!
 
-## Doubts
+## 📋 Prerequisites
 
-- creating a git-driven zero-downtime deployment workflow using systemd
+- Node.js (v22 LTS or higher)
+- npm or yarn
+- docker
+
+## 🚀 Features
+
+- [x] Modern Node.js features
+- [x] TypeScript ready
+- [ ] Solid codebase structure
+- [x] Prisma ORM integration
+- [x] VSCode debugging configuration
+- [x] Environment variables validation
+- [x] Queue management (BullMQ)
+- [x] Database migrations
+- [x] Precommit checks
+- [x] Local development environment with Docker
+- [x] Valid OpenAPI documentation
+- [x] Proper error handling
+- [x] Linting (ESLint)
+- [ ] Package application with Docker
+- [x] Proper logging
+- [ ] Basic authentication with JWT
+- [ ] Unit tests
+- [ ] Integration tests
+- [x] Base security features
+- [ ] Sentry integration
+
+## 🛠️ Installation
+
+1.  Set up environment variables:
+
+```bash
+cp .env.example .env
+```
+
+2. Configure your `.env` file with the appropriate values (see below)
+
+3. Start the development environment with Docker:
+
+```bash
+docker-compose up -d
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Bold** env must be required.
+
+| Name             |     Default     | Description                       |
+| ---------------- | :-------------: | --------------------------------- |
+| NODE_ENV         |   production    | Nodejs environment                |
+| **APP_ENV**      |                 | Application environment           |
+| APP_NAME         | fastify-service | Application name                  |
+| SERVER_ADDRESS   |    127.0.0.1    | Server address                    |
+| SERVER_PORT      |      3000       | Server port                       |
+| **API_DOMAIN**   |                 | Production, staging or dev domain |
+| **LOG_LEVEL**    |                 | Pino.js default log level         |
+| **DATABASE_URL** |                 | Postgres connection url           |
+| **REDIS_HOST**   |                 | Redis host                        |
+| **REDIS_PORT**   |                 | Redis port                        |
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+**Note:** Direct pushes to the `main` branch are not allowed. All changes must go through a Pull Request review process.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- [Fastify](https://www.fastify.io/) - Fast and low overhead web framework
+- [BullMQ](https://docs.bullmq.io/) - Premium queue package for Node.js
+- [Pino](https://getpino.io/) - Super fast, all natural JSON logger
+
+## 📧 Contact
+
+Filippo Menis - [@fmenis](https://github.com/fmenis)

@@ -12,8 +12,8 @@ export const configSchema = Type.Object(
       APP_ENV.STAGING,
       APP_ENV.PRODUCTION,
     ]),
-    APP_NAME: Type.String({ default: "api" }),
-    //##TODO
+    APP_NAME: Type.String({ default: "fastify-service" }),
+    //TODO
     // API_DOMAIN: Type.String({ format: "uri" }),
     API_DOMAIN: Type.String(),
     SERVER_ADDRESS: Type.String({ default: "127.0.0.1" }),

@@ -12,7 +12,7 @@ export async function getServerVersion(): Promise<string> {
   return version;
 }
 
-//##TODO better if become a script that will be execute the github pipeline
+//TODO better if become a script that will be execute the github pipeline
 export async function validateOpenApi(fastify: FastifyInstance): Promise<void> {
   const spec = fastify.swagger();
   try {
