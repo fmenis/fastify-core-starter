@@ -1,3 +1,5 @@
+import "./lib/instrument.js";
+
 import Fastify from "fastify";
 import env from "@fastify/env";
 import closeWithGrace from "close-with-grace";

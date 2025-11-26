@@ -7,6 +7,7 @@ import {
   FastifyRequest,
 } from "fastify";
 import fp from "fastify-plugin";
+import { captureException } from "@sentry/node";
 
 import { trimObjectFields } from "../utils/main.js";
 
@@ -65,8 +66,18 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
   });
 
   fastify.setErrorHandler(
-    (error: FastifyError, _req: FastifyRequest, reply: FastifyReply) => {
+    (error: FastifyError, req: FastifyRequest, reply: FastifyReply) => {
+      req.log.error(error);
+
       let statusCode = error.statusCode ?? 500;
+
+      if (fastify.config.SENTRY_ENABLED && statusCode > 400) {
+        captureException(error, {
+          user: req.user
+            ? { id: req.user.id, email: req.user.email }
+            : undefined,
+        });
+      }
 
       const clientError: Record<string, any> = {
         statusCode,
