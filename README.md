@@ -2,7 +2,7 @@
 
 A production-ready Fastify boilerplate with TypeScript, designed to kickstart modern Node.js applications with best practices and essential features out of the box.
 
-Note: This project is still a work in progress with plenty of room for improvement. Any contributions, suggestions, or feedback would be greatly appreciated!
+**Note**: This project is still a work in progress with plenty of room for improvement. Any contributions, suggestions, or feedback would be greatly appreciated!
 
 ## 📋 Prerequisites
 
@@ -67,6 +67,28 @@ docker-compose up -d
 | **DATABASE_URL** |                 | Postgres connection url           |
 | **REDIS_HOST**   |                 | Redis host                        |
 | **REDIS_PORT**   |                 | Redis port                        |
+
+## 🚢 Deployment
+
+The project uses GitHub Actions for automated deployment to a VPS. The deployment process is triggered automatically and uses SSH to securely copy code to your server.
+
+### Deployment Setup
+
+1. **Configure GitHub Secrets:**
+   Navigate to your repository settings → Secrets and variables → Actions, and add:
+   - `VPS_SSH_KEY`: Your private SSH key for accessing the VPS
+
+2. **Deployment Workflow:**
+   - The deployment is triggered automatically via GitHub Actions
+   - Code is securely copied to the VPS using the configured SSH key
+   - The application is deployed with zero-downtime using systemd
+
+3. **Requirements:**
+   - A VPS with SSH access
+   - Systemd configured on the server
+   - Proper SSH key pair (private key in GitHub secrets, public key on VPS)
+
+For detailed deployment configuration, refer to the GitHub Actions workflow file in `.github/workflows/deploy`.
 
 ## 🤝 Contributing
 
