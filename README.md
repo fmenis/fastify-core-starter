@@ -7,8 +7,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 ## 📋 Prerequisites
 
 - Node.js (v22 LTS or higher)
-- npm or yarn
-- docker
+- Docker
 
 ## 🚀 Features
 
