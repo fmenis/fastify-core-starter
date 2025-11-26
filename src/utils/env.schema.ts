@@ -22,6 +22,8 @@ export const configSchema = Type.Object(
     DATABASE_URL: Type.String(),
     REDIS_HOST: Type.String(),
     REDIS_PORT: Type.Number(),
+    SENTRY_ENABLED: Type.Boolean({ default: false }),
+    SENTRY_DSN: Type.Optional(Type.String()),
   },
   { additionalProperties: false },
 );

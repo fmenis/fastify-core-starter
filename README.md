@@ -31,7 +31,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [ ] Unit tests
 - [ ] Integration tests
 - [x] Base security features
-- [ ] Sentry integration
+- [x] Sentry integration
 
 ## 🛠️ Installation
 
@@ -67,6 +67,8 @@ docker-compose up -d
 | **DATABASE_URL** |                 | Postgres connection url           |
 | **REDIS_HOST**   |                 | Redis host                        |
 | **REDIS_PORT**   |                 | Redis port                        |
+| SENTRY_ENABLED   |      false      | Enable sentry integration         |
+| SENTRY_DSN       |                 | Sentry DSN                        |
 
 ## 🚢 Deployment
 

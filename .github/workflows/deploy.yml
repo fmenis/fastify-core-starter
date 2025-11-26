@@ -73,6 +73,8 @@ jobs:
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             REDIS_HOST=localhost
             REDIS_PORT=6379
+            SENTRY_ENABLED=true
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             EOF
 
       - name: SSH into VPS & restart service
