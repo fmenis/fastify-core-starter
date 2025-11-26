@@ -1,3 +1,7 @@
+/**
+ * Single Prisma client added into the fastify instance and used inside queue workers
+ */
+
 import { PrismaClient } from "../generated/prisma/client.js";
 
 const prisma = new PrismaClient({
@@ -5,7 +9,5 @@ const prisma = new PrismaClient({
 });
 
 await prisma.$connect();
-
-//TODO verify connection
 
 export default prisma;

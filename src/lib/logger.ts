@@ -1,3 +1,7 @@
+/**
+ * Single Pino logger added into the fastify instance and used inside queue workers
+ */
+
 import pino, { Logger, LoggerOptions, stdTimeFunctions } from "pino";
 
 export const loggerOptions: LoggerOptions = {
