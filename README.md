@@ -106,12 +106,6 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
-
-- [Fastify](https://www.fastify.io/) - Fast and low overhead web framework
-- [BullMQ](https://docs.bullmq.io/) - Premium queue package for Node.js
-- [Pino](https://getpino.io/) - Super fast, all natural JSON logger
-
 ## 📧 Contact
 
-Filippo Menis - [@fmenis](https://github.com/fmenis)
+Made with ❤️ by Filippo Menis - [@fmenis](https://github.com/fmenis)
