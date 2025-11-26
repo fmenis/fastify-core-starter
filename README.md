@@ -14,10 +14,11 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 
 - [x] Modern Node.js features
 - [x] TypeScript ready
+- [x] Postgres ready
 - [ ] Solid codebase structure
 - [x] Prisma ORM integration
 - [x] VSCode debugging configuration
-- [x] Environment variables validation
+- [x] Environment variables usage
 - [x] Queue management (BullMQ)
 - [x] Database migrations
 - [x] Precommit checks
