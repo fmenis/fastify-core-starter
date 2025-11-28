@@ -141,16 +141,6 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
         "Resource not found",
       );
 
-      if (!request.headers["accept-version"]) {
-        return {
-          message: `Header 'accept-version' not found for Route ${request.method}:${request.originalUrl}`,
-          error: "Api versioning header not found",
-          statusCode: 404,
-          internalCode: "HEADER_NOT_FOUND",
-          details: {},
-        };
-      }
-
       reply.code(404);
 
       return {

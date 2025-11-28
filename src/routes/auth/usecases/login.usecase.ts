@@ -13,6 +13,8 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
   const { accountRepository, commonClientErrors, bullmq } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
+  const version = "1.0.0";
+
   fastify.route({
     url: "/login",
     method: "POST",
@@ -20,12 +22,13 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
       public: true,
     },
     constraints: {
-      version: "1.0.0",
+      version,
     },
     schema: {
       description: buildRouteFullDescription({
         api: "login",
         description: "Authenticate user.",
+        version,
         errors,
       }),
       body: loginBodySchema,

@@ -27,13 +27,18 @@ export async function validateOpenApi(fastify: FastifyInstance): Promise<void> {
 export function buildRouteFullDescription(params: {
   api: string;
   description: string;
+  version?: string;
   errors?: DocumentationError[];
   permission?: string;
 }): string {
-  const { description, errors = [], api, permission } = params;
+  const { description, version, errors = [], api, permission } = params;
 
   let fullDescription = `${description} \n\n `;
   const apiErrors = errors.filter(item => item.apis.includes(api));
+
+  fullDescription += version
+    ? `**Version**: ${version}. \n\n`
+    : `**Version**: N/A. \n\n`;
 
   if (apiErrors.length > 0) {
     const formattedErrors = apiErrors
