@@ -19,6 +19,9 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
     config: {
       public: true,
     },
+    constraints: {
+      version: "1.0.0",
+    },
     schema: {
       description: buildRouteFullDescription({
         api: "login",

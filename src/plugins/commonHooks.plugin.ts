@@ -8,6 +8,7 @@ import {
 } from "fastify";
 import fp from "fastify-plugin";
 import { captureException } from "@sentry/node";
+import { Type } from "@sinclair/typebox";
 
 import { trimObjectFields } from "../utils/main.js";
 
@@ -19,6 +20,7 @@ declare module "fastify" {
   interface FastifyContextConfig {
     trimBodyFields?: string[] | undefined;
     public?: boolean;
+    disableVersioning?: boolean;
   }
 }
 
@@ -51,11 +53,23 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
     }
 
     if (body) {
+      //TODO add env variable
       req.log.debug({ body: req.body }, "Incoming request body");
     }
   });
 
   fastify.addHook("onRoute", options => {
+    if (!options.config?.disableVersioning) {
+      options.schema = {
+        ...options.schema,
+        headers: Type.Object({
+          "accept-version": Type.String({
+            description: "Api version header (default: 1.0.0).",
+          }),
+        }),
+      };
+    }
+
     options.schema = {
       ...options.schema,
       response: {
@@ -126,6 +140,16 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
         },
         "Resource not found",
       );
+
+      if (!request.headers["accept-version"]) {
+        return {
+          message: `Header 'accept-version' not found for Route ${request.method}:${request.originalUrl}`,
+          error: "Api versioning header not found",
+          statusCode: 404,
+          internalCode: "HEADER_NOT_FOUND",
+          details: {},
+        };
+      }
 
       reply.code(404);
 
