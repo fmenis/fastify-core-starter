@@ -10,6 +10,6 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
     };
   });
 
-  const prefix = "/v1/auth";
+  const prefix = "/auth";
   fastify.register(login, { prefix });
 }

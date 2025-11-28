@@ -13,6 +13,9 @@ export default async function status(fastify: FastifyInstance) {
   fastify.route({
     url: "/status",
     method: "GET",
+    config: {
+      disableVersioning: true,
+    },
     schema: {
       description: buildRouteFullDescription({
         api: "login",

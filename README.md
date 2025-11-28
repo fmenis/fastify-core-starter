@@ -32,6 +32,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [ ] Integration tests
 - [x] Base security features
 - [x] Sentry integration
+- [x] Api versioning
 
 ## 🛠️ Installation
 

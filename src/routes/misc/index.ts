@@ -10,6 +10,5 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
     };
   });
 
-  const prefix = "/v1";
-  fastify.register(status, { prefix });
+  fastify.register(status);
 }
