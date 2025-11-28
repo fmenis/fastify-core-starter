@@ -11,6 +11,7 @@ docker container stop postgres-dev
 echo "Stop redis container"
 docker container stop redis-dev
 echo "Stop nginx container"
+echo "Stopped this shit, PIPPO!"
 docker container stop nginx-dev
 
 echo "Remove postgres container"
