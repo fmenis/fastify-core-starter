@@ -1,4 +1,4 @@
-import { Type, TSchema } from "@sinclair/typebox";
+import { Type, TSchema } from "typebox";
 
 export function StringEnum<T extends string[]>(values: [...T]) {
   return Type.Unsafe<T[number]>({ type: "string", enum: values });

@@ -1,4 +1,4 @@
-import { Static, Type } from "@sinclair/typebox";
+import { Static, Type } from "typebox";
 import { levels } from "pino";
 import { StringEnum } from "../common/schema.js";
 import { APP_ENV } from "../common/enum.js";

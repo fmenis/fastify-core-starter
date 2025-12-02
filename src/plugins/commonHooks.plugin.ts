@@ -8,7 +8,7 @@ import {
 } from "fastify";
 import fp from "fastify-plugin";
 import { captureException } from "@sentry/node";
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 
 import { trimObjectFields } from "../utils/main.js";
 
