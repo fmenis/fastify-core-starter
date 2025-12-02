@@ -38,7 +38,7 @@ export function buildRouteFullDescription(params: {
 
   fullDescription += version
     ? `**Version**: ${version}. \n\n`
-    : `**Version**: N/A. \n\n`;
+    : `**This api is not versioned.** \n\n`;
 
   if (apiErrors.length > 0) {
     const formattedErrors = apiErrors
