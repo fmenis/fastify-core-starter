@@ -1,7 +1,7 @@
 import { Worker, Job } from "bullmq";
 
 import { redisWorkerClient } from "../../../lib/redis.js";
-import prisma from "../../../lib/prisma.js";
+import kysely from "../../../lib/kysely.js";
 import { loggerInstance } from "../../../lib/logger.js";
 import { QUEUE_NAME } from "../../../common/constants.js";
 
@@ -28,7 +28,11 @@ type Data = {
 export async function sendResetPasswordEmail(data: Data): Promise<void> {
   const { email } = data;
 
-  const account = await prisma.account.findUnique({ where: { email } });
+  const account = await kysely
+    .selectFrom("account")
+    .selectAll()
+    .where("email", "=", email)
+    .executeTakeFirst();
 
   if (!account) {
     loggerInstance.warn(`Account with email '${email}' not found!`);

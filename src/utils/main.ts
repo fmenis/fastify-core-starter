@@ -52,11 +52,9 @@ export function buildRouteFullDescription(params: {
     fullDescription += ` **This api doesn't expose custom errors.** \n\n`;
   }
 
-  if (permission) {
-    fullDescription += `**Required permission**: *${permission}*.`;
-  } else {
-    fullDescription += `**No permission required to consume the api**.`;
-  }
+  fullDescription += permission
+    ? `**Required permission**: *${permission}*.`
+    : `**No permission required to consume the api**.`;
 
   return fullDescription;
 }

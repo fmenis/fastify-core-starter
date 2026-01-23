@@ -21,7 +21,8 @@
     "shutdownStack": "cd ./local-stack && docker compose down",
     "rebuildStack": "./local-stack/rebuild-db.sh",
     "prepare": "husky",
-    "prismaStudio": "prisma studio --config ./prisma.config.ts"
+    "kysely:codegen": "kysely-codegen --dialect postgres --out-file ./src/generated/kysely/types.ts",
+    "db:migrate": "postgrator"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
@@ -32,8 +33,6 @@
     "@fastify/sensible": "^6.0.3",
     "@fastify/swagger": "^9.6.1",
     "@fastify/swagger-ui": "^5.2.3",
-    "@joggr/fastify-prisma": "^6.0.1",
-    "@prisma/client": "^6.19.0",
     "@sentry/node": "^10.27.0",
     "ajv-formats": "^3.0.1",
     "bullmq": "^5.64.1",
@@ -41,6 +40,7 @@
     "dotenv": "^17.2.3",
     "fastify": "^5.6.2",
     "fastify-plugin": "^5.1.0",
+    "kysely": "^0.28.10",
     "pg": "^8.16.3",
     "postgrator": "^8.0.0",
     "rimraf": "^6.1.0",
@@ -57,9 +57,9 @@
     "eslint-plugin-unused-imports": "^4.3.0",
     "fastify-tsconfig": "^3.0.0",
     "husky": "^9.1.7",
+    "kysely-codegen": "^0.19.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.6.2",
-    "prisma": "^6.19.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0"

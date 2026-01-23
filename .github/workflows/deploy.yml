@@ -25,9 +25,6 @@ jobs:
       #   run: |
       #     echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
 
-      # - name: Generate Prisma Client
-      #   run: npx prisma migrate deploy
-
       # - name: Lint
       #   run: npm run lint
 
@@ -70,7 +67,11 @@ jobs:
             SERVER_ADDRESS=localhost
             SERVER_PORT=3000
             LOG_LEVEL=debug
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            PG_HOST=${{ secrets.PG_HOST }}
+            PG_PORT=${{ secrets.PG_PORT }}
+            PG_DB=${{ secrets.PG_DB }}
+            PG_USER=${{ secrets.PG_USER }}
+            PG_PW=${{ secrets.PG_PW }}
             REDIS_HOST=localhost
             REDIS_PORT=6379
             SENTRY_ENABLED=true
@@ -88,5 +89,5 @@ jobs:
             cd /opt/fastify-service
             npm ci
             npm run build
-            npx prisma migrate deploy
+            TODO postgrator
             sudo systemctl restart fastify-app.service

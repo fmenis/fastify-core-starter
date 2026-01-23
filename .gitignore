@@ -79,7 +79,3 @@ docker-data/
 *.swo
 *.sqlite
 *.sqlite-journal
-
-/src/generated/prisma
-
-/generated/prisma

@@ -15,7 +15,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] TypeScript ready
 - [x] Postgres ready
 - [ ] Solid codebase structure
-- [x] Prisma ORM integration
+- [x] Kysely TypeScript SQL query builder
 - [x] VSCode debugging configuration
 - [x] Environment variables usage
 - [x] Queue management (BullMQ)
@@ -56,20 +56,24 @@ docker-compose up -d
 
 **Bold** env must be required.
 
-| Name             |     Default     | Description                       |
-| ---------------- | :-------------: | --------------------------------- |
-| NODE_ENV         |   production    | Nodejs environment                |
-| **APP_ENV**      |                 | Application environment           |
-| APP_NAME         | fastify-service | Application name                  |
-| SERVER_ADDRESS   |    127.0.0.1    | Server address                    |
-| SERVER_PORT      |      3000       | Server port                       |
-| **API_DOMAIN**   |                 | Production, staging or dev domain |
-| **LOG_LEVEL**    |                 | Pino.js default log level         |
-| **DATABASE_URL** |                 | Postgres connection url           |
-| **REDIS_HOST**   |                 | Redis host                        |
-| **REDIS_PORT**   |                 | Redis port                        |
-| SENTRY_ENABLED   |      false      | Enable sentry integration         |
-| SENTRY_DSN       |                 | Sentry DSN                        |
+| Name           |     Default     | Description                       |
+| -------------- | :-------------: | --------------------------------- |
+| NODE_ENV       |   production    | Nodejs environment                |
+| **APP_ENV**    |                 | Application environment           |
+| APP_NAME       | fastify-service | Application name                  |
+| SERVER_ADDRESS |    127.0.0.1    | Server address                    |
+| SERVER_PORT    |      3000       | Server port                       |
+| **API_DOMAIN** |                 | Production, staging or dev domain |
+| **LOG_LEVEL**  |                 | Pino.js default log level         |
+| **PG_HOST**    |                 | Postgres connection url           |
+| **PG_PORT**    |                 | Postgres port                     |
+| **PG_DB**      |                 | Postgres database name            |
+| **PG_USER**    |                 | Postgres role name                |
+| **PG_PW**      |                 | Postgres role password            |
+| **REDIS_HOST** |                 | Redis host                        |
+| **REDIS_PORT** |                 | Redis port                        |
+| SENTRY_ENABLED |      false      | Enable sentry integration         |
+| SENTRY_DSN     |                 | Sentry DSN                        |
 
 ## 🚢 Deployment
 

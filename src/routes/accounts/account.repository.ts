@@ -8,26 +8,35 @@ declare module "fastify" {
   }
 }
 
+/**
+ * TODO
+ * read carefully this https://kysely.dev/docs/getting-started#types
+ * and understand if the custom interfaces ("./account.interface.js") are needed
+ * of the db ones are enough
+ */
+
 export function createAccountRepository(fastify: FastifyInstance) {
-  const { prisma } = fastify;
+  const { kysely } = fastify;
 
   return {
     async createAccount(params: CreateAccount): Promise<Account> {
-      const account = await prisma.account.create({
-        data: params,
-      });
+      const account = await kysely
+        .insertInto("account")
+        .values(params)
+        .returningAll()
+        .executeTakeFirstOrThrow();
 
-      return account;
+      return account as Account;
     },
 
     async findByEmail(email: string): Promise<Account | null> {
-      const account = await prisma.account.findUnique({
-        where: {
-          email,
-        },
-      });
+      const account = await kysely
+        .selectFrom("account")
+        .selectAll()
+        .where("email", "=", email)
+        .executeTakeFirst();
 
-      return account;
+      return (account as Account) ?? null;
     },
   };
 }
@@ -39,6 +48,6 @@ export default fp(
   },
   {
     name: "account-repository",
-    dependencies: ["prisma"],
+    dependencies: ["kysely"],
   },
 );
