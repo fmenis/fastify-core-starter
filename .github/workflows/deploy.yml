@@ -89,5 +89,5 @@ jobs:
             cd /opt/fastify-service
             npm ci
             npm run build
-            TODO postgrator
+            npm run applyMigrations
             sudo systemctl restart fastify-app.service
