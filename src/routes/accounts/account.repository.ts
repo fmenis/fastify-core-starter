@@ -20,13 +20,13 @@ export function createAccountRepository(fastify: FastifyInstance) {
 
   return {
     async createAccount(params: CreateAccount): Promise<Account> {
-      const account = await kysely
+      const account: Account = await kysely
         .insertInto("account")
         .values(params)
         .returningAll()
         .executeTakeFirstOrThrow();
 
-      return account as Account;
+      return account;
     },
 
     async findByEmail(email: string): Promise<Account | null> {
@@ -36,7 +36,17 @@ export function createAccountRepository(fastify: FastifyInstance) {
         .where("email", "=", email)
         .executeTakeFirst();
 
-      return (account as Account) ?? null;
+      return account ?? null;
+    },
+
+    async findById(id: string): Promise<Account | null> {
+      const account = await kysely
+        .selectFrom("account")
+        .selectAll()
+        .where("id", "=", id)
+        .executeTakeFirst();
+
+      return account ?? null;
     },
   };
 }

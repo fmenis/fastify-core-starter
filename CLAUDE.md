@@ -91,6 +91,51 @@ Custom errors use codes from `src/plugins/commonClientErrors.plugin.ts`. Standar
 }
 ```
 
+## API Documentation (Swagger/OpenAPI)
+
+The project uses `@fastify/swagger` and `@fastify/swagger-ui` for auto-generated API documentation available at `/doc`.
+
+### Adding New API Tags
+
+When creating a new route domain (e.g., `accounts`, `products`), add a corresponding tag to the Swagger configuration:
+
+1. Open `src/plugins/swagger.plugin.ts`
+2. Add a new tag object to the `tags` array:
+
+```typescript
+tags: [
+  { name: "accounts", description: "Accounts related end-points" },
+  { name: "auth", description: "Auth related end-points" },
+  { name: "misc", description: "Misc related end-points" },
+].sort((a, b) => a.name.localeCompare(b.name)),
+```
+
+3. In the route's `index.ts`, use the `onRoute` hook to assign the tag:
+
+```typescript
+fastify.addHook("onRoute", options => {
+  options.schema = {
+    ...options.schema,
+    tags: ["accounts"], // Must match the tag name in swagger.plugin.ts
+  };
+});
+```
+
+### Route Description Format
+
+Use `buildRouteFullDescription()` from `src/utils/main.js` for consistent route descriptions:
+
+```typescript
+schema: {
+  description: buildRouteFullDescription({
+    api: "read account",
+    description: "Get account by ID.",
+    version,
+    errors,
+  }),
+}
+```
+
 ## Database (Kysely)
 
 The project uses Kysely as a type-safe SQL query builder for PostgreSQL.
