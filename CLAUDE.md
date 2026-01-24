@@ -296,6 +296,106 @@ Add new variables to the table following this pattern:
 
 See [.env.example](.env.example) for all variables with defaults.
 
+## Unit Testing
+
+The project uses Vitest for unit testing with a mock-based approach for testing use cases in isolation.
+
+### Running Tests
+
+```bash
+npm test                 # Run all tests once
+npx vitest               # Run tests in watch mode
+```
+
+### Test File Structure
+
+- Test files are co-located with source files: `*.usecase.ts` → `*.usecase.test.ts`
+- Test utilities live in `src/test/utils/`
+- Pattern: `src/**/*.{test,spec}.ts`
+
+```
+src/
+├── test/
+│   └── utils/
+│       ├── fastify.mock.ts      # Mock Fastify instance and request
+│       ├── types.ts             # TypeScript interfaces for mocks
+│       └── fixtures/            # Test data factories
+│           └── account.fixture.ts
+├── routes/
+│   └── accounts/
+│       └── usecases/
+│           ├── read.usecase.ts
+│           └── read.usecase.test.ts  # Co-located test
+```
+
+### Writing Use Case Tests
+
+Use cases are tested by mocking the Fastify instance and calling the handler directly.
+
+### Mock Utilities
+
+**`createMockFastify(options?)`** - Creates a mock Fastify instance with:
+- `accountRepository` - Mocked repository methods (`findById`, `findByEmail`, `createAccount`)
+- `commonClientErrors` - Mocked error handlers (`throwNotFoundError`)
+- `bullmq` - Mocked queue (`queue.add`)
+- `log` - Mocked logger
+- `capturedHandler` - Captures the route handler for direct invocation
+
+**`createMockRequest({ body?, params?, query? })`** - Creates a mock request object.
+
+### Test Data Factories
+
+Factories generate realistic test data using Faker. Located in `src/test/utils/fixtures/`.
+
+```typescript
+// Creating test data with defaults
+const account = createMockAccount();
+
+// Overriding specific fields
+const account = createMockAccount({
+  email: "specific@email.com",
+  createdAt: new Date("2024-01-01"),
+});
+```
+
+### What to Test
+
+**DO test:**
+- Handler business logic (happy path and edge cases)
+- Repository method calls with correct arguments
+- Repository method calls with correct arguments
+- Response data shape and transformations
+- Error handling (not found, validation errors)
+
+**DO NOT test:**
+- Route configuration (URL, method, version) - these are static values
+- Schema definitions - TypeBox handles validation
+- Fastify internals
+
+### Adding New Mock Types
+
+When adding new repositories or services:
+
+1. Add interface to `src/test/utils/types.ts`:
+```typescript
+export interface MockNewRepository {
+  findAll: Mock;
+  create: Mock;
+}
+```
+
+2. Add factory function to `src/test/utils/fastify.mock.ts`:
+```typescript
+export function createMockNewRepository(): MockNewRepository {
+  return {
+    findAll: vi.fn(),
+    create: vi.fn(),
+  };
+}
+```
+
+3. Add to `MockFastifyInstance` interface and `createMockFastify()` function.
+
 ## Local Development Ports
 
 - PostgreSQL: 6432
