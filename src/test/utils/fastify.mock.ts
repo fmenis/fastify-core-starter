@@ -71,7 +71,7 @@ export interface MockFastifyWithCapture extends MockFastifyInstance {
 export function createMockFastify(
   options: CreateMockFastifyOptions = {},
 ): MockFastifyWithCapture {
-  const capturedHandler: any = null;
+  let capturedHandler: any = null;
 
   const mockFastify: MockFastifyWithCapture = {
     accountRepository: {
@@ -87,6 +87,10 @@ export function createMockFastify(
       ...options.bullmq,
     },
     log: createMockLogger(),
+    route: vi.fn().mockImplementation((routeOptions: any) => {
+      capturedHandler = routeOptions.handler;
+    }),
+    getSchema: vi.fn().mockReturnValue({}),
     get capturedHandler() {
       return capturedHandler;
     },

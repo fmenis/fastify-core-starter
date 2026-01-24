@@ -39,4 +39,6 @@ export interface MockFastifyInstance {
   commonClientErrors: MockCommonClientErrors;
   bullmq: MockBullMQ;
   log: MockLogger;
+  route: Mock;
+  getSchema: Mock;
 }

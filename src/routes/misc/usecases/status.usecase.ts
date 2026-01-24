@@ -18,8 +18,8 @@ export default async function status(fastify: FastifyInstance) {
     },
     schema: {
       description: buildRouteFullDescription({
-        api: "login",
-        description: "Authenticate user.",
+        api: "status",
+        description: "Get service status.",
         errors: [],
       }),
       response: {
