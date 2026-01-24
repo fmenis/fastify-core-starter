@@ -25,69 +25,72 @@ jobs:
       #   run: |
       #     echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
 
-      # - name: Lint
-      #   run: npm run lint
+      - name: Lint
+        run: npm run lint
+
+      # - name: Unit test
+      #   run: npm run test:unit
 
       # - name: Build TypeScript
       #   run: npm run build
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-        env:
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      # - name: Setup SSH key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+      #     chmod 600 ~/.ssh/id_ed25519
+      #   env:
+      #     VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Copy project to VPS with rsync
-        run: |
-          mkdir -p /opt/fastify-service
-          rsync -avzh --delete-after -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-            --exclude node_modules \
-            --exclude .git \
-            --exclude .vscode \
-            --exclude dist \
-            --exclude doc \
-            --exclude local-stack \
-            ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/fastify-service
+      # - name: Copy project to VPS with rsync
+      #   run: |
+      #     mkdir -p /opt/fastify-service
+      #     rsync -avzh --delete-after -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
+      #       --exclude node_modules \
+      #       --exclude .git \
+      #       --exclude .vscode \
+      #       --exclude dist \
+      #       --exclude doc \
+      #       --exclude local-stack \
+      #       ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/fastify-service
 
-      - name: Create .env file on VPS
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          script: |
-            cat > /opt/fastify-service/.env <<EOF
-            NODE_ENV=production
-            APP_ENV=development
-            APP_NAME=fastify-core-starter
-            API_DOMAIN=api.filippomenis.it
-            SERVER_ADDRESS=localhost
-            SERVER_PORT=3000
-            LOG_LEVEL=debug
-            PG_HOST=${{ secrets.PG_HOST }}
-            PG_PORT=${{ secrets.PG_PORT }}
-            PG_DB=${{ secrets.PG_DB }}
-            PG_USER=${{ secrets.PG_USER }}
-            PG_PW=${{ secrets.PG_PW }}
-            REDIS_HOST=localhost
-            REDIS_PORT=6379
-            SENTRY_ENABLED=true
-            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-            EOF
+      # - name: Create .env file on VPS
+      #   uses: appleboy/ssh-action@v0.1.7
+      #   with:
+      #     host: ${{ secrets.VPS_HOST }}
+      #     username: ${{ secrets.VPS_USER }}
+      #     key: ${{ secrets.VPS_SSH_KEY }}
+      #     port: 22
+      #     script: |
+      #       cat > /opt/fastify-service/.env <<EOF
+      #       NODE_ENV=production
+      #       APP_ENV=development
+      #       APP_NAME=fastify-core-starter
+      #       API_DOMAIN=api.filippomenis.it
+      #       SERVER_ADDRESS=localhost
+      #       SERVER_PORT=3000
+      #       LOG_LEVEL=debug
+      #       PG_HOST=${{ secrets.PG_HOST }}
+      #       PG_PORT=${{ secrets.PG_PORT }}
+      #       PG_DB=${{ secrets.PG_DB }}
+      #       PG_USER=${{ secrets.PG_USER }}
+      #       PG_PW=${{ secrets.PG_PW }}
+      #       REDIS_HOST=localhost
+      #       REDIS_PORT=6379
+      #       SENTRY_ENABLED=true
+      #       SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+      #       EOF
 
-      - name: SSH into VPS & restart service
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          script: |
-            cd /opt/fastify-service
-            npm ci
-            npm run build
-            npm run applyMigrations
-            sudo systemctl restart fastify-app.service
+      # - name: SSH into VPS & restart service
+      #   uses: appleboy/ssh-action@v0.1.7
+      #   with:
+      #     host: ${{ secrets.VPS_HOST }}
+      #     username: ${{ secrets.VPS_USER }}
+      #     key: ${{ secrets.VPS_SSH_KEY }}
+      #     port: 22
+      #     script: |
+      #       cd /opt/fastify-service
+      #       npm ci
+      #       npm run build
+      #       npm run applyMigrations
+      #       sudo systemctl restart fastify-app.service

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { vi } from "vitest";
 import type {
   MockAccountRepository,
@@ -69,7 +71,7 @@ export interface MockFastifyWithCapture extends MockFastifyInstance {
 export function createMockFastify(
   options: CreateMockFastifyOptions = {},
 ): MockFastifyWithCapture {
-  let capturedHandler: any = null;
+  const capturedHandler: any = null;
 
   const mockFastify: MockFastifyWithCapture = {
     accountRepository: {

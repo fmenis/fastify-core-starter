@@ -11,7 +11,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
+    "test:unit": "vitest run",
     "test:watch": "vitest",
     "start": "node --env-file .env dist/server.js",
     "dev": "tsx watch --env-file .env --inspect src/server.ts",
