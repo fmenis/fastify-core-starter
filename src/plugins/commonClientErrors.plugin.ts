@@ -1,12 +1,12 @@
-import { HttpError } from "@fastify/sensible";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
+
 import { DocumentationError } from "../common/interface.js";
 
 declare module "fastify" {
   interface FastifyInstance {
     commonClientErrors: {
-      throwNotFoundError(data: { name: string; id: string }): void;
+      throwNotFoundError(data: { name: string; id: string }): never;
       errors: DocumentationError[];
     };
   }
@@ -15,7 +15,7 @@ declare module "fastify" {
 async function commonClientErrorsPlugin(fastify: FastifyInstance) {
   const { createError } = fastify.httpErrors;
 
-  function throwNotFoundError(data: { name: string; id: string }): HttpError {
+  function throwNotFoundError(data: { name: string; id: string }): never {
     const { name, id } = data;
     const message = `Entity '${name}' with '${id}' not found.`;
 

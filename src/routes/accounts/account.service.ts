@@ -1,6 +1,8 @@
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
+
 import { Account } from "./account.interface.js";
+import { EntityNotFoundError } from "../../common/errors.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -12,8 +14,14 @@ export function accountService(fastify: FastifyInstance) {
   const { accountRepository } = fastify;
 
   return {
-    async findAccount(accountId: string): Promise<Account | null> {
-      return accountRepository.findById(accountId);
+    async findAccount(accountId: string): Promise<Account> {
+      const account = await accountRepository.findById(accountId);
+
+      if (!account) {
+        throw new EntityNotFoundError("account", accountId);
+      }
+
+      return account;
     },
   };
 }

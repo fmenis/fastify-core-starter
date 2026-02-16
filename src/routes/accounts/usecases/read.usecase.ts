@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
+import { EntityNotFoundError } from "../../../common/errors.js";
 import { buildRouteFullDescription } from "../../../utils/main.js";
 import {
   readAccountParamsSchema,
@@ -44,24 +45,29 @@ export default async function readUseCase(
 
   async function onReadUseCase(
     req: FastifyRequest<{ Params: ReadAccountParamsSchemaType }>,
-  ): Promise<ReadAccountResponseSchemaType | undefined> {
+  ): Promise<ReadAccountResponseSchemaType> {
     const { id } = req.params;
 
-    const account = await accountService.findAccount(id);
+    try {
+      const account = await accountService.findAccount(id);
 
-    if (!account) {
-      throwNotFoundError({ id, name: "account" });
-      return;
+      return {
+        id: account.id,
+        firstName: account.firstName,
+        lastName: account.lastName,
+        userName: account.userName,
+        email: account.email,
+        createdAt: account.createdAt.toISOString(),
+        updatedAt: account.updatedAt.toISOString(),
+      };
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        return throwNotFoundError({
+          id: error.entityId,
+          name: error.entityName,
+        });
+      }
+      throw error;
     }
-
-    return {
-      id: account.id,
-      firstName: account.firstName,
-      lastName: account.lastName,
-      userName: account.userName,
-      email: account.email,
-      createdAt: account.createdAt.toISOString(),
-      updatedAt: account.updatedAt.toISOString(),
-    };
   }
 }

@@ -95,7 +95,53 @@ Routes are versioned via `Accept-Version` header (default: 1.0.0). Disable per-r
 
 ### Error Handling
 
-Custom errors use codes from `src/plugins/commonClientErrors.plugin.ts`. Standard response format:
+The project uses a two-layer error system:
+
+**1. Domain Errors** (`src/common/errors.ts`) - HTTP-agnostic errors thrown by services:
+
+```typescript
+import { EntityNotFoundError } from "../../common/errors.js";
+
+// In service - throws domain error
+async findAccount(accountId: string): Promise<Account> {
+  const account = await accountRepository.findById(accountId);
+  if (!account) {
+    throw new EntityNotFoundError("account", accountId);
+  }
+  return account;
+}
+```
+
+**2. HTTP Errors** (`src/plugins/commonClientErrors.plugin.ts`) - Convert domain errors to HTTP responses:
+
+```typescript
+// In use case - catch domain error, convert to HTTP error
+try {
+  const account = await accountService.findAccount(id);
+  return { ... };
+} catch (error) {
+  if (error instanceof EntityNotFoundError) {
+    return throwNotFoundError({ id: error.entityId, name: error.entityName });
+  }
+  throw error;
+}
+```
+
+**Adding new domain errors:**
+
+```typescript
+// src/common/errors.ts
+export class EntityNotFoundError extends DomainError {
+  constructor(
+    public readonly entityName: string,
+    public readonly entityId: string,
+  ) {
+    super(`Entity '${entityName}' with '${entityId}' not found`);
+  }
+}
+```
+
+**Standard HTTP error response format:**
 
 ```json
 {
@@ -106,6 +152,12 @@ Custom errors use codes from `src/plugins/commonClientErrors.plugin.ts`. Standar
   "details": { "entityId": "xxx", "entityName": "user" }
 }
 ```
+
+**Why two layers?**
+
+- Services remain HTTP-agnostic (reusable in workers, CLI, etc.)
+- Use cases handle HTTP concerns (status codes, response format)
+- Clear separation between business logic and HTTP layer
 
 ## API Documentation (Swagger/OpenAPI)
 

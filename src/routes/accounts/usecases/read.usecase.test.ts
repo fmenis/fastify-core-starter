@@ -6,6 +6,7 @@ import {
   createMockRequest,
 } from "../../../test/utils/fastify.mock.js";
 import { createMockAccount } from "../../../test/utils/fixtures/account.fixture.js";
+import { EntityNotFoundError } from "../../../common/errors.js";
 
 describe("read.usecase", () => {
   let mockFastify: ReturnType<typeof createMockFastify>;
@@ -52,7 +53,10 @@ describe("read.usecase", () => {
   describe("when account does not exist", () => {
     it("should throw NOT_FOUND error", async () => {
       const nonExistentId = faker.string.uuid();
-      mockFastify.accountService.findAccount.mockResolvedValueOnce(null);
+
+      mockFastify.accountService.findAccount.mockRejectedValueOnce(
+        new EntityNotFoundError("account", nonExistentId),
+      );
 
       const handler = await getHandler();
       const request = createMockRequest({
