@@ -37,9 +37,10 @@ npm run db:migrate       # Run database migrations with postgrator
 The app uses Fastify's plugin system for modularity. Plugins are registered in dependency order in `src/app.ts`. Key patterns:
 
 - **Repository Pattern**: Data access via decorated repositories (e.g., `account.repository.ts`)
+- **Service Pattern**: Business logic via decorated services (e.g., `account.service.ts`)
 - **Use Case Pattern**: Each route handler is a use case file (e.g., `login.usecase.ts`)
 - **TypeBox Schemas**: All request/response validation uses TypeBox with `Static<typeof schema>` for types
-- **Dependency Injection**: Services are Fastify decorators (`fastify.kysely`, `fastify.accountRepository`, `fastify.bullmq`)
+- **Dependency Injection**: Core libraries and domain layers are Fastify decorators (`fastify.kysely`, `fastify.accountRepository`, `fastify.accountService`, `fastify.bullmq`)
 
 ### Source Structure
 
@@ -52,7 +53,7 @@ src/
 ├── plugins/            # Fastify plugins (auth, bullmq, errors, hooks, swagger)
 ├── routes/             # API routes organized by domain
 │   ├── auth/           # Auth routes with usecases/ and queue/
-│   ├── accounts/       # Account repository and interfaces
+│   ├── accounts/       # Account domain (repository, service, interfaces)
 │   └── misc/           # Health/status endpoints
 ├── utils/              # Utilities (env schema, server options)
 └── @types/             # TypeScript type definitions
@@ -66,6 +67,21 @@ Follow the pattern in `src/routes/auth/`:
 2. Define schemas in `*.schema.ts` using TypeBox
 3. Create use cases in `usecases/*.usecase.ts`
 4. Register routes in parent `src/routes/index.ts`
+
+### Service Layer
+
+Services contain business logic and sit between use cases and repositories. Use cases should call services for business operations, not repositories directly.
+
+**Layer responsibilities:**
+
+- **Use Cases**: HTTP handling, request/response transformation, calling services
+- **Services**: Business logic, orchestration, domain rules
+- **Repositories**: Data access only (CRUD operations)
+
+
+**Plugin naming convention:**
+
+The `dependencies` array must reference plugins by their `name` property (e.g., `"account-repository"`), not by the decorator name (e.g., `"accountRepository"`).
 
 ### API Versioning
 
@@ -336,6 +352,7 @@ Use cases are tested by mocking the Fastify instance and calling the handler dir
 
 **`createMockFastify(options?)`** - Creates a mock Fastify instance with:
 - `accountRepository` - Mocked repository methods (`findById`, `findByEmail`, `createAccount`)
+- `accountService` - Mocked service methods (`findAccount`)
 - `commonClientErrors` - Mocked error handlers (`throwNotFoundError`)
 - `bullmq` - Mocked queue (`queue.add`)
 - `log` - Mocked logger
@@ -382,6 +399,10 @@ export interface MockNewRepository {
   findAll: Mock;
   create: Mock;
 }
+
+export interface MockNewService {
+  doSomething: Mock;
+}
 ```
 
 2. Add factory function to `src/test/utils/fastify.mock.ts`:
@@ -392,9 +413,20 @@ export function createMockNewRepository(): MockNewRepository {
     create: vi.fn(),
   };
 }
+
+export function createMockNewService(): MockNewService {
+  return {
+    doSomething: vi.fn(),
+  };
+}
 ```
 
 3. Add to `MockFastifyInstance` interface and `createMockFastify()` function.
+
+**Testing services vs repositories:**
+
+- **Use cases** should mock services (not repositories) when services contain the business logic
+- **Services** should mock repositories for unit testing service logic in isolation
 
 ## Local Development Ports
 

@@ -11,7 +11,7 @@ import {
 export default async function readUseCase(
   fastify: FastifyInstance,
 ): Promise<void> {
-  const { accountRepository, commonClientErrors } = fastify;
+  const { accountService, commonClientErrors } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
   const version = "1.0.0";
@@ -47,8 +47,7 @@ export default async function readUseCase(
   ): Promise<ReadAccountResponseSchemaType | undefined> {
     const { id } = req.params;
 
-    //TODO capire se passare da service
-    const account = await accountRepository.findById(id);
+    const account = await accountService.findAccount(id);
 
     if (!account) {
       throwNotFoundError({ id, name: "account" });

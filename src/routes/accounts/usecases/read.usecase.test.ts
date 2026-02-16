@@ -25,7 +25,7 @@ describe("read.usecase", () => {
       const updatedAt = faker.date.recent();
       const mockAccount = createMockAccount({ createdAt, updatedAt });
 
-      mockFastify.accountRepository.findById.mockResolvedValueOnce(mockAccount);
+      mockFastify.accountService.findAccount.mockResolvedValueOnce(mockAccount);
 
       const handler = await getHandler();
       const request = createMockRequest({
@@ -34,7 +34,7 @@ describe("read.usecase", () => {
 
       const result = await handler(request);
 
-      expect(mockFastify.accountRepository.findById).toHaveBeenCalledWith(
+      expect(mockFastify.accountService.findAccount).toHaveBeenCalledWith(
         mockAccount.id,
       );
       expect(result).toEqual({
@@ -52,7 +52,7 @@ describe("read.usecase", () => {
   describe("when account does not exist", () => {
     it("should throw NOT_FOUND error", async () => {
       const nonExistentId = faker.string.uuid();
-      mockFastify.accountRepository.findById.mockResolvedValueOnce(null);
+      mockFastify.accountService.findAccount.mockResolvedValueOnce(null);
 
       const handler = await getHandler();
       const request = createMockRequest({

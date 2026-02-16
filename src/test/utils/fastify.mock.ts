@@ -3,6 +3,7 @@
 import { vi } from "vitest";
 import type {
   MockAccountRepository,
+  MockAccountService,
   MockCommonClientErrors,
   MockBullMQ,
   MockLogger,
@@ -14,6 +15,12 @@ export function createMockAccountRepository(): MockAccountRepository {
     createAccount: vi.fn(),
     findByEmail: vi.fn(),
     findById: vi.fn(),
+  };
+}
+
+export function createMockAccountService(): MockAccountService {
+  return {
+    findAccount: vi.fn(),
   };
 }
 
@@ -60,6 +67,7 @@ export function createMockLogger(): MockLogger {
 
 export interface CreateMockFastifyOptions {
   accountRepository?: Partial<MockAccountRepository>;
+  accountService?: Partial<MockAccountService>;
   commonClientErrors?: Partial<MockCommonClientErrors>;
   bullmq?: Partial<MockBullMQ>;
 }
@@ -77,6 +85,10 @@ export function createMockFastify(
     accountRepository: {
       ...createMockAccountRepository(),
       ...options.accountRepository,
+    },
+    accountService: {
+      ...createMockAccountService(),
+      ...options.accountService,
     },
     commonClientErrors: {
       ...createMockCommonClientErrors(),

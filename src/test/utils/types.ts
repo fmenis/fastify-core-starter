@@ -6,6 +6,10 @@ export interface MockAccountRepository {
   findById: Mock;
 }
 
+export interface MockAccountService {
+  findAccount: Mock;
+}
+
 export interface MockCommonClientErrors {
   throwNotFoundError: Mock;
   errors: Array<{
@@ -36,6 +40,7 @@ export interface MockLogger {
 
 export interface MockFastifyInstance {
   accountRepository: MockAccountRepository;
+  accountService: MockAccountService;
   commonClientErrors: MockCommonClientErrors;
   bullmq: MockBullMQ;
   log: MockLogger;
