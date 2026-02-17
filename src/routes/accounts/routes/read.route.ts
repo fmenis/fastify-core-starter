@@ -9,9 +9,7 @@ import {
   ReadAccountResponseSchemaType,
 } from "../account.schema.js";
 
-export default async function readUseCase(
-  fastify: FastifyInstance,
-): Promise<void> {
+export default async function read(fastify: FastifyInstance): Promise<void> {
   const { accountService, commonClientErrors } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
@@ -40,10 +38,10 @@ export default async function readUseCase(
         404: fastify.getSchema("sNotFound"),
       },
     },
-    handler: onReadUseCase,
+    handler: onRead,
   });
 
-  async function onReadUseCase(
+  async function onRead(
     req: FastifyRequest<{ Params: ReadAccountParamsSchemaType }>,
   ): Promise<ReadAccountResponseSchemaType> {
     const { id } = req.params;

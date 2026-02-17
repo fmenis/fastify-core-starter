@@ -14,7 +14,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Modern Node.js features
 - [x] TypeScript ready
 - [x] Postgres ready
-- [ ] Solid codebase structure
+- [x] Solid codebase structure
 - [x] Kysely TypeScript SQL query builder
 - [x] VSCode debugging configuration
 - [x] Environment variables usage

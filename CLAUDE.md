@@ -38,7 +38,7 @@ The app uses Fastify's plugin system for modularity. Plugins are registered in d
 
 - **Repository Pattern**: Data access via decorated repositories (e.g., `account.repository.ts`)
 - **Service Pattern**: Business logic via decorated services (e.g., `account.service.ts`)
-- **Use Case Pattern**: Each route handler is a use case file (e.g., `login.usecase.ts`)
+- **Route Pattern**: Each route handler is a route file (e.g., `login.route.ts`)
 - **TypeBox Schemas**: All request/response validation uses TypeBox with `Static<typeof schema>` for types
 - **Dependency Injection**: Core libraries and domain layers are Fastify decorators (`fastify.kysely`, `fastify.accountRepository`, `fastify.accountService`, `fastify.bullmq`)
 
@@ -52,7 +52,7 @@ src/
 ├── lib/                # Core libraries (logger, kysely, redis, sentry)
 ├── plugins/            # Fastify plugins (auth, bullmq, errors, hooks, swagger)
 ├── routes/             # API routes organized by domain
-│   ├── auth/           # Auth routes with usecases/ and queue/
+│   ├── auth/           # Auth routes with routes/ and queue/
 │   ├── accounts/       # Account domain (repository, service, interfaces)
 │   └── misc/           # Health/status endpoints
 ├── utils/              # Utilities (env schema, server options)
@@ -65,16 +65,16 @@ Follow the pattern in `src/routes/auth/`:
 
 1. Create route directory with `index.ts` for registration
 2. Define schemas in `*.schema.ts` using TypeBox
-3. Create use cases in `usecases/*.usecase.ts`
+3. Create route handlers in `routes/*.route.ts`
 4. Register routes in parent `src/routes/index.ts`
 
 ### Service Layer
 
-Services contain business logic and sit between use cases and repositories. Use cases should call services for business operations, not repositories directly.
+Services contain business logic and sit between routes and repositories. Routes should call services for business operations, not repositories directly.
 
 **Layer responsibilities:**
 
-- **Use Cases**: HTTP handling, request/response transformation, calling services
+- **Routes**: HTTP handling, request/response transformation, calling services
 - **Services**: Business logic, orchestration, domain rules
 - **Repositories**: Data access only (CRUD operations)
 
@@ -115,7 +115,7 @@ async findAccount(accountId: string): Promise<Account> {
 **2. HTTP Errors** (`src/plugins/commonClientErrors.plugin.ts`) - Convert domain errors to HTTP responses:
 
 ```typescript
-// In use case - catch domain error, convert to HTTP error
+// In route - catch domain error, convert to HTTP error
 try {
   const account = await accountService.findAccount(id);
   return { ... };
@@ -156,7 +156,7 @@ export class EntityNotFoundError extends DomainError {
 **Why two layers?**
 
 - Services remain HTTP-agnostic (reusable in workers, CLI, etc.)
-- Use cases handle HTTP concerns (status codes, response format)
+- Routes handle HTTP concerns (status codes, response format)
 - Clear separation between business logic and HTTP layer
 
 ## API Documentation (Swagger/OpenAPI)
@@ -366,7 +366,7 @@ See [.env.example](.env.example) for all variables with defaults.
 
 ## Unit Testing
 
-The project uses Vitest for unit testing with a mock-based approach for testing use cases in isolation.
+The project uses Vitest for unit testing with a mock-based approach for testing routes in isolation.
 
 ### Running Tests
 
@@ -377,7 +377,7 @@ npx vitest               # Run tests in watch mode
 
 ### Test File Structure
 
-- Test files are co-located with source files: `*.usecase.ts` → `*.usecase.test.ts`
+- Test files are co-located with source files: `*.route.ts` → `*.route.test.ts`
 - Test utilities live in `src/test/utils/`
 - Pattern: `src/**/*.{test,spec}.ts`
 
@@ -391,14 +391,14 @@ src/
 │           └── account.fixture.ts
 ├── routes/
 │   └── accounts/
-│       └── usecases/
-│           ├── read.usecase.ts
-│           └── read.usecase.test.ts  # Co-located test
+│       └── routes/
+│           ├── read.route.ts
+│           └── read.route.test.ts  # Co-located test
 ```
 
-### Writing Use Case Tests
+### Writing Route Tests
 
-Use cases are tested by mocking the Fastify instance and calling the handler directly.
+Routes are tested by mocking the Fastify instance and calling the handler directly.
 
 ### Mock Utilities
 
@@ -477,7 +477,7 @@ export function createMockNewService(): MockNewService {
 
 **Testing services vs repositories:**
 
-- **Use cases** should mock services (not repositories) when services contain the business logic
+- **Routes** should mock services (not repositories) when services contain the business logic
 - **Services** should mock repositories for unit testing service logic in isolation
 
 ## Local Development Ports

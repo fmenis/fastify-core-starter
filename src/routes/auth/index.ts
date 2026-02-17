@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import login from "./usecases/login.usecase.js";
+import login from "./routes/login.route.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {

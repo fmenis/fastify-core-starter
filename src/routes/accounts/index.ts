@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import read from "./usecases/read.usecase.js";
+import read from "./routes/read.route.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {

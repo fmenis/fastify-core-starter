@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { describe, it, expect, beforeEach } from "vitest";
-import readUseCase from "./read.usecase.js";
+import readRoute from "./read.route.js";
 import {
   createMockFastify,
   createMockRequest,
@@ -8,7 +8,7 @@ import {
 import { createMockAccount } from "../../../test/utils/fixtures/account.fixture.js";
 import { EntityNotFoundError } from "../../../common/errors.js";
 
-describe("read.usecase", () => {
+describe("read.route", () => {
   let mockFastify: ReturnType<typeof createMockFastify>;
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe("read.usecase", () => {
   });
 
   async function getHandler() {
-    await readUseCase(mockFastify as never);
+    await readRoute(mockFastify as never);
     return mockFastify.capturedHandler!;
   }
 

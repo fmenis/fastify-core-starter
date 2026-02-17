@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import status from "./status.usecase.js";
+import status from "./status.route.js";
 import { createMockFastify } from "../../../test/utils/fastify.mock.js";
 
-//TODO capire perchè il mock buildRouteFullDescription non serve in read.usecase.test.ts
+//TODO capire perchè il mock buildRouteFullDescription non serve in read.route.test.ts
 vi.mock("../../../utils/main.js", () => ({
   buildRouteFullDescription: vi.fn().mockReturnValue("Foo"),
   getServerVersion: vi.fn().mockResolvedValue("0.4.0"),
 }));
 
-describe("status.usecase", () => {
+describe("status.route", () => {
   describe("GET /status", () => {
     let mockFastify: ReturnType<typeof createMockFastify>;
 
