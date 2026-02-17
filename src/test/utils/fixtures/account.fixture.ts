@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Account } from "../../../routes/accounts/account.interface.js";
+import { Account } from "../../../modules/accounts/account.interface.js";
 
 export function createMockAccount(overrides: Partial<Account> = {}): Account {
   return {

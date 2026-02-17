@@ -5,9 +5,9 @@ import authentication from "../plugins/authentication.plugin.js";
 import accountRepository from "./accounts/account.repository.js";
 import accountService from "./accounts/account.service.js";
 
-import accountsRoutes from "./accounts/index.js";
-import authRoutes from "./auth/index.js";
-import miscRoutes from "./misc/index.js";
+import authModule from "./auth/index.js";
+import miscModule from "./misc/index.js";
+import accountModule from "./accounts/index.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   await fastify.register(authentication);
@@ -16,7 +16,7 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
   await fastify.register(accountRepository);
   await fastify.register(accountService);
 
-  await fastify.register(authRoutes);
-  await fastify.register(miscRoutes);
-  await fastify.register(accountsRoutes);
+  await fastify.register(authModule);
+  await fastify.register(miscModule);
+  await fastify.register(accountModule);
 }

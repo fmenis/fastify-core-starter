@@ -6,7 +6,7 @@ import rateLimit from "@fastify/rate-limit";
 
 import bullmqPlugin from "./plugins/bullmq.plugin.js";
 import loadCommonSchemasPlugin from "./plugins/loadCommonSchemas.plugin.js";
-import apiPlugin from "./routes/index.js";
+import apiPlugin from "./modules/index.js";
 import commonClientErrorsPlugin from "./plugins/commonClientErrors.plugin.js";
 import commonHooksPlugin from "./plugins/commonHooks.plugin.js";
 import kyselyPlugin from "./plugins/kysely.plugin.js";
