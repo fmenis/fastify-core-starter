@@ -37,6 +37,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Api versioning
 - [x] Activity log
 - [ ] Request and server timeouts
+- [ ] Execute commands
 
 ## 🛠️ Installation
 
