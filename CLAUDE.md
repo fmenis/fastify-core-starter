@@ -79,6 +79,59 @@ Services contain business logic and sit between routes and repositories. Routes 
 - **Repositories**: Data access only (CRUD operations)
 
 
+### Activity Logging
+
+**Every route that produces a side effect (POST, PUT, PATCH, DELETE) must call `activityLogService` and create a record.** Read-only routes (GET) do not need to log.
+
+The `activityLogService` is available via `fastify.activityLogService`. Call it after the operation succeeds, before returning the response.
+
+**Fields:**
+
+- `actorId` — ID of the entity performing the action (e.g. authenticated user ID)
+- `actorType` — `ActorType.USER` or `ActorType.SYSTEM` (from `src/common/enum.ts`)
+- `action` — plain string describing what happened (e.g. `"account.created"`, `"account.deleted"`)
+- `resourceType` — `ResourceType.ACCOUNT`, etc. (from `src/common/enum.ts`). Add new values to the enum when introducing new domains.
+- `resourceId` — ID of the affected resource
+- `changes` — optional JSON with before/after data, or `null`
+
+**Example — single record:**
+
+```typescript
+// In a route handler
+const account = await fastify.accountService.createAccount(body);
+
+await fastify.activityLogService.logActivity({
+  actorId: request.user.id,
+  actorType: ActorType.USER,
+  action: "account.created",
+  resourceType: ResourceType.ACCOUNT,
+  resourceId: account.id,
+  changes: null,
+});
+
+return account;
+```
+
+**Example — bulk (multiple resources affected):**
+
+```typescript
+await fastify.activityLogService.logBulkActivity(
+  accounts.map(account => ({
+    actorId: request.user.id,
+    actorType: ActorType.USER,
+    action: "account.updated",
+    resourceType: ResourceType.ACCOUNT,
+    resourceId: account.id,
+    changes: null,
+  })),
+);
+```
+
+**When adding a new `ResourceType`:**
+
+1. Add the value to the `ResourceType` enum in `src/common/enum.ts`
+2. Re-run `npm run kysely:codegen` if the enum is database-backed
+
 **Plugin naming convention:**
 
 The `dependencies` array must reference plugins by their `name` property (e.g., `"account-repository"`), not by the decorator name (e.g., `"accountRepository"`).
@@ -274,6 +327,8 @@ For complex queries, joins, transactions, and advanced patterns, always consult 
 ### Migrations
 
 Use plain SQL migrations with postgrator. Place migration files in `migrations/` directory.
+
+**Table naming convention:** All table names must use **camelCase** (e.g., `activityLog`, `userProfile`). Column names also use camelCase, quoted for PostgreSQL (e.g., `"actorId"`, `"createdAt"`).
 
 ## Environment Variables
 

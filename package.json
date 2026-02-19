@@ -23,7 +23,7 @@
     "rebuildStack": "./local-stack/rebuild-db.sh",
     "prepare": "husky",
     "kysely:codegen": "kysely-codegen --dialect postgres --exclude-pattern migrations --out-file ./src/generated/kysely/types.ts",
-    "applyMigrations": "node --env-file .env ./scripts/applyMigrations.ts"
+    "db:migrate": "node --env-file .env ./scripts/applyMigrations.ts"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",

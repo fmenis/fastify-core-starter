@@ -5,9 +5,25 @@
 
 import type { ColumnType } from "kysely";
 
+export type ActorType = "SYSTEM" | "USER";
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
+
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+export type ResourceType = "ACCOUNT" | "ORDER";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -23,6 +39,18 @@ export interface Account {
   userName: string;
 }
 
+export interface ActivityLog {
+  action: string;
+  actorId: string;
+  actorType: ActorType;
+  changes: Json | null;
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  resourceId: string;
+  resourceType: ResourceType;
+}
+
 export interface DB {
   account: Account;
+  activityLog: ActivityLog;
 }
