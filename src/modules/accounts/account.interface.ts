@@ -6,7 +6,8 @@ export interface Account {
   email: string;
   password: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date | null;
+  deletedAt: Date | null;
 }
 
 export type CreateAccount = Pick<

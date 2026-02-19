@@ -56,7 +56,8 @@ export default async function read(fastify: FastifyInstance): Promise<void> {
         userName: account.userName,
         email: account.email,
         createdAt: account.createdAt.toISOString(),
-        updatedAt: account.updatedAt.toISOString(),
+        updatedAt: account.updatedAt?.toISOString() ?? null,
+        deletedAt: account.deletedAt?.toISOString() ?? null,
       };
     } catch (error) {
       if (error instanceof EntityNotFoundError) {

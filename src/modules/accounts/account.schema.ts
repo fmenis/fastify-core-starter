@@ -1,4 +1,5 @@
 import { Static, Type } from "typebox";
+import { Nullable } from "../../common/schema.js";
 
 export const readAccountParamsSchema = Type.Object(
   {
@@ -36,11 +37,18 @@ export const readAccountResponseSchema = Type.Object(
       format: "date-time",
       description: "Account creation date.",
     }),
-    //TODO nullable
-    updatedAt: Type.String({
-      format: "date-time",
-      description: "Account last update date.",
-    }),
+    updatedAt: Nullable(
+      Type.String({
+        format: "date-time",
+        description: "Account last update date.",
+      }),
+    ),
+    deletedAt: Nullable(
+      Type.String({
+        format: "date-time",
+        description: "Account last update date.",
+      }),
+    ),
   },
   { additionalProperties: false },
 );

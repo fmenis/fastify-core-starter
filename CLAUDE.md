@@ -291,7 +291,8 @@ When adding a new environment variable, **automatically update all 5 files** to 
 
 - Use **UPPER_SNAKE_CASE** for all environment variable names
 - Group related variables (app config, database, external services)
-- Prefix service-specific vars (e.g., `PG_*` for PostgreSQL, `REDIS_*` for Redis)
+- Prefix service-specific vars (e.g., `REDIS_*` for Redis)
+- Use standard connection string variables where possible (e.g., `DATABASE_URL` for PostgreSQL)
 
 ### TypeBox Validation Patterns
 
@@ -358,7 +359,7 @@ Add new variables to the table following this pattern:
 
 ### Current Environment Variables
 
-**Required:** `APP_ENV`, `API_DOMAIN`, `LOG_LEVEL`, `PG_HOST`, `PG_PORT`, `PG_DB`, `PG_USER`, `PG_PW`, `REDIS_HOST`, `REDIS_PORT`
+**Required:** `APP_ENV`, `API_DOMAIN`, `LOG_LEVEL`, `DATABASE_URL`, `REDIS_HOST`, `REDIS_PORT`
 
 **Optional:** `NODE_ENV`, `APP_NAME`, `SERVER_ADDRESS`, `SERVER_PORT`, `SENTRY_ENABLED`, `SENTRY_DSN`
 

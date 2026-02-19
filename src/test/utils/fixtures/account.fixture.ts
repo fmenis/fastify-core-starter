@@ -10,7 +10,8 @@ export function createMockAccount(overrides: Partial<Account> = {}): Account {
     email: faker.internet.email(),
     password: faker.internet.password({ length: 20 }),
     createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(),
+    updatedAt: faker.helpers.arrayElement([faker.date.recent(), null]),
+    deletedAt: faker.helpers.arrayElement([faker.date.recent(), null]),
     ...overrides,
   };
 }

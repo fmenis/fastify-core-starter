@@ -65,11 +65,7 @@ docker-compose up -d
 | SERVER_PORT    |      3000       | Server port                       |
 | **API_DOMAIN** |                 | Production, staging or dev domain |
 | **LOG_LEVEL**  |                 | Pino.js default log level         |
-| **PG_HOST**    |                 | Postgres connection url           |
-| **PG_PORT**    |                 | Postgres port                     |
-| **PG_DB**      |                 | Postgres database name            |
-| **PG_USER**    |                 | Postgres role name                |
-| **PG_PW**      |                 | Postgres role password            |
+| **DATABASE_URL** |               | PostgreSQL connection string      |
 | **REDIS_HOST** |                 | Redis host                        |
 | **REDIS_PORT** |                 | Redis port                        |
 | SENTRY_ENABLED |      false      | Enable sentry integration         |

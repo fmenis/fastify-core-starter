@@ -24,7 +24,13 @@ describe("read.route", () => {
     it("should return the account data", async () => {
       const createdAt = faker.date.past();
       const updatedAt = faker.date.recent();
-      const mockAccount = createMockAccount({ createdAt, updatedAt });
+      const deletedAt = null;
+
+      const mockAccount = createMockAccount({
+        createdAt,
+        updatedAt,
+        deletedAt,
+      });
 
       mockFastify.accountService.findAccount.mockResolvedValueOnce(mockAccount);
 
@@ -46,6 +52,7 @@ describe("read.route", () => {
         email: mockAccount.email,
         createdAt: createdAt.toISOString(),
         updatedAt: updatedAt.toISOString(),
+        deletedAt: deletedAt,
       });
     });
   });

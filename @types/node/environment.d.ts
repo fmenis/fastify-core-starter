@@ -8,11 +8,7 @@ declare global {
       SERVER_ADDRESS: string;
       SERVER_PORT: string;
       LOG_LEVEL: string;
-      PG_HOST: string;
-      PG_PORT: string;
-      PG_DB: string;
-      PG_USER: string;
-      PG_PW: string;
+      DATABASE_URL: string;
       REDIS_HOST: string;
       REDIS_PORT: string;
       SENTRY_ENABLED: boolean;

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS "account" (
     "userName" VARCHAR(50) UNIQUE NOT NULL,
     "email" VARCHAR(50) UNIQUE NOT NULL,
     "password" VARCHAR(60) NOT NULL,
-    "createdAt" timestamp DEFAULT NOW(),
-    "updatedAt" timestamp
+    "createdAt" timestamp NOT NULL DEFAULT NOW(),
+    "updatedAt" timestamp,
+    "deletedAt" timestamp
 );

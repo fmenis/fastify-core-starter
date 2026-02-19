@@ -13,12 +13,13 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Account {
   createdAt: Generated<Timestamp>;
+  deletedAt: Timestamp | null;
   email: string;
   firstName: string;
   id: Generated<string>;
   lastName: string;
   password: string;
-  updatedAt: Generated<Timestamp>;
+  updatedAt: Timestamp | null;
   userName: string;
 }
 

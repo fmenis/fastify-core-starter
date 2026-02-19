@@ -4,14 +4,11 @@ import { join, resolve } from "path";
 
 async function applyMigrations(): Promise<void> {
   const client = new pg.Client({
-    host: process.env.PG_HOST,
-    port: +process.env.PG_PORT!,
-    database: process.env.PG_DB,
-    user: process.env.PG_USER,
-    password: process.env.PG_PW,
+    connectionString: process.env.DATABASE_URL,
   });
 
   const schema = "public";
+  const database = new URL(process.env.DATABASE_URL!).pathname.slice(1);
 
   try {
     await client.connect();
@@ -19,7 +16,7 @@ async function applyMigrations(): Promise<void> {
     const postgrator = new Postgrator({
       migrationPattern: join(resolve(), "/migrations/*"),
       driver: "pg",
-      database: process.env.PG_DB,
+      database,
       schemaTable: "migrations",
       currentSchema: schema,
       execQuery: query => client.query(query),
@@ -41,7 +38,7 @@ async function applyMigrations(): Promise<void> {
 
     if (results.length === 0) {
       console.info(
-        `No migrations run for schema '${schema}'. Db '${process.env.PG_DB}' already at the latest version.`,
+        `No migrations run for schema '${schema}'. Db '${database}' already at the latest version.`,
       );
     } else {
       console.info(`${results.length} migration/s applied.`);

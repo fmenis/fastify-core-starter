@@ -66,11 +66,7 @@ jobs:
       #       SERVER_ADDRESS=localhost
       #       SERVER_PORT=3000
       #       LOG_LEVEL=debug
-      #       PG_HOST=${{ secrets.PG_HOST }}
-      #       PG_PORT=${{ secrets.PG_PORT }}
-      #       PG_DB=${{ secrets.PG_DB }}
-      #       PG_USER=${{ secrets.PG_USER }}
-      #       PG_PW=${{ secrets.PG_PW }}
+      #       DATABASE_URL=${{ secrets.DATABASE_URL }}
       #       REDIS_HOST=localhost
       #       REDIS_PORT=6379
       #       SENTRY_ENABLED=true
