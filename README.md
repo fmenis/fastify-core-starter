@@ -22,19 +22,21 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Database migrations
 - [x] Precommit checks
 - [x] Local development environment with Docker
+- [ ] Dockerizing application
 - [x] Valid OpenAPI documentation
-- [x] Proper error handling
+- [x] Proper error handling (structured http errors and domainErrors)
 - [x] Linting (ESLint)
 - [ ] Package application with Docker
 - [x] Proper logging
 - [ ] Basic authentication with JWT
+- [ ] Basic authorization (Casl)
 - [x] Unit tests
 - [ ] Integration tests
 - [x] Base security features
 - [x] Sentry integration
 - [x] Api versioning
 - [x] Activity log
-- [ ] Request and server timers
+- [ ] Request and server timeouts
 
 ## 🛠️ Installation
 
