@@ -1,10 +1,10 @@
 import { FastifyServerOptions } from "fastify";
+import addFormatsPkg from "ajv-formats";
 
 import { loggerOptions } from "../lib/logger.js";
 
-//TODO
-// import addFormatsPkg from "ajv-formats";
-// const addFormats = addFormatsPkg as unknown as (ajv: any) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const addFormats = addFormatsPkg as unknown as (ajv: any) => any;
 
 export function buildServerOptions(): FastifyServerOptions {
   return {
@@ -15,7 +15,7 @@ export function buildServerOptions(): FastifyServerOptions {
         removeAdditional: false,
         useDefaults: true,
       },
-      // plugins: [addFormats],
+      plugins: [addFormats],
     },
     trustProxy: true,
   };

@@ -9,7 +9,7 @@ import { validateOpenApi } from "./utils/main.js";
 import swaggerPlugin from "./plugins/swagger.plugin.js";
 
 import app from "./app.js";
-import { buildServerOptions } from "./utils/server.options.js";
+import { buildServerOptions, addFormats } from "./utils/server.options.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -24,6 +24,12 @@ async function init() {
     await fastify.register(env, {
       confKey: "config",
       schema: configSchema,
+      ajv: {
+        customOptions(ajvInstance) {
+          addFormats(ajvInstance);
+          return ajvInstance;
+        },
+      },
     });
 
     await fastify.register(swaggerPlugin);
