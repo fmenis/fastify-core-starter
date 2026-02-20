@@ -1,11 +1,11 @@
-import { Type, TSchema } from "typebox";
+import { Type, TSchema, Static } from "typebox";
 
 export function StringEnum<T extends string[]>(values: [...T]) {
   return Type.Unsafe<T[number]>({ type: "string", enum: values });
 }
 
 export const Nullable = <T extends TSchema>(schema: T) =>
-  Type.Union([schema, Type.Null()]);
+  Type.Unsafe<Static<T> | null>({ ...schema, nullable: true });
 
 export const paginationSchema = Type.Object(
   {
