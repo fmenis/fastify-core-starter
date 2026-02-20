@@ -14,6 +14,7 @@ export function buildServerOptions(): FastifyServerOptions {
         allErrors: true,
         removeAdditional: false,
         useDefaults: true,
+        coerceTypes: false,
       },
       plugins: [addFormats],
     },
