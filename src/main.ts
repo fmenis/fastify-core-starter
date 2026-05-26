@@ -5,12 +5,15 @@ import env from "@fastify/env";
 import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
-import { validateOpenApi } from "./utils/main.js";
+import { validateOpenApi, resolveAppMode } from "./utils/main.js";
 import { AppMode } from "./common/enum.js";
 import { buildServerOptions, addFormats } from "./utils/server.options.js";
+
 import swaggerPlugin from "./plugins/swagger.plugin.js";
 import kyselyPlugin from "./plugins/kysely.plugin.js";
 import servicePlugins from "./modules/servicePlugins.js";
+import bullmqPlugin from "./plugins/bullmq.plugin.js";
+
 import app from "./app.js";
 
 declare module "fastify" {
@@ -19,22 +22,7 @@ declare module "fastify" {
   }
 }
 
-const mode = process.env.APP_MODE;
-
-if (!mode) {
-  console.error(
-    "APP_MODE environment variable is required (http | standalone)",
-  );
-  process.exit(1);
-}
-
-if (!Object.values(AppMode).includes(mode as AppMode)) {
-  console.error(
-    `Unknown APP_MODE: "${mode}". Must be one of: ${Object.values(AppMode).join(" | ")}`,
-  );
-  process.exit(1);
-}
-
+const mode = resolveAppMode();
 const fastify = Fastify(buildServerOptions());
 
 async function init() {
@@ -51,6 +39,7 @@ async function init() {
     });
 
     await fastify.register(kyselyPlugin);
+    await fastify.register(bullmqPlugin);
     await fastify.register(servicePlugins);
 
     if (mode === AppMode.HTTP) {

@@ -12,9 +12,12 @@ Fastify Core Starter is a production-ready Fastify boilerplate with TypeScript. 
 
 ```bash
 # Development
-npm run dev              # Start dev server with hot-reload and inspector
+npm run dev              # Start dev server with hot-reload and inspector (requires APP_MODE in .env)
 npm run build            # Compile TypeScript to dist/
 npm start                # Run production build
+
+# Scripts (standalone, no HTTP server)
+npm run script:run -- src/scripts/my-script.ts   # Run a one-off script
 
 # Code Quality
 npm run lint             # Run ESLint
@@ -46,18 +49,73 @@ The app uses Fastify's plugin system for modularity. Plugins are registered in d
 
 ```
 src/
-├── server.ts           # Entry point - initializes Fastify and registers plugins
-├── app.ts              # Main app plugin - registers core plugins and routes
+├── main.ts             # Single entry point - branches on APP_MODE (http | standalone)
+├── app.ts              # HTTP app plugin - registers HTTP-only plugins and routes
+├── bootstrap.ts        # Standalone factory - boots Fastify with services, no HTTP (used by scripts)
 ├── common/             # Shared constants, enums, interfaces, schemas
 ├── lib/                # Core libraries (logger, kysely, redis, sentry)
-├── plugins/            # Fastify plugins (auth, bullmq, errors, hooks, swagger)
-├── routes/             # API routes organized by domain
-│   ├── auth/           # Auth routes with routes/ and queue/
-│   ├── accounts/       # Account domain (repository, service, interfaces)
+├── modules/            # Domain modules
+│   ├── index.ts        # HTTP modules entry (authentication + routes)
+│   ├── servicePlugins.ts  # Business layer plugin - registers all repositories and services
+│   ├── accounts/       # Account domain (repository, service, routes, interfaces)
+│   ├── auth/           # Auth domain with routes/ and queue/
+│   ├── activityLog/    # Activity log service
 │   └── misc/           # Health/status endpoints
-├── utils/              # Utilities (env schema, server options)
+├── plugins/            # Fastify plugins (auth, bullmq, errors, hooks, swagger)
+├── scripts/            # One-off scripts (run via npm run script:run)
+│   ├── helpers/
+│   │   └── runScript.ts   # Script runner utility - bootstraps app and handles shutdown
+│   └── *.ts            # Individual scripts
+├── utils/              # Utilities (env schema, server options, helpers)
 └── @types/             # TypeScript type definitions
 ```
+
+### Application Modes
+
+The app has a single entry point (`src/main.ts`) that branches on the `APP_MODE` environment variable. The variable is read directly from `process.env` before Fastify initializes — it is **not** part of `configSchema`.
+
+| `APP_MODE` | What starts | Use case |
+|---|---|---|
+| `http` | Full HTTP server (swagger, routes, listen) | API server |
+| `standalone` | Fastify with DB + services, no HTTP | Future BullMQ worker processes |
+
+If `APP_MODE` is missing or has an unrecognized value the process exits immediately with an explicit error. Valid values are defined in the `AppMode` enum (`src/common/enum.ts`).
+
+**Base setup (both modes):** `kyselyPlugin` + `bullmqPlugin` + `servicePlugins`
+
+**HTTP-only additions:** `swaggerPlugin` + `app` (routes, cors, helmet, rate-limit) + `fastify.listen()`
+
+### Scripts
+
+Scripts are one-off processes that need the full business layer (services, repositories, Kysely) but no HTTP server.
+
+**Utility files:**
+- `src/bootstrap.ts` — boots a Fastify instance with env + kysely + servicePlugins, calls `ready()`, returns the instance. Used internally by `runScript`.
+- `src/scripts/helpers/runScript.ts` — wraps `bootstrapApp()`, runs the provided function, then closes Fastify. Handles errors and `process.exitCode`.
+
+**Writing a new script:**
+
+```typescript
+// src/scripts/my-script.ts
+import { runScript } from "./helpers/runScript.js";
+
+runScript(async (fastify) => {
+  const { kysely } = fastify;
+  // fastify.accountService, fastify.accountRepository, fastify.kysely all available
+});
+```
+
+**Running a script:**
+
+```bash
+# Generic runner (pass the file path as argument)
+npm run script:run -- src/scripts/my-script.ts
+
+# Or add a dedicated npm script in package.json
+"job:my-script": "tsx --env-file .env src/scripts/my-script.ts"
+```
+
+**When to add a dedicated npm script:** when a script is recurring or part of a scheduled job. Use `job:` as prefix (e.g., `job:delete-inactive-accounts`).
 
 ### Adding New Routes
 
@@ -414,9 +472,11 @@ Add new variables to the table following this pattern:
 
 ### Current Environment Variables
 
-**Required:** `APP_ENV`, `API_DOMAIN`, `LOG_LEVEL`, `DATABASE_URL`, `REDIS_HOST`, `REDIS_PORT`
+**Required:** `APP_MODE`, `APP_ENV`, `API_DOMAIN`, `LOG_LEVEL`, `DATABASE_URL`, `REDIS_HOST`, `REDIS_PORT`
 
 **Optional:** `NODE_ENV`, `APP_NAME`, `SERVER_ADDRESS`, `SERVER_PORT`, `SENTRY_ENABLED`, `SENTRY_DSN`
+
+> `APP_MODE` is read directly from `process.env` in `src/main.ts` and is **not** validated by TypeBox/configSchema. It does not need to be added to `src/utils/env.schema.ts`.
 
 See [.env.example](.env.example) for all variables with defaults.
 
