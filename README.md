@@ -7,7 +7,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 ## 📋 Prerequisites
 
 - Node.js (v22 LTS or higher)
-- Docker
+- Docker & docker-compose
 
 ## 🚀 Features
 
@@ -29,7 +29,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Proper error handling (structured http errors and domainErrors)
 - [x] Linting (ESLint)
 - [ ] Package application with Docker
-- [ ] Graceful Shutdown
+- [x] Graceful Shutdown
 - [x] Proper logging
 - [ ] Basic authentication with JWT ()
 - [ ] Basic authorization (Casl)
