@@ -5,11 +5,16 @@ import env from "@fastify/env";
 import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
-import { validateOpenApi } from "./utils/main.js";
+import { validateOpenApi, resolveAppMode } from "./utils/main.js";
+import { AppMode } from "./common/enum.js";
+import { buildServerOptions, addFormats } from "./utils/server.options.js";
+
 import swaggerPlugin from "./plugins/swagger.plugin.js";
+import kyselyPlugin from "./plugins/kysely.plugin.js";
+import servicePlugins from "./modules/servicePlugins.js";
+import bullmqPlugin from "./plugins/bullmq.plugin.js";
 
 import app from "./app.js";
-import { buildServerOptions, addFormats } from "./utils/server.options.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -17,6 +22,7 @@ declare module "fastify" {
   }
 }
 
+const mode = resolveAppMode();
 const fastify = Fastify(buildServerOptions());
 
 async function init() {
@@ -32,9 +38,14 @@ async function init() {
       },
     });
 
-    await fastify.register(swaggerPlugin);
+    await fastify.register(kyselyPlugin);
+    await fastify.register(bullmqPlugin);
+    await fastify.register(servicePlugins);
 
-    await fastify.register(app);
+    if (mode === AppMode.HTTP) {
+      await fastify.register(swaggerPlugin);
+      await fastify.register(app);
+    }
 
     closeWithGrace({ delay: 2000 }, async ({ signal, err }) => {
       const { log } = fastify;
@@ -49,15 +60,16 @@ async function init() {
 
     await fastify.ready();
 
-    await validateOpenApi(fastify);
-
-    await fastify.listen({
-      port: fastify.config.SERVER_PORT,
-      host: fastify.config.SERVER_ADDRESS,
-    });
+    if (mode === AppMode.HTTP) {
+      await validateOpenApi(fastify);
+      await fastify.listen({
+        port: fastify.config.SERVER_PORT,
+        host: fastify.config.SERVER_ADDRESS,
+      });
+    }
 
     fastify.log.debug(
-      `Service '${fastify.config.APP_NAME}' launched in '${fastify.config.APP_ENV}' environment`,
+      `Service '${fastify.config.APP_NAME}' launched in '${fastify.config.APP_ENV}' environment (${mode} mode)`,
     );
   } catch (err) {
     fastify.log.error(err);

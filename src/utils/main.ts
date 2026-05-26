@@ -3,6 +3,25 @@ import { readFile } from "fs/promises";
 import { resolve, join } from "node:path";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { DocumentationError } from "../common/interface.js";
+import { AppMode } from "../common/enum.js";
+
+export function resolveAppMode(): AppMode {
+  const mode = process.env.APP_MODE;
+
+  if (!mode) {
+    console.error("APP_MODE environment variable is required (http | standalone)");
+    process.exit(1);
+  }
+
+  if (!Object.values(AppMode).includes(mode as AppMode)) {
+    console.error(
+      `Unknown APP_MODE: "${mode}". Must be one of: ${Object.values(AppMode).join(" | ")}`,
+    );
+    process.exit(1);
+  }
+
+  return mode as AppMode;
+}
 
 export async function getServerVersion(): Promise<string> {
   const content = await readFile(join(resolve(), "package.json"), {

@@ -1,3 +1,8 @@
+export enum AppMode {
+  HTTP = "http",
+  STANDALONE = "standalone",
+}
+
 export enum APP_ENV {
   LOCAL = "local",
   DEVELOPMENT = "development",
