@@ -9,7 +9,6 @@ import loadCommonSchemasPlugin from "./plugins/loadCommonSchemas.plugin.js";
 import apiPlugin from "./modules/index.js";
 import commonClientErrorsPlugin from "./plugins/commonClientErrors.plugin.js";
 import commonHooksPlugin from "./plugins/commonHooks.plugin.js";
-import kyselyPlugin from "./plugins/kysely.plugin.js";
 
 export default async function app(fastify: FastifyInstance): Promise<void> {
   fastify.register(cors);
@@ -20,7 +19,6 @@ export default async function app(fastify: FastifyInstance): Promise<void> {
     timeWindow: "1 minute",
   });
 
-  await fastify.register(kyselyPlugin);
   await fastify.register(bullmqPlugin);
   await fastify.register(loadCommonSchemasPlugin);
   await fastify.register(commonClientErrorsPlugin);

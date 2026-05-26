@@ -13,8 +13,8 @@
   "scripts": {
     "test:unit": "vitest run",
     "test:watch": "vitest",
-    "start": "node --env-file .env dist/server.js",
-    "dev": "tsx watch --env-file .env --inspect src/server.ts",
+    "start": "node --env-file .env dist/main.js",
+    "dev": "tsx watch --env-file .env --inspect src/main.ts",
     "build": "rimraf dist && tsc -p tsconfig.json",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier . --write",

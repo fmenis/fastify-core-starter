@@ -6,15 +6,33 @@ import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
 import { validateOpenApi } from "./utils/main.js";
-import swaggerPlugin from "./plugins/swagger.plugin.js";
-
-import app from "./app.js";
+import { AppMode } from "./common/enum.js";
 import { buildServerOptions, addFormats } from "./utils/server.options.js";
+import swaggerPlugin from "./plugins/swagger.plugin.js";
+import kyselyPlugin from "./plugins/kysely.plugin.js";
+import servicePlugins from "./modules/servicePlugins.js";
+import app from "./app.js";
 
 declare module "fastify" {
   interface FastifyInstance {
     config: ConfigSchemaType;
   }
+}
+
+const mode = process.env.APP_MODE;
+
+if (!mode) {
+  console.error(
+    "APP_MODE environment variable is required (http | standalone)",
+  );
+  process.exit(1);
+}
+
+if (!Object.values(AppMode).includes(mode as AppMode)) {
+  console.error(
+    `Unknown APP_MODE: "${mode}". Must be one of: ${Object.values(AppMode).join(" | ")}`,
+  );
+  process.exit(1);
 }
 
 const fastify = Fastify(buildServerOptions());
@@ -32,9 +50,13 @@ async function init() {
       },
     });
 
-    await fastify.register(swaggerPlugin);
+    await fastify.register(kyselyPlugin);
+    await fastify.register(servicePlugins);
 
-    await fastify.register(app);
+    if (mode === AppMode.HTTP) {
+      await fastify.register(swaggerPlugin);
+      await fastify.register(app);
+    }
 
     closeWithGrace({ delay: 2000 }, async ({ signal, err }) => {
       const { log } = fastify;
@@ -49,15 +71,16 @@ async function init() {
 
     await fastify.ready();
 
-    await validateOpenApi(fastify);
-
-    await fastify.listen({
-      port: fastify.config.SERVER_PORT,
-      host: fastify.config.SERVER_ADDRESS,
-    });
+    if (mode === AppMode.HTTP) {
+      await validateOpenApi(fastify);
+      await fastify.listen({
+        port: fastify.config.SERVER_PORT,
+        host: fastify.config.SERVER_ADDRESS,
+      });
+    }
 
     fastify.log.debug(
-      `Service '${fastify.config.APP_NAME}' launched in '${fastify.config.APP_ENV}' environment`,
+      `Service '${fastify.config.APP_NAME}' launched in '${fastify.config.APP_ENV}' environment (${mode} mode)`,
     );
   } catch (err) {
     fastify.log.error(err);
