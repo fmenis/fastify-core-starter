@@ -9,7 +9,7 @@ import {
   StatusResponseSchemaType,
 } from "../misc.schema.js";
 
-export default async function status(fastify: FastifyInstance) {
+export default async function status(fastify: FastifyInstance): Promise<void> {
   fastify.route({
     url: "/status",
     method: "GET",
