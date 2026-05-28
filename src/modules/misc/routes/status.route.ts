@@ -3,7 +3,7 @@ import { FastifyInstance } from "fastify";
 import {
   buildRouteFullDescription,
   getServerVersion,
-} from "../../../utils/main.js";
+} from "../../../utils/utils.js";
 import {
   statusResponseSchema,
   StatusResponseSchemaType,

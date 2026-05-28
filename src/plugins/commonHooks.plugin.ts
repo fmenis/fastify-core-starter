@@ -10,7 +10,7 @@ import fp from "fastify-plugin";
 import { captureException } from "@sentry/node";
 import { Type } from "typebox";
 
-import { trimObjectFields } from "../utils/main.js";
+import { trimObjectFields } from "../utils/utils.js";
 
 declare module "fastify" {
   interface FastifyRequest {

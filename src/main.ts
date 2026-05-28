@@ -5,7 +5,7 @@ import env from "@fastify/env";
 import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
-import { validateOpenApi, resolveAppMode } from "./utils/main.js";
+import { validateOpenApi, resolveAppMode } from "./utils/utils.js";
 import { AppMode } from "./common/enum.js";
 import { buildServerOptions, addFormats } from "./utils/server.options.js";
 

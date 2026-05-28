@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
 import { EntityNotFoundError } from "../../../common/errors.js";
-import { buildRouteFullDescription } from "../../../utils/main.js";
+import { buildRouteFullDescription } from "../../../utils/utils.js";
 import {
   readAccountParamsSchema,
   ReadAccountParamsSchemaType,

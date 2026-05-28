@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
 
-import { buildRouteFullDescription } from "../../../utils/main.js";
+import { buildRouteFullDescription } from "../../../utils/utils.js";
 import {
   loginBodySchema,
   loginBodySchemaType,

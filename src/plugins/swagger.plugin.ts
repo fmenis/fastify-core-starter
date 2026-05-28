@@ -3,7 +3,7 @@ import fp from "fastify-plugin";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 
-import { getServerVersion } from "../utils/main.js";
+import { getServerVersion } from "../utils/utils.js";
 import { APP_ENV } from "../common/enum.js";
 
 async function swaggerPlugin(fastify: FastifyInstance): Promise<void> {
