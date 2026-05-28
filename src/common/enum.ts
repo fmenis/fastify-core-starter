@@ -1,6 +1,6 @@
 export enum AppMode {
   HTTP = "http",
-  STANDALONE = "standalone",
+  WORKER = "worker",
 }
 
 export enum APP_ENV {

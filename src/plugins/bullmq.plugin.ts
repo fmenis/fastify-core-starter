@@ -2,12 +2,13 @@ import { FastifyInstance } from "fastify";
 import Fp from "fastify-plugin";
 import { Queue, QueueOptions } from "bullmq";
 import { redisProducerClient, redisWorkerClient } from "../lib/redis.js";
-import { QUEUE_NAME } from "../common/constants.js";
+import { QUEUE_NAME, SCHEDULED_QUEUE_NAME } from "../common/constants.js";
 
 declare module "fastify" {
   export interface FastifyInstance {
     bullmq: {
       queue: Queue;
+      scheduledQueue: Queue;
     };
   }
 }
@@ -26,9 +27,8 @@ function bullmqPlugin(fastify: FastifyInstance): void {
     },
   };
 
-  const myQueue = new Queue(QUEUE_NAME, options);
-
-  //TODO queueEvents
+  const queue = new Queue(QUEUE_NAME, options);
+  const scheduledQueue = new Queue(SCHEDULED_QUEUE_NAME, options);
 
   fastify.addHook("onClose", async () => {
     await redisProducerClient.quit();
@@ -36,9 +36,7 @@ function bullmqPlugin(fastify: FastifyInstance): void {
     fastify.log.debug("Redis connections closed");
   });
 
-  fastify.decorate("bullmq", {
-    queue: myQueue,
-  });
+  fastify.decorate("bullmq", { queue, scheduledQueue });
 }
 
 export default Fp(bullmqPlugin, { name: "bullmq" });

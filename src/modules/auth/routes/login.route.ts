@@ -7,7 +7,7 @@ import {
   loginResponseSchema,
   loginResponseSchemaType,
 } from "../auth.schema.js";
-import { JOB_NAME } from "../queue/auth.worker.js";
+import { JOB_NAME } from "../../../common/constants.js";
 
 export default async function login(fastify: FastifyInstance): Promise<void> {
   const { accountRepository, commonClientErrors, bullmq } = fastify;

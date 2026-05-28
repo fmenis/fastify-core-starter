@@ -6,7 +6,7 @@ import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
 import { validateOpenApi, resolveAppMode } from "./utils/utils.js";
-import { AppMode } from "./common/enum.js";
+import { AppMode, APP_ENV } from "./common/enum.js";
 import { buildServerOptions, addFormats } from "./utils/server.options.js";
 
 import swaggerPlugin from "./plugins/swagger.plugin.js";
@@ -15,6 +15,8 @@ import servicePlugins from "./modules/servicePlugins.js";
 import bullmqPlugin from "./plugins/bullmq.plugin.js";
 
 import app from "./app.js";
+import workerPlugin from "./jobs/worker/worker.plugin.js";
+import schedulerPlugin from "./jobs/scheduler/scheduler.plugin.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -42,9 +44,26 @@ async function init() {
     await fastify.register(bullmqPlugin);
     await fastify.register(servicePlugins);
 
+    /**
+     * Mode-specific plugins:
+     * - in http mode, register routes and related plugins;
+     * - in worker mode, register both the jobs worker (event-driven) and the
+     * scheduler (cron jobs);
+     * - in local http mode, also register the jobs worker so event-driven jobs (e.g. emails)
+     *  are processed without a separate process.
+     */
     if (mode === AppMode.HTTP) {
       await fastify.register(swaggerPlugin);
       await fastify.register(app);
+    }
+
+    if (mode === AppMode.HTTP && fastify.config.APP_ENV === APP_ENV.LOCAL) {
+      await fastify.register(workerPlugin);
+    }
+
+    if (mode === AppMode.WORKER) {
+      await fastify.register(workerPlugin);
+      await fastify.register(schedulerPlugin);
     }
 
     closeWithGrace({ delay: 2000 }, async ({ signal, err }) => {

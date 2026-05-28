@@ -1,31 +1,13 @@
-import { Worker, Job } from "bullmq";
-
-import { redisWorkerClient } from "../../../lib/redis.js";
 import kysely from "../../../lib/kysely.js";
 import { loggerInstance } from "../../../lib/logger.js";
-import { QUEUE_NAME } from "../../../common/constants.js";
 
-export enum JOB_NAME {
-  SEND_RESET_PASSWORD_EMAIL = "sendResetPasswordEmail",
-}
-
-export const emailWorker = new Worker(
-  QUEUE_NAME,
-  async (job: Job): Promise<void> => {
-    return sendResetPasswordEmail(job.data);
-  },
-  { connection: redisWorkerClient },
-);
-
-emailWorker.on("error", err => {
-  loggerInstance.error(err);
-});
-
-type Data = {
+type SendResetPasswordEmailData = {
   email: string;
 };
 
-export async function sendResetPasswordEmail(data: Data): Promise<void> {
+export async function sendResetPasswordEmail(
+  data: SendResetPasswordEmailData,
+): Promise<void> {
   const { email } = data;
 
   const account = await kysely

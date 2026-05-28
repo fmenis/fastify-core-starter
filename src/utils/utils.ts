@@ -9,7 +9,7 @@ export function resolveAppMode(): AppMode {
   const mode = process.env.APP_MODE;
 
   if (!mode) {
-    console.error("APP_MODE environment variable is required (http | standalone)");
+    console.error("APP_MODE environment variable is required (http | worker)");
     process.exit(1);
   }
 

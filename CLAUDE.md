@@ -12,11 +12,13 @@ Fastify Core Starter is a production-ready Fastify boilerplate with TypeScript. 
 
 ```bash
 # Development
-npm run dev              # Start dev server with hot-reload and inspector (requires APP_MODE in .env)
+npm run dev:http         # Start HTTP server with hot-reload and inspector
+npm run dev:worker       # Start worker process (BullMQ + scheduled jobs)
 npm run build            # Compile TypeScript to dist/
-npm start                # Run production build
+npm run prod:http        # Run production HTTP server (requires build)
+npm run prod:worker      # Run production worker process (requires build)
 
-# Scripts (standalone, no HTTP server)
+# Scripts (one-off, no HTTP server)
 npm run script:run -- src/scripts/my-script.ts   # Run a one-off script
 
 # Code Quality
@@ -49,7 +51,7 @@ The app uses Fastify's plugin system for modularity. Plugins are registered in d
 
 ```
 src/
-├── main.ts             # Single entry point - branches on APP_MODE (http | standalone)
+├── main.ts             # Single entry point - branches on APP_MODE (http | worker)
 ├── app.ts              # HTTP app plugin - registers HTTP-only plugins and routes
 ├── bootstrap.ts        # Standalone factory - boots Fastify with services, no HTTP (used by scripts)
 ├── common/             # Shared constants, enums, interfaces, schemas
@@ -61,7 +63,10 @@ src/
 │   ├── auth/           # Auth domain with routes/ and queue/
 │   ├── activityLog/    # Activity log service
 │   └── misc/           # Health/status endpoints
-├── plugins/            # Fastify plugins (auth, bullmq, errors, hooks, swagger)
+├── jobs/               # Scheduled job handlers and worker plugin (worker mode)
+│   ├── index.ts        # Fastify plugin - starts Workers + registers scheduled jobs via upsertJobScheduler
+│   └── *.job.ts        # Individual job handlers (pure functions, no Fastify dependency)
+├── plugins/            # Fastify plugins (auth, bullmq, bullBoard, errors, hooks, swagger)
 ├── scripts/            # One-off scripts (run via npm run script:run)
 │   ├── helpers/
 │   │   └── runScript.ts   # Script runner utility - bootstraps app and handles shutdown
@@ -77,13 +82,15 @@ The app has a single entry point (`src/main.ts`) that branches on the `APP_MODE`
 | `APP_MODE` | What starts | Use case |
 |---|---|---|
 | `http` | Full HTTP server (swagger, routes, listen) | API server |
-| `standalone` | Fastify with DB + services, no HTTP | Future BullMQ worker processes |
+| `worker` | Fastify with DB + services, no HTTP | BullMQ worker processes and scheduled jobs |
 
 If `APP_MODE` is missing or has an unrecognized value the process exits immediately with an explicit error. Valid values are defined in the `AppMode` enum (`src/common/enum.ts`).
 
 **Base setup (both modes):** `kyselyPlugin` + `bullmqPlugin` + `servicePlugins`
 
-**HTTP-only additions:** `swaggerPlugin` + `app` (routes, cors, helmet, rate-limit) + `fastify.listen()`
+**HTTP-only additions:** `swaggerPlugin` + `bullBoardPlugin` + `app` (routes, cors, helmet, rate-limit) + `fastify.listen()`
+
+**Worker-only additions:** `jobsPlugin` (Workers BullMQ + scheduled job registration)
 
 ### Scripts
 
@@ -200,9 +207,60 @@ Routes are versioned via `Accept-Version` header (default: 1.0.0). Disable per-r
 
 ### Queue Jobs (BullMQ)
 
-- Queue name defined in `src/common/constants.ts`
-- Add jobs via `fastify.bullmq.add(jobName, data, options)`
-- Workers in `src/routes/*/queue/*.worker.ts`
+Queue name and job name enums are defined in `src/common/constants.ts`. The worker process runs with `APP_MODE=worker` (`npm run dev:worker` / `npm run prod:worker`).
+
+**Architettura cron job (regola obbligatoria)**
+
+Il cron non esegue mai logica di business direttamente — si limita ad accodare un job. Il worker esegue la logica reale.
+
+```
+upsertJobScheduler (cron) → queue.add(JOB) → Worker: esegue la logica
+```
+
+**Fan-out (`addBulk`) — quando usarlo**
+
+Il fan-out ha senso quando ogni elemento di una collezione richiede un'operazione **lenta o fallibile in modo indipendente**: inviare un'email, chiamare un'API esterna, processare un file. In questi casi vuoi retry per singolo record, non per l'intera collezione.
+
+```
+Worker (collect)
+  → query N elementi → queue.addBulk([JOB x N])
+      → Worker (process): operazione lenta/esterna su singolo elemento
+```
+
+**Fan-out — quando NON usarlo**
+
+Se l'operazione su N record è una singola query SQL (bulk `UPDATE`, bulk `INSERT`), il fan-out è controproducente: il database gestisce migliaia di righe in una query in modo molto più efficiente di N job Redis. L'overhead di enqueue + storage + dequeue per N job supera largamente il beneficio.
+
+Regola pratica: se l'operazione è un'istruzione SQL che lavora su più righe → eseguila direttamente nel job. Se l'operazione per ogni elemento chiama qualcosa di esterno al database (API, email, filesystem) → fan-out.
+
+| Scenario | Approccio |
+|---|---|
+| Soft-delete di N account inattivi | Query bulk diretta nel job |
+| Invio email a N utenti | Fan-out — un job per email |
+| Aggiornamento stato ordini via API esterna | Fan-out — un job per ordine |
+| Pulizia sessioni scadute | Query bulk diretta nel job |
+| Export PDF per N documenti | Fan-out — un job per documento |
+
+**Aggiungere un nuovo job schedulato:**
+
+1. Aggiungere `SCHEDULER_ID` e `SCHEDULED_JOB_NAME` in `src/common/constants.ts`
+2. Creare `src/jobs/my-job.job.ts` con gli handler (funzioni pure, usano singleton `kysely`/`loggerInstance`)
+3. Aggiungere il `case` nello switch del Worker in `src/jobs/index.ts`
+4. Registrare lo scheduler in `onReady` di `src/jobs/index.ts`:
+
+```typescript
+await fastify.bullmq.queue.upsertJobScheduler(
+  SCHEDULER_ID.MY_JOB,
+  { pattern: "0 2 * * *" },
+  { name: SCHEDULED_JOB_NAME.MY_COLLECT_JOB, data: {} },
+);
+```
+
+**Cambio di cron pattern:** `upsertJobScheduler` aggiorna la definizione esistente in Redis se lo `schedulerId` è lo stesso. Non crea duplicati al riavvio.
+
+**Dashboard (HTTP mode):** Bull Board disponibile su `/queues` — mostra job schedulati, completati, falliti e permette retry manuali. Da proteggere con autenticazione prima di andare in produzione.
+
+**Event-driven workers** (job accodati manualmente, non schedulati): seguire il pattern esistente in `src/modules/auth/queue/auth.worker.ts` — Worker singleton che usa `redisWorkerClient` e singleton diretti.
 
 ### Error Handling
 
