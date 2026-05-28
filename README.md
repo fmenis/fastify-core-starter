@@ -18,7 +18,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Postgres ready
 - [x] Solid codebase structure
 - [x] Kysely TypeScript SQL query builder
-- [ ] Request validation
+- [x] Request validation
 - [x] VSCode debugging configuration
 - [x] Environment variables usage
 - [x] Database migrations
@@ -31,7 +31,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [ ] Package application with Docker
 - [x] Graceful Shutdown
 - [x] Proper logging
-- [ ] Basic authentication with JWT ()
+- [ ] Basic authentication with refresh token
 - [ ] Basic authorization (Casl)
 - [x] Unit tests
 - [ ] Integration tests
@@ -41,8 +41,8 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 
 ### Advanced
 
-- [ ] Execute commands
-- [ ] Rate limiting
+- [x] Execute commands
+- [x] Rate limiting
 - [ ] Distributed Tracing
 - [ ] Request and server timeouts
 - [x] Queue management (BullMQ)

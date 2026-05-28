@@ -11,13 +11,13 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test:unit": "vitest run",
-    "test:watch": "vitest",
+    "build": "rimraf dist && tsc -p tsconfig.json",
     "prod:http": "APP_MODE=http node --env-file .env dist/main.js",
     "prod:worker": "APP_MODE=worker tsx --env-file .env src/main.ts",
     "dev:http": "APP_MODE=http tsx watch --env-file .env --inspect src/main.ts",
     "dev:worker": "APP_MODE=worker tsx --env-file .env src/main.ts",
-    "build": "rimraf dist && tsc -p tsconfig.json",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "format": "prettier . --write",
     "initStack": "cd ./local-stack && docker compose up -d",
@@ -25,7 +25,7 @@
     "rebuildStack": "./local-stack/rebuild-db.sh",
     "prepare": "husky",
     "kysely:codegen": "kysely-codegen --dialect postgres --exclude-pattern migrations --out-file ./src/generated/kysely/types.ts",
-    "db:migrate": "node --env-file .env ./scripts/applyMigrations.ts",
+    "db:migrate": "tsx --env-file .env ./src/scripts/applyMigrations.ts",
     "job:delete-inactive-accounts": "tsx --env-file .env src/scripts/deleteInactiveAccounts.ts"
   },
   "dependencies": {
