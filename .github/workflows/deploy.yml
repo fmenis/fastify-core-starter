@@ -17,8 +17,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
+          cache: "npm"
 
       - name: Install dependencies
+        run: npm ci --omit=dev
+
+      - name: Install dev dependencies for CI steps
         run: npm ci
 
       - name: Lint
@@ -42,10 +46,8 @@ jobs:
       #   run: |
       #     mkdir -p /opt/fastify-service
       #     rsync -avzh --delete-after -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-      #       --exclude node_modules \
       #       --exclude .git \
       #       --exclude .vscode \
-      #       --exclude dist \
       #       --exclude doc \
       #       --exclude local-stack \
       #       ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/fastify-service
@@ -82,7 +84,5 @@ jobs:
       #     port: 22
       #     script: |
       #       cd /opt/fastify-service
-      #       npm ci
-      #       npm run build
       #       npm run db:migrate
       #       sudo systemctl restart fastify-app.service
