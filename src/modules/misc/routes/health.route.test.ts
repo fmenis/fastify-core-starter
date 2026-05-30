@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import health from "./health.route.js";
 import { createMockFastify } from "../../../test/utils/fastify.mock.js";
+import { getServerVersion } from "../../../utils/utils.js";
 
 //TODO capire perchè il mock buildRouteFullDescription non serve in read.route.test.ts
 vi.mock("../../../utils/main.js", () => ({
@@ -11,9 +12,11 @@ vi.mock("../../../utils/main.js", () => ({
 describe("health.route", () => {
   describe("GET /health", () => {
     let mockFastify: ReturnType<typeof createMockFastify>;
+    let version: string;
 
     beforeEach(async () => {
       mockFastify = createMockFastify();
+      version = await getServerVersion();
     });
 
     async function getHandler() {
@@ -28,7 +31,7 @@ describe("health.route", () => {
 
       expect(result).toEqual({
         health: "ok",
-        version: "0.4.0",
+        version,
       });
     });
   });
