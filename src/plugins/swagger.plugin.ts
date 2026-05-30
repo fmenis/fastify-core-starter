@@ -25,16 +25,16 @@ async function swaggerPlugin(fastify: FastifyInstance): Promise<void> {
         url: "https://github.com/fmenis/fastify-core-starter",
       },
       servers:
-        process.env.APP_ENV === APP_ENV.LOCAL
+        fastify.config.APP_ENV === APP_ENV.LOCAL
           ? [
               {
-                url: `http://${process.env.SERVER_ADDRESS}:${process.env.SERVER_PORT}`,
+                url: `http://localhost:${fastify.config.SERVER_PORT}`,
                 description: "Service api",
               },
             ]
           : [
               {
-                url: `https://${process.env.API_DOMAIN}`,
+                url: `https://${fastify.config.API_DOMAIN}`,
                 description: "Service api",
               },
             ],

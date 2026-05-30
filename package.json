@@ -13,7 +13,7 @@
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.json",
     "prod:http": "APP_MODE=http node --env-file .env dist/main.js",
-    "prod:worker": "APP_MODE=worker tsx --env-file .env src/main.ts",
+    "prod:worker": "APP_MODE=worker node --env-file .env dist/main.js",
     "dev:http": "APP_MODE=http tsx watch --env-file .env --inspect src/main.ts",
     "dev:worker": "APP_MODE=worker tsx --env-file .env src/main.ts",
     "test:unit": "vitest run",

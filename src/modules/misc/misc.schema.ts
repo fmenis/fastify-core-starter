@@ -1,9 +1,9 @@
 import { Static, Type } from "typebox";
 
-export const statusResponseSchema = Type.Object(
+export const healthResponseSchema = Type.Object(
   {
-    status: Type.Literal("ok", {
-      description: "Service status.",
+    health: Type.Literal("ok", {
+      description: "Service health.",
     }),
     version: Type.String({
       minLength: 5,
@@ -13,4 +13,4 @@ export const statusResponseSchema = Type.Object(
   },
   { additionalProperties: false },
 );
-export type StatusResponseSchemaType = Static<typeof statusResponseSchema>;
+export type HealthResponseSchemaType = Static<typeof healthResponseSchema>;

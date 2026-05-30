@@ -1,0 +1,31 @@
+# Dependencies — reinstalled inside the image
+node_modules
+
+# Secrets — never bake into the image
+.env*
+
+# Previous build output — rebuilt inside the image
+dist
+
+# Version control
+.git
+.gitignore
+
+# Local development infrastructure
+local-stack
+
+# Test and coverage artifacts
+coverage
+src/**/*.test.ts
+src/**/*.spec.ts
+src/test/
+
+# Generated API docs
+doc
+
+# Dev tooling config
+vitest.config.ts
+eslint.config.js
+.husky
+.prettierrc*
+.eslintignore

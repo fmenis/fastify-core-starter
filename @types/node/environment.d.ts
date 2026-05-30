@@ -11,7 +11,7 @@ declare global {
       DATABASE_URL: string;
       REDIS_HOST: string;
       REDIS_PORT: string;
-      SENTRY_ENABLED: boolean;
+      SENTRY_ENABLED: string;
       SENTRY_DSN: string;
     }
   }

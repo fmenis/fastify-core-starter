@@ -11,13 +11,31 @@
  */
 
 import { Redis, RedisOptions } from "ioredis";
+import { loggerInstance } from "./logger.js";
 
 const options: RedisOptions = {
   host: process.env.REDIS_HOST,
   port: Number(process.env.REDIS_PORT),
   maxRetriesPerRequest: null,
+  lazyConnect: true,
 };
 
-export const redisProducerClient: Redis = new Redis(options);
+export const redisProducerClient = new Redis(options);
+export const redisWorkerClient = new Redis(options);
 
-export const redisWorkerClient: Redis = new Redis(options);
+redisProducerClient.on("error", err => {
+  loggerInstance.error({ err }, "Redis producer client error");
+});
+
+redisWorkerClient.on("error", err => {
+  loggerInstance.error({ err }, "Redis worker client error");
+});
+
+try {
+  await redisProducerClient.connect();
+  await redisWorkerClient.connect();
+  loggerInstance.debug("Redis connections verified");
+} catch (err) {
+  loggerInstance.fatal({ err }, "Failed to connect to Redis — aborting");
+  process.exit(1);
+}

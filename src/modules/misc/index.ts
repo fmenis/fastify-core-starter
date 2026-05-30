@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import status from "./routes/status.route.js";
+import status from "./routes/health.route.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {

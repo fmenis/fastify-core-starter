@@ -13,10 +13,12 @@ const pool = new Pool({
   max: 10,
 });
 
+pool.on("error", err => {
+  loggerInstance.error({ err }, "Unexpected PostgreSQL client error");
+});
+
 export const kysely = new Kysely<DB>({
-  dialect: new PostgresDialect({
-    pool,
-  }),
+  dialect: new PostgresDialect({ pool }),
   log(event) {
     if (event.level === "query") {
       loggerInstance.debug({
@@ -24,7 +26,22 @@ export const kysely = new Kysely<DB>({
         parameters: event.query.parameters,
       });
     }
+    if (event.level === "error") {
+      loggerInstance.error(
+        { err: event.error, sql: event.query.sql },
+        "Query failed",
+      );
+    }
   },
 });
+
+try {
+  const client = await pool.connect();
+  client.release();
+  loggerInstance.debug("PostgreSQL connection verified");
+} catch (err) {
+  loggerInstance.fatal({ err }, "Failed to connect to PostgreSQL — aborting");
+  process.exit(1);
+}
 
 export default kysely;

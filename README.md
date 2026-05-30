@@ -74,8 +74,8 @@ docker-compose up -d
 
 | Name             |     Default     | Description                       |
 | ---------------- | :-------------: | --------------------------------- |
-| NODE_ENV         |   production    | Nodejs environment                |
 | **APP_ENV**      |                 | Application environment           |
+| **APP_MODE**     |                 | Application mode (http or worker) |
 | APP_NAME         | fastify-service | Application name                  |
 | SERVER_ADDRESS   |    127.0.0.1    | Server address                    |
 | SERVER_PORT      |      3000       | Server port                       |
