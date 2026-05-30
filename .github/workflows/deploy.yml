@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      HUSKY: "0"
 
     steps:
       - name: Checkout
@@ -20,9 +22,6 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci --omit=dev
-
-      - name: Install dev dependencies for CI steps
         run: npm ci
 
       - name: Lint
