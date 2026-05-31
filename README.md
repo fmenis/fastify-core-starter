@@ -24,17 +24,16 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Database migrations
 - [x] Precommit checks
 - [x] Local development environment with Docker
-- [ ] Dockerizing application
+- [x] Dockerizing application
 - [x] Valid OpenAPI documentation
 - [x] Proper error handling (structured http errors and domainErrors)
 - [x] Linting (ESLint)
-- [ ] Package application with Docker
 - [x] Graceful Shutdown
 - [x] Proper logging
 - [ ] Basic authentication with refresh token
 - [ ] Basic authorization (Casl)
 - [x] Unit tests
-- [ ] Integration tests
+- [x] Integration tests
 - [x] Base security features
 - [x] Sentry integration
 - [x] Api versioning
@@ -86,6 +85,58 @@ docker-compose up -d
 | **REDIS_PORT**   |                 | Redis port                        |
 | SENTRY_ENABLED   |      false      | Enable sentry integration         |
 | SENTRY_DSN       |                 | Sentry DSN                        |
+
+## 🧪 Testing
+
+### Unit tests
+
+```bash
+npm run test:unit
+```
+
+### Integration tests
+
+Integration tests run against real Postgres and Redis instances managed via Docker.
+
+```bash
+npm run test:integration
+```
+
+This command:
+
+1. Starts Postgres and Redis containers (`tests/docker-compose.test.yml`)
+2. Waits for healthchecks to pass
+3. Runs migrations against the test DB
+4. Executes all tests under `tests/integration/`
+5. Tears down the containers
+
+### Debugging integration tests
+
+> **Prerequisites:** the test containers must be running before starting the debugger.
+
+```bash
+docker compose -f tests/docker-compose.test.yml up -d --wait
+```
+
+Then launch **Debug Integration Tests** from the VS Code Run & Debug panel (`Ctrl+Shift+D`).
+
+Breakpoints work in both test files and application source code. The launch configuration uses `autoAttachChildProcesses: true` to attach to the child processes spawned by Vitest for each test file.
+
+To debug a single file, edit `.vscode/launch.json` and add the file path as the last entry in `args`:
+
+```json
+"args": [
+  "run",
+  "--config", "tests/vitest.integration.config.ts",
+  "tests/modules/accounts/read.route.test.ts"
+]
+```
+
+Remember to remove the containers with
+
+```bash
+docker compose -f tests/docker-compose.test.yml down
+```
 
 ## 🚢 Deployment
 
