@@ -21,6 +21,7 @@ tsbuildinfo.tsbuildinfo
 .env
 .env.*
 !.env.example
+!tests/.env.test
 
 # ───────────────────────────────
 # Logs & Runtime Data
