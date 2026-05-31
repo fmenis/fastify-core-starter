@@ -98,7 +98,7 @@ jobs:
 
   build:
     name: Build
-    needs: [unit, integration]
+    needs: [test-unit, test-integration]
     runs-on: ubuntu-latest
     env:
       HUSKY: "0"
