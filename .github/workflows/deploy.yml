@@ -6,82 +6,114 @@ on:
       - main
 
 jobs:
-  deploy:
+  install:
+    name: Install
     runs-on: ubuntu-latest
     env:
       HUSKY: "0"
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
-          cache: "npm"
+
+      - uses: actions/cache@v4
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
+
+  lint:
+    name: Lint
+    needs: install
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Lint
         run: npm run lint
 
-      - name: Unit test
+  test:unit:
+    name: Unit Tests
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Unit tests
         run: npm run test:unit
+
+  test:integration:
+    name: Integration Tests
+    needs: lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Start test containers
+        run: docker compose -f tests/docker-compose.test.yml up -d --wait
+
+      - name: Run integration tests
+        run: npx vitest run --config tests/vitest.integration.config.ts
+
+      - name: Stop test containers
+        if: always()
+        run: docker compose -f tests/docker-compose.test.yml down
+
+  build:
+    name: Build
+    needs: [unit, integration]
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: "0"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Build TypeScript
         run: npm run build
-
-      # - name: Setup SSH key
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
-      #     chmod 600 ~/.ssh/id_ed25519
-      #   env:
-      #     VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-
-      # - name: Copy project to VPS with rsync
-      #   run: |
-      #     mkdir -p /opt/fastify-service
-      #     rsync -avzh --delete-after -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" \
-      #       --exclude .git \
-      #       --exclude .vscode \
-      #       --exclude doc \
-      #       --exclude local-stack \
-      #       ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/fastify-service
-
-      # - name: Create .env file on VPS
-      #   uses: appleboy/ssh-action@v0.1.7
-      #   with:
-      #     host: ${{ secrets.VPS_HOST }}
-      #     username: ${{ secrets.VPS_USER }}
-      #     key: ${{ secrets.VPS_SSH_KEY }}
-      #     port: 22
-      #     script: |
-      #       cat > /opt/fastify-service/.env <<EOF
-      #       NODE_ENV=production
-      #       APP_ENV=development
-      #       APP_NAME=fastify-core-starter
-      #       API_DOMAIN=api.filippomenis.it
-      #       SERVER_ADDRESS=localhost
-      #       SERVER_PORT=3000
-      #       LOG_LEVEL=debug
-      #       DATABASE_URL=${{ secrets.DATABASE_URL }}
-      #       REDIS_HOST=localhost
-      #       REDIS_PORT=6379
-      #       SENTRY_ENABLED=true
-      #       SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-      #       EOF
-
-      # - name: SSH into VPS & restart service
-      #   uses: appleboy/ssh-action@v0.1.7
-      #   with:
-      #     host: ${{ secrets.VPS_HOST }}
-      #     username: ${{ secrets.VPS_USER }}
-      #     key: ${{ secrets.VPS_SSH_KEY }}
-      #     port: 22
-      #     script: |
-      #       cd /opt/fastify-service
-      #       npm run db:migrate
-      #       sudo systemctl restart fastify-app.service
