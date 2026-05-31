@@ -46,7 +46,7 @@ export const readAccountResponseSchema = Type.Object(
     deletedAt: Nullable(
       Type.String({
         format: "date-time",
-        description: "Account last update date.",
+        description: "Account deletion date.",
       }),
     ),
   },

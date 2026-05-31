@@ -12,7 +12,7 @@ export const paginationSchema = Type.Object(
     limit: Type.Integer({
       maximum: 100,
       default: 10,
-      description: "Number of  (pagination).",
+      description: "Number of items (pagination).",
     }),
     offset: Type.Integer({
       maximum: 100,

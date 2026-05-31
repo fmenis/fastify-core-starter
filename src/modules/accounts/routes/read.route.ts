@@ -19,7 +19,7 @@ export default async function read(fastify: FastifyInstance): Promise<void> {
     url: "/:id",
     method: "GET",
     config: {
-      public: true,
+      public: false,
     },
     constraints: {
       version,

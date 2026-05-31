@@ -23,6 +23,7 @@ export const loginResponseSchema = Type.Object(
     jwt: Type.String({
       description: "JWT token.",
     }),
+    //##TODO remove, only for test the optional field
     foo: Type.Optional(
       Type.String({
         minLength: 10,
