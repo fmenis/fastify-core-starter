@@ -1,6 +1,5 @@
 import { defineConfig } from "vitest/config";
 
-//##TODO voglio anche il debugging qui
 export default defineConfig({
   test: {
     globals: true,
