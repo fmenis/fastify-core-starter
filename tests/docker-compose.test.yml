@@ -1,0 +1,29 @@
+services:
+  postgres-test:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    tmpfs:
+      - /var/lib/postgresql
+    ports:
+      - "6433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis-test:
+    image: redis:latest
+    ports:
+      - "7380:6379"
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5

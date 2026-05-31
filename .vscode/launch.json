@@ -21,6 +21,16 @@
       "request": "attach",
       "port": 9229,
       "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    },
+    {
+      "name": "Debug Integration Tests",
+      "type": "node",
+      "request": "launch",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"],
+      "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "--config", "tests/vitest.integration.config.ts"],
+      "console": "integratedTerminal"
     }
   ]
 }

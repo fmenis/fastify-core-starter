@@ -654,6 +654,108 @@ export function createMockNewService(): MockNewService {
 - **Routes** should mock services (not repositories) when services contain the business logic
 - **Services** should mock repositories for unit testing service logic in isolation
 
+## Integration Testing
+
+Integration tests run against real Postgres and Redis instances via Docker. They test the full HTTP stack without mocking the database.
+
+### Running Tests
+
+```bash
+npm run test:integration          # start containers, run tests, stop containers
+npm run test:integration:watch    # watch mode (containers must already be running)
+```
+
+### Test File Structure
+
+```
+tests/
+├── .env.test                          # env vars for the test DB/Redis
+├── docker-compose.test.yml            # Postgres + Redis containers (tmpfs, no persistence)
+├── vitest.integration.config.ts       # Vitest config (globalSetup, setupFiles, fileParallelism)
+├── helpers/
+│   ├── global-setup.ts                # runs once: loads .env.test, applies migrations
+│   ├── setup.ts                       # afterEach: truncates all tables
+│   ├── build-app.ts                   # getTestApp() factory — builds Fastify without listen()
+│   └── seeds/                         # (optional) shared seed helpers across test files
+└── modules/
+    └── <domain>/
+        ├── <route>.route.test.ts
+        └── <entity>.seed.ts           # seed helpers co-located with the domain tests
+```
+
+### Vitest Configuration
+
+- **`fileParallelism: false`** — test files run sequentially. Required to avoid race conditions on shared DB state and to prevent top-level await singletons (Kysely pool, Redis clients) from being re-initialized in parallel forks.
+- **`globalSetup`** — runs once in the main process before any fork is spawned. Loads `tests/.env.test` via `dotenv.config()` and applies migrations by running `src/scripts/applyMigrations.ts` as a subprocess. Env vars set here are inherited by all worker forks.
+- **`setupFiles`** — runs in every worker fork, registers `afterEach` that truncates all user tables (excluding `migrations`).
+
+### Writing Integration Tests
+
+**App factory** — call `getTestApp()` once per describe block in `beforeAll`. The factory builds the full Fastify app (same plugins as production, minus Swagger) and calls `ready()`. With `fileParallelism: false` the module is shared within the fork, so repeated calls return the cached instance:
+
+```typescript
+describe("GET /api/accounts/:id", () => {
+  let app: FastifyInstance;
+  let account: Selectable<Account>;
+
+  beforeAll(async () => {
+    app = await getTestApp();
+    account = await seedAccount(); // seed shared data here
+  });
+
+  it("returns 200", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: `/api/accounts/${account.id}`,
+      headers: { "accept-version": "1.0.0" },
+    });
+    expect(response.statusCode).toBe(200);
+  });
+});
+```
+
+**Hook execution order:**
+
+```
+beforeAll (describe)  → getTestApp() + seedAccount()
+  afterEach (setup.ts)  → TRUNCATE              ← runs after each test
+  test 1               → uses beforeAll data
+  afterEach            → TRUNCATE
+  test 2               → starts clean
+```
+
+`afterEach` (not `beforeEach`) is used for truncation so that `beforeAll` seeds survive until the first test runs.
+
+**Seeds** — use Kysely directly (not HTTP calls). Co-locate seed files with the test domain and use `@faker-js/faker` for realistic random data:
+
+```typescript
+// tests/modules/accounts/account.seed.ts
+import { faker } from "@faker-js/faker";
+
+export async function seedAccount(overrides = {}): Promise<Selectable<Account>> {
+  return kysely
+    .insertInto("account")
+    .values({
+      firstName: overrides.firstName ?? faker.person.firstName(),
+      // ...
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+}
+```
+
+**Versioned routes** require the `Accept-Version` header:
+
+```typescript
+headers: { "accept-version": "1.0.0" }
+```
+
+### Table cleanup
+
+`setup.ts` truncates all tables in `public` schema except `migrations` (Postgrator's version table). New tables added via migrations are picked up automatically — no manual update needed.
+
+`RESTART IDENTITY` is omitted because all tables use UUID PKs (`gen_random_uuid()`), which are not backed by sequences. `CASCADE` is included defensively for future FK constraints.
+
 ## Local Development Ports
 
 - PostgreSQL: 6432

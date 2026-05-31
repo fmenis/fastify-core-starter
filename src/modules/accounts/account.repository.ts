@@ -34,7 +34,7 @@ export function createAccountRepository(fastify: FastifyInstance) {
         .selectFrom("account")
         .selectAll()
         .where("email", "=", email)
-        .where("deletedAt", "=", null)
+        .where("deletedAt", "is", null)
         .executeTakeFirst();
 
       return account ?? null;
@@ -45,7 +45,7 @@ export function createAccountRepository(fastify: FastifyInstance) {
         .selectFrom("account")
         .selectAll()
         .where("id", "=", id)
-        .where("deletedAt", "<>", null)
+        .where("deletedAt", "is", null)
         .executeTakeFirst();
 
       return account ?? null;
