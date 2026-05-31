@@ -35,6 +35,26 @@ npm run kysely:codegen   # Generate TypeScript types from database schema
 npm run db:migrate       # Run database migrations with postgrator
 ```
 
+## Versioning & Dependency Hygiene
+
+Before writing or suggesting any Node.js code, configuration, or tooling setup:
+
+1. **Always check the current latest stable version** of any library, runtime, or tool involved.
+   - Use `npm info <package> version` or check npmjs.com/registry
+   - Do NOT rely on your training data for version numbers — they are stale by definition
+   - Flag explicitly if a package has had breaking changes between the version you know and latest
+
+2. **For Node.js itself**: check nodejs.org/en/download for the current LTS. Default to LTS unless the user specifies otherwise.
+
+3. **For config files** (Dockerfile, docker-compose.yml, .github/workflows, tsconfig.json, eslint.config.js, etc.):
+   - Always use the current recommended syntax for that tool's version
+   - Call out deprecated fields explicitly (e.g., `version:` top-level key in Compose is now obsolete)
+   - Reference official docs, not Stack Overflow or blog posts
+
+4. **For Fastify, Prisma, Zod, TypeScript, etc.**: before generating code, confirm the API surface matches the installed or latest stable version. Many AI models hallucinate APIs from older major versions.
+
+5. If you cannot verify a version at runtime, say so explicitly and provide the command the user should run to verify themselves.
+
 ## Architecture
 
 ### Plugin-Based Structure
