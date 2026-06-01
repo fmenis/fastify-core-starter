@@ -37,6 +37,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Base security features
 - [x] Sentry integration
 - [x] Api versioning
+- [x] Correlation ID for every response
 
 ### Advanced
 

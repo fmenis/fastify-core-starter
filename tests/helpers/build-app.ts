@@ -4,10 +4,7 @@ import Fastify, { FastifyInstance } from "fastify";
 import env from "@fastify/env";
 
 import { configSchema } from "../../src/utils/env.schema.js";
-import {
-  buildServerOptions,
-  addFormats,
-} from "../../src/utils/server.options.js";
+import { addFormats } from "../../src/utils/server.options.js";
 import kyselyPlugin from "../../src/plugins/kysely.plugin.js";
 import bullmqPlugin from "../../src/plugins/bullmq.plugin.js";
 import servicePlugins from "../../src/modules/servicePlugins.js";
@@ -23,7 +20,10 @@ export async function getTestApp(): Promise<FastifyInstance> {
     return app;
   }
 
-  const fastify = Fastify(buildServerOptions());
+  const fastify = Fastify({
+    // we don't want to see the routes errors
+    logger: { level: "fatal" },
+  });
 
   await fastify.register(env, {
     confKey: "config",

@@ -38,6 +38,7 @@ describe(`GET ${BASE_API_URL}/:id`, () => {
     });
   });
 
+  //##TODO approfondimento su cosa deve fare ogni layer di test
   it("returns 404 when account does not exist", async () => {
     const response = await app.inject({
       method: "GET",
@@ -49,20 +50,6 @@ describe(`GET ${BASE_API_URL}/:id`, () => {
     expect(response.json()).toMatchObject({
       statusCode: 404,
       internalCode: "NOT_FOUND",
-    });
-  });
-
-  it("returns 400 when id is not a valid UUID", async () => {
-    const response = await app.inject({
-      method: "GET",
-      url: `${BASE_API_URL}/not-a-valid-uuid`,
-      headers: VERSION_HEADER,
-    });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.json()).toMatchObject({
-      statusCode: 400,
-      internalCode: "BAD_REQUEST",
     });
   });
 

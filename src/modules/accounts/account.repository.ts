@@ -1,6 +1,8 @@
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
-import { Account, CreateAccount } from "./account.interface.js";
+import { CreateAccount } from "./account.interface.js";
+import { Selectable } from "kysely";
+import { Account } from "../../generated/kysely/types.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -9,18 +11,20 @@ declare module "fastify" {
 }
 
 /**
- * TODO
+ * ##TODO
  * read carefully this https://kysely.dev/docs/getting-started#types
  * and understand if the custom interfaces ("./account.interface.js") are needed
- * of the db ones are enough
+ * of the db ones are enough.
+ *
+ * ##TODO capire quando lanciare il comando kysely:codegen (anche nelle pipeline)
  */
 
 export function createAccountRepository(fastify: FastifyInstance) {
   const { kysely } = fastify;
 
   return {
-    async createAccount(params: CreateAccount): Promise<Account> {
-      const account: Account = await kysely
+    async createAccount(params: CreateAccount): Promise<Selectable<Account>> {
+      const account = await kysely
         .insertInto("account")
         .values(params)
         .returningAll()
@@ -29,7 +33,7 @@ export function createAccountRepository(fastify: FastifyInstance) {
       return account;
     },
 
-    async findByEmail(email: string): Promise<Account | null> {
+    async findByEmail(email: string): Promise<Selectable<Account> | null> {
       const account = await kysely
         .selectFrom("account")
         .selectAll()
@@ -40,7 +44,7 @@ export function createAccountRepository(fastify: FastifyInstance) {
       return account ?? null;
     },
 
-    async findById(id: string): Promise<Account | null> {
+    async findById(id: string): Promise<Selectable<Account> | null> {
       const account = await kysely
         .selectFrom("account")
         .selectAll()
