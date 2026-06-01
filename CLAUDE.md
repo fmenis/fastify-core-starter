@@ -99,10 +99,10 @@ src/
 
 The app has a single entry point (`src/main.ts`) that branches on the `APP_MODE` environment variable. The variable is read directly from `process.env` before Fastify initializes — it is **not** part of `configSchema`.
 
-| `APP_MODE` | What starts | Use case |
-|---|---|---|
-| `http` | Full HTTP server (swagger, routes, listen) | API server |
-| `worker` | Fastify with DB + services, no HTTP | BullMQ worker processes and scheduled jobs |
+| `APP_MODE` | What starts                                | Use case                                   |
+| ---------- | ------------------------------------------ | ------------------------------------------ |
+| `http`     | Full HTTP server (swagger, routes, listen) | API server                                 |
+| `worker`   | Fastify with DB + services, no HTTP        | BullMQ worker processes and scheduled jobs |
 
 If `APP_MODE` is missing or has an unrecognized value the process exits immediately with an explicit error. Valid values are defined in the `AppMode` enum (`src/common/enum.ts`).
 
@@ -117,6 +117,7 @@ If `APP_MODE` is missing or has an unrecognized value the process exits immediat
 Scripts are one-off processes that need the full business layer (services, repositories, Kysely) but no HTTP server.
 
 **Utility files:**
+
 - `src/bootstrap.ts` — boots a Fastify instance with env + kysely + servicePlugins, calls `ready()`, returns the instance. Used internally by `runScript`.
 - `src/scripts/helpers/runScript.ts` — wraps `bootstrapApp()`, runs the provided function, then closes Fastify. Handles errors and `process.exitCode`.
 
@@ -126,7 +127,7 @@ Scripts are one-off processes that need the full business layer (services, repos
 // src/scripts/my-script.ts
 import { runScript } from "./helpers/runScript.js";
 
-runScript(async (fastify) => {
+runScript(async fastify => {
   const { kysely } = fastify;
   // fastify.accountService, fastify.accountRepository, fastify.kysely all available
 });
@@ -162,7 +163,6 @@ Services contain business logic and sit between routes and repositories. Routes 
 - **Routes**: HTTP handling, request/response transformation, calling services
 - **Services**: Business logic, orchestration, domain rules
 - **Repositories**: Data access only (CRUD operations)
-
 
 ### Activity Logging
 
@@ -253,13 +253,13 @@ Se l'operazione su N record è una singola query SQL (bulk `UPDATE`, bulk `INSER
 
 Regola pratica: se l'operazione è un'istruzione SQL che lavora su più righe → eseguila direttamente nel job. Se l'operazione per ogni elemento chiama qualcosa di esterno al database (API, email, filesystem) → fan-out.
 
-| Scenario | Approccio |
-|---|---|
-| Soft-delete di N account inattivi | Query bulk diretta nel job |
-| Invio email a N utenti | Fan-out — un job per email |
-| Aggiornamento stato ordini via API esterna | Fan-out — un job per ordine |
-| Pulizia sessioni scadute | Query bulk diretta nel job |
-| Export PDF per N documenti | Fan-out — un job per documento |
+| Scenario                                   | Approccio                      |
+| ------------------------------------------ | ------------------------------ |
+| Soft-delete di N account inattivi          | Query bulk diretta nel job     |
+| Invio email a N utenti                     | Fan-out — un job per email     |
+| Aggiornamento stato ordini via API esterna | Fan-out — un job per ordine    |
+| Pulizia sessioni scadute                   | Query bulk diretta nel job     |
+| Export PDF per N documenti                 | Fan-out — un job per documento |
 
 **Aggiungere un nuovo job schedulato:**
 
@@ -597,6 +597,7 @@ Routes are tested by mocking the Fastify instance and calling the handler direct
 ### Mock Utilities
 
 **`createMockFastify(options?)`** - Creates a mock Fastify instance with:
+
 - `accountRepository` - Mocked repository methods (`findById`, `findByEmail`, `createAccount`)
 - `accountService` - Mocked service methods (`findAccount`)
 - `commonClientErrors` - Mocked error handlers (`throwNotFoundError`)
@@ -624,6 +625,7 @@ const account = createMockAccount({
 ### What to Test
 
 **DO test:**
+
 - Handler business logic (happy path and edge cases)
 - Repository method calls with correct arguments
 - Repository method calls with correct arguments
@@ -631,6 +633,7 @@ const account = createMockAccount({
 - Error handling (not found, validation errors)
 
 **DO NOT test:**
+
 - Route configuration (URL, method, version) - these are static values
 - Schema definitions - TypeBox handles validation
 - Fastify internals
@@ -640,6 +643,7 @@ const account = createMockAccount({
 When adding new repositories or services:
 
 1. Add interface to `src/test/utils/types.ts`:
+
 ```typescript
 export interface MockNewRepository {
   findAll: Mock;
@@ -652,6 +656,7 @@ export interface MockNewService {
 ```
 
 2. Add factory function to `src/test/utils/fastify.mock.ts`:
+
 ```typescript
 export function createMockNewRepository(): MockNewRepository {
   return {
@@ -752,7 +757,9 @@ beforeAll (describe)  → getTestApp() + seedAccount()
 // tests/modules/accounts/account.seed.ts
 import { faker } from "@faker-js/faker";
 
-export async function seedAccount(overrides = {}): Promise<Selectable<Account>> {
+export async function seedAccount(
+  overrides = {},
+): Promise<Selectable<Account>> {
   return kysely
     .insertInto("account")
     .values({
