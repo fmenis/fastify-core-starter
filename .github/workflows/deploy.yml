@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
   lint:
-    name: Lint
+    name: Check lint
     needs: install
     runs-on: ubuntu-latest
 
@@ -46,8 +46,28 @@ jobs:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
 
-      - name: Lint
-        run: npm run lint
+      - name: Check Lint
+        run: npm run lint:check
+
+  format:
+    name: Check format
+    needs: install
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+
+      - uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Check format
+        run: npm run format:check
 
   test-unit:
     name: Unit Tests

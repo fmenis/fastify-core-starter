@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import fastifySwagger from "@fastify/swagger";
