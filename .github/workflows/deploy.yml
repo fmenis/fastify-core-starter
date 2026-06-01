@@ -71,7 +71,7 @@ jobs:
 
   test-unit:
     name: Unit Tests
-    needs: lint
+    needs: [lint, format]
     runs-on: ubuntu-latest
 
     steps:
