@@ -58,6 +58,11 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
     }
   });
 
+  // add correlation ID for every response
+  fastify.addHook("onSend", async (req, reply) => {
+    reply.header("x-request-id", req.id);
+  });
+
   fastify.addHook("onRoute", options => {
     if (!options.config?.disableVersioning) {
       options.schema = {
