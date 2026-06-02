@@ -11,6 +11,8 @@ import { loggerInstance } from "./logger.js";
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 10,
+  query_timeout: 10000,
+  statement_timeout: 10000,
 });
 
 pool.on("error", err => {

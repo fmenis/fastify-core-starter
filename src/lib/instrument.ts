@@ -4,7 +4,7 @@ import { loggerInstance } from "./logger.js";
 if (process.env.SENTRY_ENABLED === "true") {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    sendDefaultPii: true,
+    sendDefaultPii: true, // potentially gdpr issue (user specific info sent to sentry)
     environment: process.env.APP_ENV,
     attachStacktrace: true,
   });

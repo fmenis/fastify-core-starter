@@ -44,12 +44,13 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Execute commands
 - [x] Rate limiting
 - [ ] Distributed Tracing
-- [ ] Request and server timeouts
+- [x] Server and db timeouts
 - [x] Queue management (BullMQ)
 - [x] Activity log
 - [ ] Async localStorage
 - [ ] Request sanitization
 - [ ] Release please
+- [ ] Advanced env variables management ([infisical](https://infisical.com/))
 
 ## 🛠️ Installation
 

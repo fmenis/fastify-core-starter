@@ -1,3 +1,4 @@
+import { FastifyInstance } from "fastify";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { profileService } from "./profile.service.js";
 import { EntityNotFoundError } from "../../common/errors.js";
@@ -38,8 +39,14 @@ describe("profileService", () => {
   });
 });
 
-function buildService() {
+function buildService(): {
+  service: ReturnType<typeof profileService>;
+  repository: ReturnType<typeof createMockProfileRepository>;
+} {
   const repository = createMockProfileRepository();
-  const service = profileService({ profileRepository: repository } as never);
+  const service = profileService({
+    profileRepository: repository,
+  } as unknown as FastifyInstance);
+
   return { service, repository };
 }

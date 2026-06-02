@@ -19,5 +19,7 @@ export function buildServerOptions(): FastifyServerOptions {
       plugins: [addFormats],
     },
     trustProxy: true,
+    connectionTimeout: 10000,
+    requestTimeout: 10000,
   };
 }
