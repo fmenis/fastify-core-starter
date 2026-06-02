@@ -7,8 +7,9 @@ import profileService from "./profile/profile.service.js";
 
 export default fp(
   async function (fastify: FastifyInstance): Promise<void> {
-    await fastify.register(activityLogService);
     await fastify.register(profileRepository);
+
+    await fastify.register(activityLogService);
     await fastify.register(profileService);
   },
   {
