@@ -49,6 +49,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Activity log
 - [ ] Async localStorage
 - [ ] Request sanitization
+- [ ] Release please
 
 ## 🛠️ Installation
 

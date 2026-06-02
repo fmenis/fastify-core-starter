@@ -793,3 +793,13 @@ headers: { "accept-version": "1.0.0" }
 ## Git Workflow
 
 Direct pushes to `main` are not allowed. All changes must go through Pull Requests.
+
+### Pull Request Template
+
+Use `.github/PULL_REQUEST_TEMPLATE.md` as the template for all PRs. The template has five sections:
+
+- **What changed** — architectural decisions and intent, not a list of files
+- **Requirements before merge** — anything that must happen before merging (dependent PRs, migrations to run, coordinations with other teams, feature flags to enable)
+- **Breaking changes** — what breaks, who is impacted, migration path (write "None" if not applicable)
+- **Checklist** — tested locally, no hardcoded secrets, tests added/updated, migrations reversible, docs updated
+- **Additional notes** — tech debt, discarded approaches, dependencies on other PRs, feature flags
