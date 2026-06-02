@@ -74,7 +74,7 @@ jobs:
 
   test-unit:
     name: Unit Tests
-    needs: [lint, format]
+    needs: [lint, format, validate-openapi]
     runs-on: ubuntu-latest
 
     steps:
@@ -94,7 +94,7 @@ jobs:
 
   test-integration:
     name: Integration Tests
-    needs: [lint, format]
+    needs: [lint, format, validate-openapi]
     runs-on: ubuntu-latest
 
     steps:
@@ -119,9 +119,36 @@ jobs:
         if: always()
         run: docker compose -f tests/docker-compose.test.yml down
 
+  validate-openapi:
+    name: Validate OpenAPI
+    needs: install
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+
+      - uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Start test containers
+        run: docker compose -f tests/docker-compose.test.yml up -d --wait
+
+      - name: Validate OpenAPI schema
+        run: cp tests/.env.test .env && npm run validate:openapi
+
+      - name: Stop test containers
+        if: always()
+        run: docker compose -f tests/docker-compose.test.yml down
+
   build:
     name: Build
-    needs: [test-unit, test-integration]
+    needs: [test-unit, test-integration, validate-openapi]
     runs-on: ubuntu-latest
     env:
       HUSKY: "0"

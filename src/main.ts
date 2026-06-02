@@ -5,7 +5,7 @@ import env from "@fastify/env";
 import closeWithGrace from "close-with-grace";
 
 import { ConfigSchemaType, configSchema } from "./utils/env.schema.js";
-import { validateOpenApi, resolveAppMode } from "./utils/utils.js";
+import { resolveAppMode } from "./utils/utils.js";
 import { AppMode, APP_ENV } from "./common/enum.js";
 import { buildServerOptions, addFormats } from "./utils/server.options.js";
 
@@ -80,7 +80,6 @@ async function init() {
     await fastify.ready();
 
     if (mode === AppMode.HTTP) {
-      await validateOpenApi(fastify);
       await fastify.listen({
         port: fastify.config.SERVER_PORT,
         host: fastify.config.SERVER_ADDRESS,
