@@ -24,12 +24,12 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "initStack": "cd ./local-stack && docker compose up -d",
-    "shutdownStack": "cd ./local-stack && docker compose down",
-    "rebuildStack": "./local-stack/rebuild-db.sh",
+    "shutdown-stack": "cd ./local-stack && docker compose down",
+    "rebuild-stack": "./local-stack/rebuild-db.sh",
     "prepare": "husky",
     "kysely:codegen": "kysely-codegen --dialect postgres --exclude-pattern migrations --out-file ./src/generated/kysely/types.ts",
     "db:migrate": "tsx --env-file .env ./src/scripts/applyMigrations.ts",
-    "job:delete-inactive-accounts": "tsx --env-file .env src/scripts/deleteInactiveAccounts.ts"
+    "job:delete-inactive-profiles": "tsx --env-file .env src/scripts/deleteInactiveProfiles.ts"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",

@@ -129,7 +129,7 @@ To debug a single file, edit `.vscode/launch.json` and add the file path as the 
 "args": [
   "run",
   "--config", "tests/vitest.integration.config.ts",
-  "tests/modules/accounts/read.route.test.ts"
+  "tests/modules/profile/read.route.test.ts"
 ]
 ```
 

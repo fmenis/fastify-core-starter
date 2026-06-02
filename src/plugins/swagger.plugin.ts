@@ -42,7 +42,7 @@ async function swaggerPlugin(fastify: FastifyInstance): Promise<void> {
       tags: [
         { name: "auth", description: "Auth related end-points" },
         { name: "misc", description: "Misc related end-points" },
-        { name: "accounts", description: "Accounts related end-points" },
+        { name: "profile", description: "Profile related end-points" },
       ].sort((a, b) => a.name.localeCompare(b.name)),
       components: {
         headers: {

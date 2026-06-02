@@ -5,7 +5,7 @@ import {
   createMockFastify,
   createMockRequest,
 } from "../../../test/utils/fastify.mock.js";
-import { createMockAccount } from "../../../test/utils/fixtures/account.fixture.js";
+import { createMockProfile } from "../../../test/utils/fixtures/profile.fixture.js";
 import { EntityNotFoundError } from "../../../common/errors.js";
 
 describe("read.route", () => {
@@ -20,36 +20,36 @@ describe("read.route", () => {
     return mockFastify.capturedHandler!;
   }
 
-  describe("when account exists", () => {
-    it("should return the account data", async () => {
+  describe("when profile exists", () => {
+    it("should return the profile data", async () => {
       const createdAt = faker.date.past();
       const updatedAt = faker.date.recent();
       const deletedAt = null;
 
-      const mockAccount = createMockAccount({
+      const mockProfile = createMockProfile({
         createdAt,
         updatedAt,
         deletedAt,
       });
 
-      mockFastify.accountService.findAccount.mockResolvedValueOnce(mockAccount);
+      mockFastify.profileService.findById.mockResolvedValueOnce(mockProfile);
 
       const handler = await getHandler();
       const request = createMockRequest({
-        params: { id: mockAccount.id },
+        params: { id: mockProfile.id },
       });
 
       const result = await handler(request);
 
-      expect(mockFastify.accountService.findAccount).toHaveBeenCalledWith(
-        mockAccount.id,
+      expect(mockFastify.profileService.findById).toHaveBeenCalledWith(
+        mockProfile.id,
       );
       expect(result).toEqual({
-        id: mockAccount.id,
-        firstName: mockAccount.firstName,
-        lastName: mockAccount.lastName,
-        userName: mockAccount.userName,
-        email: mockAccount.email,
+        id: mockProfile.id,
+        firstName: mockProfile.firstName,
+        lastName: mockProfile.lastName,
+        userName: mockProfile.userName,
+        email: mockProfile.email,
         createdAt: createdAt.toISOString(),
         updatedAt: updatedAt.toISOString(),
         deletedAt: deletedAt,
@@ -57,12 +57,12 @@ describe("read.route", () => {
     });
   });
 
-  describe("when account does not exist", () => {
+  describe("when profile does not exist", () => {
     it("should throw NOT_FOUND error", async () => {
       const nonExistentId = faker.string.uuid();
 
-      mockFastify.accountService.findAccount.mockRejectedValueOnce(
-        new EntityNotFoundError("account", nonExistentId),
+      mockFastify.profileService.findById.mockRejectedValueOnce(
+        new EntityNotFoundError("profile", nonExistentId),
       );
 
       const handler = await getHandler();
@@ -71,14 +71,14 @@ describe("read.route", () => {
       });
 
       await expect(handler(request)).rejects.toThrow(
-        `Entity 'account' with '${nonExistentId}' not found.`,
+        `Entity 'profile' with '${nonExistentId}' not found.`,
       );
 
       expect(
         mockFastify.commonClientErrors.throwNotFoundError,
       ).toHaveBeenCalledWith({
         id: nonExistentId,
-        name: "account",
+        name: "profile",
       });
     });
   });

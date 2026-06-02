@@ -1,4 +1,4 @@
-export interface Account {
+export interface Profile {
   id: string;
   firstName: string;
   lastName: string;
@@ -10,7 +10,7 @@ export interface Account {
   deletedAt: Date | null;
 }
 
-export type CreateAccount = Pick<
-  Account,
+export type CreateProfile = Pick<
+  Profile,
   "firstName" | "lastName" | "userName" | "email" | "password"
 >;

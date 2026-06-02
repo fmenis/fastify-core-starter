@@ -2,25 +2,25 @@
 
 import { vi } from "vitest";
 import type {
-  MockAccountRepository,
-  MockAccountService,
+  MockProfileRepository,
+  MockProfileService,
   MockCommonClientErrors,
   MockBullMQ,
   MockLogger,
   MockFastifyInstance,
 } from "./types.js";
 
-export function createMockAccountRepository(): MockAccountRepository {
+export function createMockProfileRepository(): MockProfileRepository {
   return {
-    createAccount: vi.fn(),
+    createProfile: vi.fn(),
     findByEmail: vi.fn(),
     findById: vi.fn(),
   };
 }
 
-export function createMockAccountService(): MockAccountService {
+export function createMockProfileService(): MockProfileService {
   return {
-    findAccount: vi.fn(),
+    findById: vi.fn(),
   };
 }
 
@@ -36,7 +36,7 @@ export function createMockCommonClientErrors(): MockCommonClientErrors {
       {
         code: "*NOT_FOUND*",
         description: "occurs when the target entity is not present.",
-        apis: ["login", "read account"],
+        apis: ["login", "read profile"],
         statusCode: 404,
       },
     ],
@@ -66,8 +66,8 @@ export function createMockLogger(): MockLogger {
 }
 
 export interface CreateMockFastifyOptions {
-  accountRepository?: Partial<MockAccountRepository>;
-  accountService?: Partial<MockAccountService>;
+  profileRepository?: Partial<MockProfileRepository>;
+  profileService?: Partial<MockProfileService>;
   commonClientErrors?: Partial<MockCommonClientErrors>;
   bullmq?: Partial<MockBullMQ>;
 }
@@ -82,13 +82,13 @@ export function createMockFastify(
   let capturedHandler: any = null;
 
   const mockFastify: MockFastifyWithCapture = {
-    accountRepository: {
-      ...createMockAccountRepository(),
-      ...options.accountRepository,
+    profileRepository: {
+      ...createMockProfileRepository(),
+      ...options.profileRepository,
     },
-    accountService: {
-      ...createMockAccountService(),
-      ...options.accountService,
+    profileService: {
+      ...createMockProfileService(),
+      ...options.profileService,
     },
     commonClientErrors: {
       ...createMockCommonClientErrors(),

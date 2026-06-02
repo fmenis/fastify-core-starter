@@ -3,14 +3,14 @@ import { FastifyInstance, FastifyRequest } from "fastify";
 import { EntityNotFoundError } from "../../../common/errors.js";
 import { buildRouteFullDescription } from "../../../utils/utils.js";
 import {
-  readAccountParamsSchema,
-  ReadAccountParamsSchemaType,
-  readAccountResponseSchema,
-  ReadAccountResponseSchemaType,
-} from "../account.schema.js";
+  readProfileParamsSchema,
+  ReadProfileParamsSchemaType,
+  readProfileResponseSchema,
+  ReadProfileResponseSchemaType,
+} from "../profile.schema.js";
 
 export default async function read(fastify: FastifyInstance): Promise<void> {
-  const { accountService, commonClientErrors } = fastify;
+  const { profileService, commonClientErrors } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
   const version = "1.0.0";
@@ -26,14 +26,14 @@ export default async function read(fastify: FastifyInstance): Promise<void> {
     },
     schema: {
       description: buildRouteFullDescription({
-        api: "read account",
-        description: "Get account by ID.",
+        api: "read profile",
+        description: "Get profile by ID.",
         version,
         errors,
       }),
-      params: readAccountParamsSchema,
+      params: readProfileParamsSchema,
       response: {
-        200: readAccountResponseSchema,
+        200: readProfileResponseSchema,
         400: fastify.getSchema("sBadRequest"),
         404: fastify.getSchema("sNotFound"),
       },
@@ -42,24 +42,25 @@ export default async function read(fastify: FastifyInstance): Promise<void> {
   });
 
   async function onRead(
-    req: FastifyRequest<{ Params: ReadAccountParamsSchemaType }>,
-  ): Promise<ReadAccountResponseSchemaType> {
+    req: FastifyRequest<{ Params: ReadProfileParamsSchemaType }>,
+  ): Promise<ReadProfileResponseSchemaType> {
     const { id } = req.params;
 
     try {
-      const account = await accountService.findAccount(id);
+      const profile = await profileService.findById(id);
 
       return {
-        id: account.id,
-        firstName: account.firstName,
-        lastName: account.lastName,
-        userName: account.userName,
-        email: account.email,
-        createdAt: account.createdAt.toISOString(),
-        updatedAt: account.updatedAt?.toISOString() ?? null,
-        deletedAt: account.deletedAt?.toISOString() ?? null,
+        id: profile.id,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        userName: profile.userName,
+        email: profile.email,
+        createdAt: profile.createdAt.toISOString(),
+        updatedAt: profile.updatedAt?.toISOString() ?? null,
+        deletedAt: profile.deletedAt?.toISOString() ?? null,
       };
     } catch (error) {
+      //##TODO togliere questa logica, mettere gli errori http nel service (per il momento)
       if (error instanceof EntityNotFoundError) {
         return throwNotFoundError({
           id: error.entityId,

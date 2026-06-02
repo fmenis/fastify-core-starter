@@ -8,7 +8,7 @@ import {
   SCHEDULER_ID,
   SCHEDULED_JOB_NAME,
 } from "../../common/constants.js";
-import { handleDeleteInactiveAccounts } from "./jobs/deleteInactiveAccounts.job.js";
+import { handleDeleteInactiveProfiles } from "./jobs/deleteInactiveProfiles.job.js";
 
 /**
  * Worker for cron jobs
@@ -18,8 +18,8 @@ async function schedulerPlugin(fastify: FastifyInstance): Promise<void> {
     SCHEDULED_QUEUE_NAME,
     async job => {
       switch (job.name) {
-        case SCHEDULED_JOB_NAME.DELETE_INACTIVE_ACCOUNTS:
-          await handleDeleteInactiveAccounts(job.id!);
+        case SCHEDULED_JOB_NAME.DELETE_INACTIVE_PROFILES:
+          await handleDeleteInactiveProfiles(job.id!);
           break;
         default:
           fastify.log.error({ jobName: job.name }, "unknown scheduled job");
@@ -33,9 +33,9 @@ async function schedulerPlugin(fastify: FastifyInstance): Promise<void> {
 
   fastify.addHook("onReady", async () => {
     await fastify.bullmq.scheduledQueue.upsertJobScheduler(
-      SCHEDULER_ID.DELETE_INACTIVE_ACCOUNTS,
+      SCHEDULER_ID.DELETE_INACTIVE_PROFILES,
       { every: 5000 },
-      { name: SCHEDULED_JOB_NAME.DELETE_INACTIVE_ACCOUNTS, data: {} },
+      { name: SCHEDULED_JOB_NAME.DELETE_INACTIVE_PROFILES, data: {} },
     );
     fastify.log.debug("scheduled jobs registered");
   });

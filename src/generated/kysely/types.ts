@@ -24,11 +24,11 @@ export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
-export type ResourceType = "ACCOUNT" | "ORDER";
+export type ResourceType = "PROFILE";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Account {
+export interface Profile {
   createdAt: Generated<Timestamp>;
   deletedAt: Timestamp | null;
   email: string;
@@ -39,7 +39,6 @@ export interface Account {
   updatedAt: Timestamp | null;
   userName: string;
 }
-
 export interface ActivityLog {
   action: string;
   actorId: string;
@@ -52,6 +51,6 @@ export interface ActivityLog {
 }
 
 export interface DB {
-  account: Account;
+  profile: Profile;
   activityLog: ActivityLog;
 }

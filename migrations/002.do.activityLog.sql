@@ -1,5 +1,5 @@
 CREATE TYPE actor_type AS ENUM ('USER', 'SYSTEM');
-CREATE TYPE resource_type AS ENUM ('ACCOUNT', 'ORDER');
+CREATE TYPE resource_type AS ENUM ('PROFILE');
 
 CREATE TABLE IF NOT EXISTS "activityLog" (
   "id"           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
