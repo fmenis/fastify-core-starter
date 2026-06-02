@@ -35,6 +35,92 @@ npm run kysely:codegen   # Generate TypeScript types from database schema
 npm run db:migrate       # Run database migrations with postgrator
 ```
 
+## Pre-coding Checklist
+
+After a plan is accepted and before writing any code, go through every item below. If an item does not apply, state why — do not skip silently.
+
+### 0. Breaking changes (evaluate before writing code)
+
+Before starting implementation, explicitly list any breaking changes the plan introduces:
+
+- **API contract**: removed/renamed fields, changed status codes, modified request/response schemas, removed endpoints
+- **Database**: column renames/drops, constraint changes, index removals — and whether the migration is reversible
+- **Environment variables**: renamed or removed variables that existing deployments depend on
+- **Queue/job contract**: renamed job names, changed payload shapes, removed job types
+- **Plugin/decorators**: renamed or removed Fastify decorators that other modules depend on
+
+If there are no breaking changes, write **"Breaking changes: none"** explicitly. Raise breaking changes during planning, not after writing code.
+
+### 1. Environment variables
+
+If the task introduces new env variables:
+
+- Add to `src/utils/env.schema.ts` with type and validation
+- Add to `.env.example` (placeholder value) and `.env` (real dev value)
+- Add to the "Create .env file on VPS" step in `.github/workflows/deploy.yml`
+- Update the `## Environment Variables` section in `README.md`
+
+### 2. Database migrations
+
+If the task modifies the database schema:
+
+- Create a migration file in `migrations/` following the existing naming convention
+- Verify the migration is reversible (include a down migration)
+- Run `npm run db:migrate` locally to validate
+- Run `npm run kysely:codegen` and commit the updated generated types in `src/generated/kysely/types.ts`
+
+### 3. Enums
+
+If the task introduces a new domain entity or resource type:
+
+- Add the value to the relevant enum in `src/common/enum.ts` (`ResourceType`, `ActorType`, etc.)
+- Re-run `npm run kysely:codegen` if the enum is database-backed
+
+### 4. Activity logging
+
+Every route that produces a side effect (POST, PUT, PATCH, DELETE) must call `activityLogService`. For each such route:
+
+- Call `fastify.activityLogService.logActivity()` after the operation succeeds
+- Use the correct `ActorType`, `ResourceType`, and a descriptive `action` string (e.g. `"profile.updated"`)
+- For bulk operations use `logBulkActivity()`
+
+### 5. Swagger / OpenAPI
+
+If the task adds routes:
+
+- If it is a new domain: add the tag to `swagger.plugin.ts` and assign it via the `onRoute` hook
+- Use `buildRouteFullDescription()` for all route `description` fields
+
+### 6. Unit tests — Services
+
+- New method on an existing service → write unit tests for that method
+- New service → write the full unit test file
+- Mock all external dependencies (DB, HTTP clients) — unit tests must not hit real infrastructure
+
+### 7. Unit tests — Routes
+
+- New route handler → write unit tests for it
+- Inject a mock of the underlying service — do not test service logic here
+
+### 8. Integration tests — Routes
+
+- New or modified route → write or update the integration test
+- Cover: happy path, validation errors (4xx), and at least one edge case
+
+### 9. CLAUDE.md
+
+If the task changes something already documented in this file (architecture, conventions, commands, env vars, patterns), update the relevant section. Keep CLAUDE.md in sync with the actual codebase.
+
+### 10. Build + lint
+
+Before declaring the task complete, run:
+
+```bash
+npm run build && npm run lint && npm run format
+```
+
+This catches TypeScript errors, style violations, and formatting issues that tests do not surface.
+
 ## Versioning & Dependency Hygiene
 
 Before writing or suggesting any Node.js code, configuration, or tooling setup:
