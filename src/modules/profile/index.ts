@@ -6,10 +6,10 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {
     options.schema = {
       ...options.schema,
-      tags: ["accounts"],
+      tags: ["profile"],
     };
   });
 
-  const prefix = "/accounts";
+  const prefix = "/profile";
   fastify.register(read, { prefix });
 }

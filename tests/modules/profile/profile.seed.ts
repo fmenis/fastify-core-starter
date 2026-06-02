@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { Selectable } from "kysely";
 import { kysely } from "../../../src/lib/kysely.js";
-import { Account } from "../../../src/generated/kysely/types.js";
+import { Profile } from "../../../src/generated/kysely/types.js";
 
-export async function seedAccount(
+export async function seedProfile(
   overrides: {
     firstName?: string;
     lastName?: string;
@@ -11,9 +11,9 @@ export async function seedAccount(
     email?: string;
     password?: string;
   } = {},
-): Promise<Selectable<Account>> {
+): Promise<Selectable<Profile>> {
   return kysely
-    .insertInto("account")
+    .insertInto("profile")
     .values({
       firstName: overrides.firstName ?? faker.person.firstName(),
       lastName: overrides.lastName ?? faker.person.lastName(),

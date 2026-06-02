@@ -3,35 +3,35 @@ import type { FastifyInstance } from "fastify";
 import { randomUUID } from "crypto";
 import { getTestApp } from "../../helpers/build-app.js";
 import { Selectable } from "kysely";
-import { Account } from "../../../src/generated/kysely/types.js";
-import { seedAccount } from "./account.seed.js";
+import { Profile } from "../../../src/generated/kysely/types.js";
+import { seedProfile } from "./profile.seed.js";
 
 const VERSION_HEADER = { "accept-version": "1.0.0" };
-const BASE_API_URL = "/api/accounts";
+const BASE_API_URL = "/api/profile";
 
 describe(`GET ${BASE_API_URL}/:id`, () => {
   let app: FastifyInstance;
-  let account: Selectable<Account>;
+  let profile: Selectable<Profile>;
 
   beforeAll(async () => {
     app = await getTestApp();
-    account = await seedAccount();
+    profile = await seedProfile();
   });
 
-  it("returns 200 with account data for an existing account", async () => {
+  it("returns 200 with profile data for an existing profile", async () => {
     const response = await app.inject({
       method: "GET",
-      url: `${BASE_API_URL}/${account.id}`,
+      url: `${BASE_API_URL}/${profile.id}`,
       headers: VERSION_HEADER,
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
-      id: account.id,
-      firstName: account.firstName,
-      lastName: account.lastName,
-      userName: account.userName,
-      email: account.email,
+      id: profile.id,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      userName: profile.userName,
+      email: profile.email,
       createdAt: expect.any(String),
       updatedAt: null,
       deletedAt: null,
@@ -39,7 +39,7 @@ describe(`GET ${BASE_API_URL}/:id`, () => {
   });
 
   //##TODO approfondimento su cosa deve fare ogni layer di test
-  it("returns 404 when account does not exist", async () => {
+  it("returns 404 when profile does not exist", async () => {
     const response = await app.inject({
       method: "GET",
       url: `${BASE_API_URL}/${randomUUID()}`,
@@ -54,11 +54,11 @@ describe(`GET ${BASE_API_URL}/:id`, () => {
   });
 
   it("returns 404 when Accept-Version header is missing", async () => {
-    const account = await seedAccount();
+    const profile = await seedProfile();
 
     const response = await app.inject({
       method: "GET",
-      url: `${BASE_API_URL}/${account.id}`,
+      url: `${BASE_API_URL}/${profile.id}`,
     });
 
     expect(response.statusCode).toBe(404);

@@ -10,14 +10,14 @@ export async function sendResetPasswordEmail(
 ): Promise<void> {
   const { email } = data;
 
-  const account = await kysely
-    .selectFrom("account")
+  const profile = await kysely
+    .selectFrom("profile")
     .selectAll()
     .where("email", "=", email)
     .executeTakeFirst();
 
-  if (!account) {
-    loggerInstance.warn(`Account with email '${email}' not found!`);
+  if (!profile) {
+    loggerInstance.warn(`Profile with email '${email}' not found!`);
   }
 
   // send email

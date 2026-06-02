@@ -1,24 +1,24 @@
 import { Static, Type } from "typebox";
 import { Nullable } from "../../common/schema.js";
 
-export const readAccountParamsSchema = Type.Object(
+export const readProfileParamsSchema = Type.Object(
   {
     id: Type.String({
       format: "uuid",
-      description: "Account ID.",
+      description: "Profile ID.",
     }),
   },
   { additionalProperties: false },
 );
-export type ReadAccountParamsSchemaType = Static<
-  typeof readAccountParamsSchema
+export type ReadProfileParamsSchemaType = Static<
+  typeof readProfileParamsSchema
 >;
 
-export const readAccountResponseSchema = Type.Object(
+export const readProfileResponseSchema = Type.Object(
   {
     id: Type.String({
       format: "uuid",
-      description: "Account ID.",
+      description: "Profile ID.",
     }),
     firstName: Type.String({
       description: "First name.",
@@ -35,23 +35,23 @@ export const readAccountResponseSchema = Type.Object(
     }),
     createdAt: Type.String({
       format: "date-time",
-      description: "Account creation date.",
+      description: "Profile creation date.",
     }),
     updatedAt: Nullable(
       Type.String({
         format: "date-time",
-        description: "Account last update date.",
+        description: "Profile last update date.",
       }),
     ),
     deletedAt: Nullable(
       Type.String({
         format: "date-time",
-        description: "Account deletion date.",
+        description: "Profile deletion date.",
       }),
     ),
   },
   { additionalProperties: false },
 );
-export type ReadAccountResponseSchemaType = Static<
-  typeof readAccountResponseSchema
+export type ReadProfileResponseSchemaType = Static<
+  typeof readProfileResponseSchema
 >;

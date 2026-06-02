@@ -61,11 +61,11 @@ Before writing or suggesting any Node.js code, configuration, or tooling setup:
 
 The app uses Fastify's plugin system for modularity. Plugins are registered in dependency order in `src/app.ts`. Key patterns:
 
-- **Repository Pattern**: Data access via decorated repositories (e.g., `account.repository.ts`)
-- **Service Pattern**: Business logic via decorated services (e.g., `account.service.ts`)
+- **Repository Pattern**: Data access via decorated repositories (e.g., `profile.repository.ts`)
+- **Service Pattern**: Business logic via decorated services (e.g., `profile.service.ts`)
 - **Route Pattern**: Each route handler is a route file (e.g., `login.route.ts`)
 - **TypeBox Schemas**: All request/response validation uses TypeBox with `Static<typeof schema>` for types
-- **Dependency Injection**: Core libraries and domain layers are Fastify decorators (`fastify.kysely`, `fastify.accountRepository`, `fastify.accountService`, `fastify.bullmq`)
+- **Dependency Injection**: Core libraries and domain layers are Fastify decorators (`fastify.kysely`, `fastify.profileRepository`, `fastify.profileService`, `fastify.bullmq`)
 
 ### Source Structure
 
@@ -79,7 +79,7 @@ src/
 ├── modules/            # Domain modules
 │   ├── index.ts        # HTTP modules entry (authentication + routes)
 │   ├── servicePlugins.ts  # Business layer plugin - registers all repositories and services
-│   ├── accounts/       # Account domain (repository, service, routes, interfaces)
+│   ├── profile/        # Profile domain (repository, service, routes, interfaces)
 │   ├── auth/           # Auth domain with routes/ and queue/
 │   ├── activityLog/    # Activity log service
 │   └── misc/           # Health/status endpoints
@@ -129,7 +129,7 @@ import { runScript } from "./helpers/runScript.js";
 
 runScript(async fastify => {
   const { kysely } = fastify;
-  // fastify.accountService, fastify.accountRepository, fastify.kysely all available
+  // fastify.profileService, fastify.profileRepository, fastify.kysely all available
 });
 ```
 
@@ -143,7 +143,7 @@ npm run script:run -- src/scripts/my-script.ts
 "job:my-script": "tsx --env-file .env src/scripts/my-script.ts"
 ```
 
-**When to add a dedicated npm script:** when a script is recurring or part of a scheduled job. Use `job:` as prefix (e.g., `job:delete-inactive-accounts`).
+**When to add a dedicated npm script:** when a script is recurring or part of a scheduled job. Use `job:` as prefix (e.g., `job:delete-inactive-profiles`).
 
 ### Adding New Routes
 
@@ -174,8 +174,8 @@ The `activityLogService` is available via `fastify.activityLogService`. Call it 
 
 - `actorId` — ID of the entity performing the action (e.g. authenticated user ID)
 - `actorType` — `ActorType.USER` or `ActorType.SYSTEM` (from `src/common/enum.ts`)
-- `action` — plain string describing what happened (e.g. `"account.created"`, `"account.deleted"`)
-- `resourceType` — `ResourceType.ACCOUNT`, etc. (from `src/common/enum.ts`). Add new values to the enum when introducing new domains.
+- `action` — plain string describing what happened (e.g. `"profile.created"`, `"profile.deleted"`)
+- `resourceType` — `ResourceType.PROFILE`, etc. (from `src/common/enum.ts`). Add new values to the enum when introducing new domains.
 - `resourceId` — ID of the affected resource
 - `changes` — optional JSON with before/after data, or `null`
 
@@ -183,30 +183,30 @@ The `activityLogService` is available via `fastify.activityLogService`. Call it 
 
 ```typescript
 // In a route handler
-const account = await fastify.accountService.createAccount(body);
+const profile = await fastify.profileService.createProfile(body);
 
 await fastify.activityLogService.logActivity({
   actorId: request.user.id,
   actorType: ActorType.USER,
-  action: "account.created",
-  resourceType: ResourceType.ACCOUNT,
-  resourceId: account.id,
+  action: "profile.created",
+  resourceType: ResourceType.PROFILE,
+  resourceId: profile.id,
   changes: null,
 });
 
-return account;
+return profile;
 ```
 
 **Example — bulk (multiple resources affected):**
 
 ```typescript
 await fastify.activityLogService.logBulkActivity(
-  accounts.map(account => ({
+  profiles.map(profile => ({
     actorId: request.user.id,
     actorType: ActorType.USER,
-    action: "account.updated",
-    resourceType: ResourceType.ACCOUNT,
-    resourceId: account.id,
+    action: "profile.updated",
+    resourceType: ResourceType.PROFILE,
+    resourceId: profile.id,
     changes: null,
   })),
 );
@@ -219,7 +219,7 @@ await fastify.activityLogService.logBulkActivity(
 
 **Plugin naming convention:**
 
-The `dependencies` array must reference plugins by their `name` property (e.g., `"account-repository"`), not by the decorator name (e.g., `"accountRepository"`).
+The `dependencies` array must reference plugins by their `name` property (e.g., `"profile-repository"`), not by the decorator name (e.g., `"profileRepository"`).
 
 ### API Versioning
 
@@ -255,7 +255,7 @@ Regola pratica: se l'operazione è un'istruzione SQL che lavora su più righe �
 
 | Scenario                                   | Approccio                      |
 | ------------------------------------------ | ------------------------------ |
-| Soft-delete di N account inattivi          | Query bulk diretta nel job     |
+| Soft-delete di N profili inattivi          | Query bulk diretta nel job     |
 | Invio email a N utenti                     | Fan-out — un job per email     |
 | Aggiornamento stato ordini via API esterna | Fan-out — un job per ordine    |
 | Pulizia sessioni scadute                   | Query bulk diretta nel job     |
@@ -292,12 +292,12 @@ The project uses a two-layer error system:
 import { EntityNotFoundError } from "../../common/errors.js";
 
 // In service - throws domain error
-async findAccount(accountId: string): Promise<Account> {
-  const account = await accountRepository.findById(accountId);
-  if (!account) {
-    throw new EntityNotFoundError("account", accountId);
+async findProfile(profileId: string): Promise<Profile> {
+  const profile = await profileRepository.findById(profileId);
+  if (!profile) {
+    throw new EntityNotFoundError("profile", profileId);
   }
-  return account;
+  return profile;
 }
 ```
 
@@ -306,7 +306,7 @@ async findAccount(accountId: string): Promise<Account> {
 ```typescript
 // In route - catch domain error, convert to HTTP error
 try {
-  const account = await accountService.findAccount(id);
+  const profile = await profileService.findProfile(id);
   return { ... };
 } catch (error) {
   if (error instanceof EntityNotFoundError) {
@@ -354,14 +354,14 @@ The project uses `@fastify/swagger` and `@fastify/swagger-ui` for auto-generated
 
 ### Adding New API Tags
 
-When creating a new route domain (e.g., `accounts`, `products`), add a corresponding tag to the Swagger configuration:
+When creating a new route domain (e.g., `profiles`, `products`), add a corresponding tag to the Swagger configuration:
 
 1. Open `src/plugins/swagger.plugin.ts`
 2. Add a new tag object to the `tags` array:
 
 ```typescript
 tags: [
-  { name: "accounts", description: "Accounts related end-points" },
+  { name: "profiles", description: "Profiles related end-points" },
   { name: "auth", description: "Auth related end-points" },
   { name: "misc", description: "Misc related end-points" },
 ].sort((a, b) => a.name.localeCompare(b.name)),
@@ -373,7 +373,7 @@ tags: [
 fastify.addHook("onRoute", options => {
   options.schema = {
     ...options.schema,
-    tags: ["accounts"], // Must match the tag name in swagger.plugin.ts
+    tags: ["profiles"], // Must match the tag name in swagger.plugin.ts
   };
 });
 ```
@@ -385,8 +385,8 @@ Use `buildRouteFullDescription()` from `src/utils/main.js` for consistent route 
 ```typescript
 schema: {
   description: buildRouteFullDescription({
-    api: "read account",
-    description: "Get account by ID.",
+    api: "read profile",
+    description: "Get profile by ID.",
     version,
     errors,
   }),
@@ -426,21 +426,21 @@ The documentation includes:
 ```typescript
 // INSERT with returning
 await kysely
-  .insertInto("account")
+  .insertInto("profile")
   .values(params)
   .returningAll()
   .executeTakeFirstOrThrow();
 
 // SELECT with WHERE
 await kysely
-  .selectFrom("account")
+  .selectFrom("profile")
   .selectAll()
   .where("email", "=", email)
   .executeTakeFirst();
 
 // UPDATE with returning
 await kysely
-  .updateTable("account")
+  .updateTable("profile")
   .set({ firstName: "New" })
   .where("id", "=", id)
   .returningAll()
@@ -448,7 +448,7 @@ await kysely
 
 // DELETE
 await kysely
-  .deleteFrom("account")
+  .deleteFrom("profile")
   .where("id", "=", id)
   .executeTakeFirstOrThrow();
 ```
@@ -582,9 +582,9 @@ src/
 │       ├── fastify.mock.ts      # Mock Fastify instance and request
 │       ├── types.ts             # TypeScript interfaces for mocks
 │       └── fixtures/            # Test data factories
-│           └── account.fixture.ts
+│           └── profile.fixture.ts
 ├── routes/
-│   └── accounts/
+│   └── profile/
 │       └── routes/
 │           ├── read.route.ts
 │           └── read.route.test.ts  # Co-located test
@@ -598,8 +598,8 @@ Routes are tested by mocking the Fastify instance and calling the handler direct
 
 **`createMockFastify(options?)`** - Creates a mock Fastify instance with:
 
-- `accountRepository` - Mocked repository methods (`findById`, `findByEmail`, `createAccount`)
-- `accountService` - Mocked service methods (`findAccount`)
+- `profileRepository` - Mocked repository methods (`findById`, `findByEmail`, `createProfile`)
+- `profileService` - Mocked service methods (`findProfile`)
 - `commonClientErrors` - Mocked error handlers (`throwNotFoundError`)
 - `bullmq` - Mocked queue (`queue.add`)
 - `log` - Mocked logger
@@ -613,10 +613,10 @@ Factories generate realistic test data using Faker. Located in `src/test/utils/f
 
 ```typescript
 // Creating test data with defaults
-const account = createMockAccount();
+const profile = createMockProfile();
 
 // Overriding specific fields
-const account = createMockAccount({
+const profile = createMockProfile({
   email: "specific@email.com",
   createdAt: new Date("2024-01-01"),
 });
@@ -719,19 +719,19 @@ tests/
 **App factory** — call `getTestApp()` once per describe block in `beforeAll`. The factory builds the full Fastify app (same plugins as production, minus Swagger) and calls `ready()`. With `fileParallelism: false` the module is shared within the fork, so repeated calls return the cached instance:
 
 ```typescript
-describe("GET /api/accounts/:id", () => {
+describe("GET /api/profiles/:id", () => {
   let app: FastifyInstance;
-  let account: Selectable<Account>;
+  let profile: Selectable<Profile>;
 
   beforeAll(async () => {
     app = await getTestApp();
-    account = await seedAccount(); // seed shared data here
+    profile = await seedProfile(); // seed shared data here
   });
 
   it("returns 200", async () => {
     const response = await app.inject({
       method: "GET",
-      url: `/api/accounts/${account.id}`,
+      url: `/api/profiles/${profile.id}`,
       headers: { "accept-version": "1.0.0" },
     });
     expect(response.statusCode).toBe(200);
@@ -742,7 +742,7 @@ describe("GET /api/accounts/:id", () => {
 **Hook execution order:**
 
 ```
-beforeAll (describe)  → getTestApp() + seedAccount()
+beforeAll (describe)  → getTestApp() + seedProfile()
   afterEach (setup.ts)  → TRUNCATE              ← runs after each test
   test 1               → uses beforeAll data
   afterEach            → TRUNCATE
@@ -754,14 +754,14 @@ beforeAll (describe)  → getTestApp() + seedAccount()
 **Seeds** — use Kysely directly (not HTTP calls). Co-locate seed files with the test domain and use `@faker-js/faker` for realistic random data:
 
 ```typescript
-// tests/modules/accounts/account.seed.ts
+// tests/modules/profile/profile.seed.ts
 import { faker } from "@faker-js/faker";
 
-export async function seedAccount(
+export async function seedProfile(
   overrides = {},
-): Promise<Selectable<Account>> {
+): Promise<Selectable<Profile>> {
   return kysely
-    .insertInto("account")
+    .insertInto("profile")
     .values({
       firstName: overrides.firstName ?? faker.person.firstName(),
       // ...
@@ -793,3 +793,13 @@ headers: { "accept-version": "1.0.0" }
 ## Git Workflow
 
 Direct pushes to `main` are not allowed. All changes must go through Pull Requests.
+
+### Pull Request Template
+
+Use `.github/PULL_REQUEST_TEMPLATE.md` as the template for all PRs. The template has five sections:
+
+- **What changed** — architectural decisions and intent, not a list of files
+- **Requirements before merge** — anything that must happen before merging (dependent PRs, migrations to run, coordinations with other teams, feature flags to enable)
+- **Breaking changes** — what breaks, who is impacted, migration path (write "None" if not applicable)
+- **Checklist** — tested locally, no hardcoded secrets, tests added/updated, migrations reversible, docs updated
+- **Additional notes** — tech debt, discarded approaches, dependencies on other PRs, feature flags

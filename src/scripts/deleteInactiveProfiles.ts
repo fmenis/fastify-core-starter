@@ -7,7 +7,7 @@ runScript(async fastify => {
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
   const result = await kysely
-    .updateTable("account")
+    .updateTable("profile")
     .set({ deletedAt: new Date() })
     .where("updatedAt", "<", oneYearAgo)
     .where("deletedAt", "is", null)
@@ -15,6 +15,6 @@ runScript(async fastify => {
 
   fastify.log.info(
     { count: result.numUpdatedRows.toString() },
-    "soft-deleted inactive accounts",
+    "soft-deleted inactive profiles",
   );
 });

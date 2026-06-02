@@ -16,6 +16,5 @@ export enum ActorType {
 }
 
 export enum ResourceType {
-  ACCOUNT = "ACCOUNT",
-  ORDER = "ORDER",
+  PROFILE = "PROFILE",
 }

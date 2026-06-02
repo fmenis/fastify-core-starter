@@ -10,7 +10,7 @@ import {
 import { JOB_NAME } from "../../../common/constants.js";
 
 export default async function login(fastify: FastifyInstance): Promise<void> {
-  const { accountRepository, commonClientErrors, bullmq } = fastify;
+  const { profileRepository, commonClientErrors, bullmq } = fastify;
   const { throwNotFoundError, errors } = commonClientErrors;
 
   const version = "1.0.0";
@@ -46,7 +46,7 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
   ): Promise<loginResponseSchemaType | undefined> {
     const { email } = req.body;
 
-    const account = await accountRepository.findByEmail(email);
+    const profile = await profileRepository.findByEmail(email);
 
     await bullmq.queue.add(
       JOB_NAME.SEND_RESET_PASSWORD_EMAIL,
@@ -56,8 +56,8 @@ export default async function login(fastify: FastifyInstance): Promise<void> {
       { delay: 2000 },
     );
 
-    if (!account) {
-      throwNotFoundError({ id: "fgfdsgsfg", name: "user" });
+    if (!profile) {
+      throwNotFoundError({ id: "fgfdsgsfg", name: "profile" });
     }
 
     return { jwt: "jwt" };

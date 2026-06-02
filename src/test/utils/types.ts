@@ -1,13 +1,13 @@
 import type { Mock } from "vitest";
 
-export interface MockAccountRepository {
-  createAccount: Mock;
+export interface MockProfileRepository {
+  createProfile: Mock;
   findByEmail: Mock;
   findById: Mock;
 }
 
-export interface MockAccountService {
-  findAccount: Mock;
+export interface MockProfileService {
+  findById: Mock;
 }
 
 export interface MockCommonClientErrors {
@@ -39,8 +39,8 @@ export interface MockLogger {
 }
 
 export interface MockFastifyInstance {
-  accountRepository: MockAccountRepository;
-  accountService: MockAccountService;
+  profileRepository: MockProfileRepository;
+  profileService: MockProfileService;
   commonClientErrors: MockCommonClientErrors;
   bullmq: MockBullMQ;
   log: MockLogger;

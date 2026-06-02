@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
-import { Account } from "../../../modules/accounts/account.interface.js";
+import { Profile } from "../../../modules/profile/profile.interface.js";
 
-export function createMockAccount(overrides: Partial<Account> = {}): Account {
+export function createMockProfile(overrides: Partial<Profile> = {}): Profile {
   return {
     id: faker.string.uuid(),
     firstName: faker.person.firstName(),
