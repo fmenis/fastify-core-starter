@@ -20,19 +20,27 @@ export const readProfileResponseSchema = Type.Object(
       format: "uuid",
       description: "Profile ID.",
     }),
-    firstName: Type.String({
-      description: "First name.",
-    }),
-    lastName: Type.String({
-      description: "Last name.",
-    }),
-    userName: Type.String({
-      description: "Username.",
-    }),
-    email: Type.String({
-      format: "email",
-      description: "Email address.",
-    }),
+    userId: Nullable(
+      Type.String({
+        format: "uuid",
+        description: "Associated user ID.",
+      }),
+    ),
+    firstName: Nullable(
+      Type.String({
+        description: "First name.",
+      }),
+    ),
+    lastName: Nullable(
+      Type.String({
+        description: "Last name.",
+      }),
+    ),
+    userName: Nullable(
+      Type.String({
+        description: "Username.",
+      }),
+    ),
     createdAt: Type.String({
       format: "date-time",
       description: "Profile creation date.",

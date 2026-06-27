@@ -51,10 +51,10 @@ export default async function read(fastify: FastifyInstance): Promise<void> {
 
       return {
         id: profile.id,
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        userName: profile.userName,
-        email: profile.email,
+        userId: profile.userId ?? null,
+        firstName: profile.firstName ?? null,
+        lastName: profile.lastName ?? null,
+        userName: profile.userName ?? null,
         createdAt: profile.createdAt.toISOString(),
         updatedAt: profile.updatedAt?.toISOString() ?? null,
         deletedAt: profile.deletedAt?.toISOString() ?? null,

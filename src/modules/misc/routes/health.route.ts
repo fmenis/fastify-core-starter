@@ -14,6 +14,7 @@ export default async function health(fastify: FastifyInstance): Promise<void> {
     url: "/health",
     method: "GET",
     config: {
+      public: true,
       disableVersioning: true,
     },
     schema: {

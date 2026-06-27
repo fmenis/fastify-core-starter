@@ -46,10 +46,10 @@ describe("read.route", () => {
       );
       expect(result).toEqual({
         id: mockProfile.id,
+        userId: mockProfile.userId,
         firstName: mockProfile.firstName,
         lastName: mockProfile.lastName,
         userName: mockProfile.userName,
-        email: mockProfile.email,
         createdAt: createdAt.toISOString(),
         updatedAt: updatedAt.toISOString(),
         deletedAt: deletedAt,

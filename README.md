@@ -74,20 +74,24 @@ docker-compose up -d
 
 **Bold** env must be required.
 
-| Name             |     Default     | Description                       |
-| ---------------- | :-------------: | --------------------------------- |
-| **APP_ENV**      |                 | Application environment           |
-| **APP_MODE**     |                 | Application mode (http or worker) |
-| APP_NAME         | fastify-service | Application name                  |
-| SERVER_ADDRESS   |    127.0.0.1    | Server address                    |
-| SERVER_PORT      |      3000       | Server port                       |
-| **API_DOMAIN**   |                 | Production, staging or dev domain |
-| **LOG_LEVEL**    |                 | Pino.js default log level         |
-| **DATABASE_URL** |                 | PostgreSQL connection string      |
-| **REDIS_HOST**   |                 | Redis host                        |
-| **REDIS_PORT**   |                 | Redis port                        |
-| SENTRY_ENABLED   |      false      | Enable sentry integration         |
-| SENTRY_DSN       |                 | Sentry DSN                        |
+| Name                   |     Default     | Description                                                |
+| ---------------------- | :-------------: | ---------------------------------------------------------- |
+| **APP_ENV**            |                 | Application environment                                    |
+| **APP_MODE**           |                 | Application mode (http or worker)                          |
+| APP_NAME               | fastify-service | Application name                                           |
+| SERVER_ADDRESS         |    127.0.0.1    | Server address                                             |
+| SERVER_PORT            |      3000       | Server port                                                |
+| **API_DOMAIN**         |                 | Production, staging or dev domain                          |
+| **LOG_LEVEL**          |                 | Pino.js default log level                                  |
+| **DATABASE_URL**       |                 | PostgreSQL connection string                               |
+| **REDIS_HOST**         |                 | Redis host                                                 |
+| **REDIS_PORT**         |                 | Redis port                                                 |
+| **BETTER_AUTH_SECRET** |                 | Secret key for Better Auth session signing                 |
+| **BETTER_AUTH_URL**    |                 | Public URL of this API (used by Better Auth)               |
+| **FRONTEND_ORIGIN**    |                 | Frontend origin for CORS and trusted origins               |
+| COOKIE_DOMAIN          |                 | Cookie domain for cross-subdomain auth (prod/staging only) |
+| SENTRY_ENABLED         |      false      | Enable sentry integration                                  |
+| SENTRY_DSN             |                 | Sentry DSN                                                 |
 
 ## 🧪 Testing
 

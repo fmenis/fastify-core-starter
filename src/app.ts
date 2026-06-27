@@ -11,7 +11,7 @@ import commonHooksPlugin from "./plugins/commonHooks.plugin.js";
 import bullBoardPlugin from "./plugins/bullBoard.plugin.js";
 
 export default async function app(fastify: FastifyInstance): Promise<void> {
-  fastify.register(cors);
+  fastify.register(cors, { origin: process.env.FRONTEND_ORIGIN });
   fastify.register(sensible);
   fastify.register(helmet);
   fastify.register(rateLimit, {

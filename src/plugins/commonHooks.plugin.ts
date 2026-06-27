@@ -64,6 +64,8 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
   });
 
   fastify.addHook("onRoute", options => {
+    if (!options.schema) return;
+
     if (!options.config?.disableVersioning) {
       options.schema = {
         ...options.schema,
@@ -78,7 +80,7 @@ async function commonHooksPlugin(fastify: FastifyInstance): Promise<void> {
     options.schema = {
       ...options.schema,
       response: {
-        ...options.schema!.response!,
+        ...(options.schema.response ?? {}),
         500: fastify.getSchema("sInternalServerError"),
       },
     };

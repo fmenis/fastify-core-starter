@@ -28,17 +28,22 @@ export type ResourceType = "PROFILE";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface Profile {
+export interface Account {
+  accessToken: string | null;
+  accessTokenExpiresAt: Timestamp | null;
+  accountId: string;
   createdAt: Generated<Timestamp>;
-  deletedAt: Timestamp | null;
-  email: string;
-  firstName: string;
   id: Generated<string>;
-  lastName: string;
-  password: string;
-  updatedAt: Timestamp | null;
-  userName: string;
+  idToken: string | null;
+  password: string | null;
+  providerId: string;
+  refreshToken: string | null;
+  refreshTokenExpiresAt: Timestamp | null;
+  scope: string | null;
+  updatedAt: Generated<Timestamp>;
+  userId: string;
 }
+
 export interface ActivityLog {
   action: string;
   actorId: string;
@@ -50,7 +55,60 @@ export interface ActivityLog {
   resourceType: ResourceType;
 }
 
+export interface Jwks {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  privateKey: string;
+  publicKey: string;
+}
+
+export interface Profile {
+  createdAt: Generated<Timestamp>;
+  deletedAt: Timestamp | null;
+  firstName: string | null;
+  id: Generated<string>;
+  lastName: string | null;
+  updatedAt: Timestamp | null;
+  userId: string | null;
+  userName: string | null;
+}
+
+export interface Session {
+  createdAt: Generated<Timestamp>;
+  expiresAt: Timestamp;
+  id: Generated<string>;
+  ipAddress: string | null;
+  token: string;
+  updatedAt: Generated<Timestamp>;
+  userAgent: string | null;
+  userId: string;
+}
+
+export interface User {
+  createdAt: Generated<Timestamp>;
+  email: string;
+  emailVerified: Generated<boolean>;
+  id: Generated<string>;
+  image: string | null;
+  name: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface Verification {
+  createdAt: Generated<Timestamp>;
+  expiresAt: Timestamp;
+  id: Generated<string>;
+  identifier: string;
+  updatedAt: Generated<Timestamp>;
+  value: string;
+}
+
 export interface DB {
-  profile: Profile;
+  account: Account;
   activityLog: ActivityLog;
+  jwks: Jwks;
+  profile: Profile;
+  session: Session;
+  user: User;
+  verification: Verification;
 }

@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
-
-import login from "./routes/login.route.js";
+import betterAuthPlugin from "./betterAuth.plugin.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {
@@ -10,6 +9,5 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
     };
   });
 
-  const prefix = "/auth";
-  fastify.register(login, { prefix });
+  fastify.register(betterAuthPlugin);
 }

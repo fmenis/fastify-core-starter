@@ -2,7 +2,6 @@ import type { Mock } from "vitest";
 
 export interface MockProfileRepository {
   createProfile: Mock;
-  findByEmail: Mock;
   findById: Mock;
 }
 

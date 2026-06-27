@@ -13,7 +13,6 @@ import type {
 export function createMockProfileRepository(): MockProfileRepository {
   return {
     createProfile: vi.fn(),
-    findByEmail: vi.fn(),
     findById: vi.fn(),
   };
 }

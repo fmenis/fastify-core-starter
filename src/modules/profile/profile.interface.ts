@@ -1,16 +1,13 @@
 export interface Profile {
   id: string;
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  password: string;
+  userId: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  userName: string | null;
   createdAt: Date;
   updatedAt: Date | null;
   deletedAt: Date | null;
 }
 
-export type CreateProfile = Pick<
-  Profile,
-  "firstName" | "lastName" | "userName" | "email" | "password"
->;
+export type CreateProfile = Pick<Profile, "userId"> &
+  Partial<Pick<Profile, "firstName" | "lastName" | "userName">>;

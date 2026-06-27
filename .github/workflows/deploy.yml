@@ -212,6 +212,9 @@ jobs:
   #           DATABASE_URL=${{ secrets.DATABASE_URL }}
   #           REDIS_HOST=localhost
   #           REDIS_PORT=6379
+  #           BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+  #           BETTER_AUTH_URL=https://api.filippomenis.it
+  #           FRONTEND_ORIGIN=https://filippomenis.it
   #           SENTRY_ENABLED=true
   #           SENTRY_DSN=${{ secrets.SENTRY_DSN }}
   #           EOF

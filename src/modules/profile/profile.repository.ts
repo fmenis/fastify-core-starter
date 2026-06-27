@@ -10,13 +10,6 @@ declare module "fastify" {
   }
 }
 
-/**
- * ##TODO
- * read carefully this https://kysely.dev/docs/getting-started#types
- * and understand if the custom interfaces ("./profile.interface.js") are needed
- * of the db ones are enough.
- */
-
 export function createProfileRepository(fastify: FastifyInstance) {
   const { kysely } = fastify;
 
@@ -29,17 +22,6 @@ export function createProfileRepository(fastify: FastifyInstance) {
         .executeTakeFirstOrThrow();
 
       return profile;
-    },
-
-    async findByEmail(email: string): Promise<Selectable<Profile> | null> {
-      const profile = await kysely
-        .selectFrom("profile")
-        .selectAll()
-        .where("email", "=", email)
-        .where("deletedAt", "is", null)
-        .executeTakeFirst();
-
-      return profile ?? null;
     },
 
     async findById(id: string): Promise<Selectable<Profile> | null> {
