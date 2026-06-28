@@ -126,3 +126,31 @@ export function createMockRequest<
     log: createMockLogger(),
   };
 }
+
+export function createMockReply() {
+  return {
+    header: vi.fn(),
+    status: vi.fn(),
+  };
+}
+
+export function createMockFetchResponse(
+  opts: {
+    ok?: boolean;
+    status?: number;
+    headers?: Record<string, string>;
+    body?: unknown;
+  } = {},
+): Response {
+  const headersMap = opts.headers ?? {};
+  return {
+    ok: opts.ok ?? true,
+    status: opts.status ?? 200,
+    headers: {
+      forEach: (cb: (v: string, k: string) => void) => {
+        Object.entries(headersMap).forEach(([k, v]) => cb(v, k));
+      },
+    },
+    json: vi.fn().mockResolvedValue(opts.body ?? {}),
+  } as unknown as Response;
+}
