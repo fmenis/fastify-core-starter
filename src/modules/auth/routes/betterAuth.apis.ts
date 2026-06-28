@@ -39,24 +39,6 @@ export default fp(async function betterAuthApi(
     handler: proxyToBA,
   });
   fastify.route({
-    url: "/auth/token",
-    method: "GET",
-    config: { public: true, disableVersioning: true },
-    schema: {
-      description: buildRouteFullDescription({
-        api: "get token",
-        description:
-          "Exchange a valid session cookie for a short-lived JWT access token (15 min, EdDSA).",
-        errors: [],
-      }),
-      response: {
-        200: baTokenResponseSchema,
-        401: baErrorSchema,
-      },
-    },
-    handler: proxyToBA,
-  });
-  fastify.route({
     url: "/auth/jwks",
     method: "GET",
     config: { public: true, disableVersioning: true },

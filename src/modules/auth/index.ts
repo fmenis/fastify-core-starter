@@ -1,7 +1,9 @@
 import { FastifyInstance } from "fastify";
 
+import authClientErrorsPlugin from "./auth.errors.js";
 import register from "./routes/register.route.js";
 import login from "./routes/login.route.js";
+import token from "./routes/token.route.js";
 // import betterAuthPlugin from "./betterAuth.plugin.js";
 // import betterAuthApis from "./routes/betterAuth.apis.js";
 
@@ -13,10 +15,12 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
     };
   });
 
-  const prefix = "/auth";
+  fastify.register(authClientErrorsPlugin);
 
+  const prefix = "/auth";
   fastify.register(register, { prefix });
   fastify.register(login, { prefix });
+  fastify.register(token, { prefix });
   // fastify.register(betterAuthApis);
   // fastify.register(betterAuthPlugin);
 }
