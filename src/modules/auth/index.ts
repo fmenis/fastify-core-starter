@@ -4,8 +4,7 @@ import authClientErrorsPlugin from "./auth.errors.js";
 import register from "./routes/register.route.js";
 import login from "./routes/login.route.js";
 import token from "./routes/token.route.js";
-// import betterAuthPlugin from "./betterAuth.plugin.js";
-// import betterAuthApis from "./routes/betterAuth.apis.js";
+import logout from "./routes/logout.route.js";
 
 export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.addHook("onRoute", options => {
@@ -21,6 +20,5 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
   fastify.register(register, { prefix });
   fastify.register(login, { prefix });
   fastify.register(token, { prefix });
-  // fastify.register(betterAuthApis);
-  // fastify.register(betterAuthPlugin);
+  fastify.register(logout, { prefix });
 }

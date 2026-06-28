@@ -53,13 +53,7 @@
               "type": "noauth"
             },
             "method": "POST",
-            "header": [
-              {
-                "key": "Origin",
-                "value": "http://localhost:5173",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "raw",
               "raw": "{\n    \"email\": \"filippomenis@gmail.com\",\n    \"password\": \"password\"\n}",
@@ -104,6 +98,28 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -142,7 +158,12 @@
         "packages": {},
         "requests": {},
         "exec": [
-          "pm.request.headers.add({ key: 'Accept-Version', value: '1.0.0' });"
+          "// add headers",
+          "pm.request.headers.add({ key: 'Accept-Version', value: '1.0.0' });",
+          "",
+          "const frontendUrl = pm.environment.get(\"frontend_url\");",
+          "pm.request.headers.add({ key: 'Origin', value: frontendUrl });",
+          ""
         ]
       }
     },
