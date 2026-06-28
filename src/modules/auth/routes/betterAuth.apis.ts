@@ -5,11 +5,9 @@ import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../../../lib/auth.js";
 import { buildRouteFullDescription } from "../../../utils/utils.js";
 import {
-  baErrorSchema,
   baGetSessionResponseSchema,
   baJwksResponseSchema,
   baSignOutResponseSchema,
-  baTokenResponseSchema,
 } from "../auth.schema.js";
 
 /**

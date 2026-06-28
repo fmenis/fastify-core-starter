@@ -11,10 +11,15 @@ import { BaUrl } from "../auth.enum.js";
 import { createFetchRequest, throwException } from "../utils.js";
 
 export default async function token(fastify: FastifyInstance): Promise<void> {
+  const version = "1.0.0";
+
+  //##TODO rimappare errori BA e documentarli
+
   fastify.route({
     url: "/token",
     method: "GET",
-    config: { public: true, disableVersioning: true },
+    config: { public: true },
+    constraints: { version },
     schema: {
       description: buildRouteFullDescription({
         api: "get token",

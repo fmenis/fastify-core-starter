@@ -7,22 +7,29 @@ import {
   registerEmailBodySchema,
   RegisterEmailBodySchemaType,
 } from "../auth.schema.js";
-import { BaUrl } from "../auth.enum.js";
+import { BaError, BaUrl } from "../auth.enum.js";
 import { auth } from "../../../lib/auth.js";
-import { createFetchRequest, throwException } from "../utils.js";
+import { createFetchRequest } from "../utils.js";
 
 export default async function register(
   fastify: FastifyInstance,
 ): Promise<void> {
+  const { authClientErrors } = fastify;
+  const { throwUserAlreadyRegisteredError, errors } = authClientErrors;
+
+  const version = "1.0.0";
+
   fastify.route({
     url: "/register",
     method: "POST",
-    config: { public: true, disableVersioning: true },
+    config: { public: true },
+    constraints: { version },
     schema: {
       description: buildRouteFullDescription({
         api: "register",
         description: "Register a new user with email and password.",
-        errors: [],
+        errors,
+        version,
       }),
       body: registerEmailBodySchema,
       response: {
@@ -51,7 +58,7 @@ export default async function register(
     const response = await auth.handler(request);
 
     if (!response.ok) {
-      await throwException(response);
+      await remapErrors(response);
     }
 
     reply.status(response.status);
@@ -61,5 +68,15 @@ export default async function register(
 
     const body = (await response.json()) as BaSignUpResponseSchemaType;
     return { user: body.user };
+  }
+
+  async function remapErrors(response: Response): Promise<void> {
+    const text = await response.text();
+    let parsed: { message?: string; code?: string } | null = null;
+    parsed = JSON.parse(text);
+
+    if (parsed?.code === BaError.USER_ALREADY_EXISTS) {
+      return throwUserAlreadyRegisteredError();
+    }
   }
 }
