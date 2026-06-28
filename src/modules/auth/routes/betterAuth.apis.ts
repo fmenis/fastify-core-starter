@@ -5,16 +5,19 @@ import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../../../lib/auth.js";
 import { buildRouteFullDescription } from "../../../utils/utils.js";
 import {
-  baAuthResponseSchema,
+  // baAuthResponseSchema,
   baErrorSchema,
   // baGetSessionResponseSchema,
   // baJwksResponseSchema,
   // baSignOutResponseSchema,
+  baSignUpResponseSchema,
   // baTokenResponseSchema,
   // signInEmailBodySchema,
   signUpEmailBodySchema,
   SignUpEmailBodySchemaType,
 } from "../auth.schema.js";
+import { BaRequestOpt } from "../auth.interface.js";
+import { BaUrl } from "../auth.enum.js";
 
 /**
  * Better auth routes are registered by a single catch-all handler (betterAuthPlugin: fastify.all)
@@ -22,7 +25,6 @@ import {
  * individual Fastify routes.
  * Every request is then proxied directly to BA.
  */
-
 export default fp(async function betterAuthApi(
   fastify: FastifyInstance,
 ): Promise<void> {
@@ -38,7 +40,7 @@ export default fp(async function betterAuthApi(
       }),
       body: signUpEmailBodySchema,
       response: {
-        200: baAuthResponseSchema,
+        200: baSignUpResponseSchema,
         422: baErrorSchema,
       },
     },
@@ -46,20 +48,30 @@ export default fp(async function betterAuthApi(
       req: FastifyRequest<{ Body: SignUpEmailBodySchemaType }>,
       reply: FastifyReply,
     ) => {
-      //##TODO riprendere la conversazione con claude e farsi spigare il modello di auth
-
-      const request = createFetchRequest(req);
+      /**
+       * ##TODO
+       * normalmente BA crea già una sessione durante il signup,
+       * ritornando sia il token che il cookie. Qui invece torniamo
+       * solo lo user che è stato creato, ma lato BA (db) l'utente è
+       * comunque autenticato. Capire se voglio direttamente l'utente autenticato
+       * all signup oppure no.
+       */
+      const request = createFetchRequest(req, {
+        baPath: BaUrl.SIGN_UP_EMAIL,
+      });
       const response = await auth.handler(request);
 
       if (!response.ok) {
         await throwException(response);
       }
 
-      // set headers to fastify response
-      response.headers.forEach((v, k) => reply.header(k, v));
-
       reply.status(response.status);
-      return response.text();
+
+      // setta i cookie della risposta BA alla risposta fastify (col cookie di auth)
+      // response.headers.forEach((v, k) => reply.header(k, v));
+
+      const body = (await response.json()) as { user: unknown };
+      return { user: body.user };
     },
   });
 
@@ -158,8 +170,11 @@ export default fp(async function betterAuthApi(
 });
 
 // translate fastify request in standard Fetch request for BA
-function createFetchRequest(request: FastifyRequest): Request {
-  const url = new URL(request.url, process.env.BETTER_AUTH_URL!);
+function createFetchRequest(
+  request: FastifyRequest,
+  opts: BaRequestOpt = {},
+): Request {
+  const url = new URL(opts.baPath ?? request.url, process.env.BETTER_AUTH_URL!);
   const req = new Request(url, {
     method: request.method,
     headers: fromNodeHeaders(request.headers),

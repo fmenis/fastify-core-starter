@@ -10,6 +10,7 @@ export default async function index(fastify: FastifyInstance): Promise<void> {
     };
   });
 
+  // const prefix = "/auth";
   fastify.register(betterAuthApis);
   fastify.register(betterAuthPlugin);
 }

@@ -65,6 +65,12 @@ export const baAuthResponseSchema = Type.Object(
 );
 export type BaAuthResponseSchemaType = Static<typeof baAuthResponseSchema>;
 
+export const baSignUpResponseSchema = Type.Object(
+  { user: baUserSchema },
+  { additionalProperties: false },
+);
+export type BaSignUpResponseSchemaType = Static<typeof baSignUpResponseSchema>;
+
 export const baSignOutResponseSchema = Type.Object(
   {
     success: Type.Boolean({ description: "Whether the sign-out was successful." }),
