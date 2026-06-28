@@ -12,8 +12,12 @@ declare global {
       DATABASE_URL: string;
       REDIS_HOST: string;
       REDIS_PORT: string;
+      BETTER_AUTH_SECRET: string;
+      BETTER_AUTH_URL: string;
+      FRONTEND_ORIGIN: string;
+      COOKIE_DOMAIN?: string;
       SENTRY_ENABLED: string;
-      SENTRY_DSN: string;
+      SENTRY_DSN?: string;
     }
   }
 }

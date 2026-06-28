@@ -44,17 +44,10 @@ export default async function register(
     req: FastifyRequest<{ Body: RegisterEmailBodySchemaType }>,
     reply: FastifyReply,
   ): Promise<BaSignUpResponseSchemaType> {
-    /**
-     * ##TODO
-     * normalmente BA crea già una sessione durante il signup,
-     * ritornando sia il token che il cookie. Qui invece torniamo
-     * solo lo user che è stato creato, ma lato BA (db) l'utente è
-     * comunque autenticato. Capire se voglio direttamente l'utente autenticato
-     * all signup oppure no.
-     */
     const request = createFetchRequest(req, {
       baPath: BaUrl.SIGN_UP_EMAIL,
     });
+
     const response = await auth.handler(request);
 
     if (!response.ok) {
@@ -75,6 +68,7 @@ export default async function register(
     let parsed: { message?: string; code?: string } | null = null;
     parsed = JSON.parse(text);
 
+    // se autoSignIn:false non riceverà mai errore
     if (parsed?.code === BaError.USER_ALREADY_EXISTS) {
       return throwUserAlreadyRegisteredError();
     }

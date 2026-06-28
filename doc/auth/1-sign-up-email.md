@@ -23,7 +23,7 @@ Registers a new user with email and password.
 
 ## Session behavior (important!)
 
-BA always creates an active session at sign-up and returns both the token and the cookie. The caller decides whether to forward them to the client or discard them.
+BA always creates an active session at sign-up and returns both the token and the cookie. The caller decides whether to forward them to the client or discard them. To disable this behavior set autoSignIn to false
 
 ## Input
 

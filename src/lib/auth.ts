@@ -7,7 +7,7 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   database: { db, type: "postgres" },
   trustedOrigins: [process.env.FRONTEND_ORIGIN!],
-  emailAndPassword: { enabled: true },
+  emailAndPassword: { enabled: true, autoSignIn: false },
 
   session: {
     expiresIn: 60 * 60 * 24 * 30,
@@ -19,12 +19,10 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async user => {
-          console.log("ciao");
           await db
             .insertInto("profile")
             .values({ userId: user.id })
             .executeTakeFirstOrThrow();
-          console.log("ciao2");
         },
       },
     },
@@ -32,6 +30,8 @@ export const auth = betterAuth({
 
   advanced: {
     database: { generateId: "uuid" },
+    cookiePrefix: process.env.APP_NAME,
+    useSecureCookies: true,
     crossSubDomainCookies: process.env.COOKIE_DOMAIN
       ? { enabled: true, domain: process.env.COOKIE_DOMAIN }
       : { enabled: false },
