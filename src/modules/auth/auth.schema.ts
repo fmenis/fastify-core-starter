@@ -2,15 +2,25 @@ import { Static, Type } from "typebox";
 
 import { Nullable } from "../../common/schema.js";
 
+//##TODO rivedere i nomi. Non tornare BAsomething dall'api di fastify
+
 export const baUserSchema = Type.Object(
   {
     id: Type.String({ format: "uuid", description: "User ID." }),
     name: Type.String({ description: "Display name." }),
     email: Type.String({ format: "email", description: "Email address." }),
-    emailVerified: Type.Boolean({ description: "Whether the email is verified." }),
+    emailVerified: Type.Boolean({
+      description: "Whether the email is verified.",
+    }),
     image: Nullable(Type.String({ description: "Profile image URL." })),
-    createdAt: Type.String({ format: "date-time", description: "Creation date." }),
-    updatedAt: Type.String({ format: "date-time", description: "Last update date." }),
+    createdAt: Type.String({
+      format: "date-time",
+      description: "Creation date.",
+    }),
+    updatedAt: Type.String({
+      format: "date-time",
+      description: "Last update date.",
+    }),
   },
   { additionalProperties: false },
 );
@@ -29,20 +39,22 @@ export const baErrorSchema = Type.Object(
   },
 );
 
-export const signUpEmailBodySchema = Type.Object(
+export const registerEmailBodySchema = Type.Object(
   {
     name: Type.String({ description: "Display name." }),
     email: Type.String({ format: "email", description: "Email address." }),
     password: Type.String({
       minLength: 8,
       maxLength: 128,
-      description: "Password (8–128 chars).",
+      description: "Password (8-128 chars).",
     }),
     image: Type.Optional(Type.String({ description: "Profile image URL." })),
   },
   { additionalProperties: false },
 );
-export type SignUpEmailBodySchemaType = Static<typeof signUpEmailBodySchema>;
+export type RegisterEmailBodySchemaType = Static<
+  typeof registerEmailBodySchema
+>;
 
 export const signInEmailBodySchema = Type.Object(
   {
@@ -73,7 +85,9 @@ export type BaSignUpResponseSchemaType = Static<typeof baSignUpResponseSchema>;
 
 export const baSignOutResponseSchema = Type.Object(
   {
-    success: Type.Boolean({ description: "Whether the sign-out was successful." }),
+    success: Type.Boolean({
+      description: "Whether the sign-out was successful.",
+    }),
   },
   { additionalProperties: false },
 );
@@ -109,9 +123,18 @@ const baSessionSchema = Type.Object(
     id: Type.String({ format: "uuid", description: "Session ID." }),
     userId: Type.String({ format: "uuid", description: "User ID." }),
     token: Type.String({ description: "Session token." }),
-    expiresAt: Type.String({ format: "date-time", description: "Expiry date." }),
-    createdAt: Type.String({ format: "date-time", description: "Creation date." }),
-    updatedAt: Type.String({ format: "date-time", description: "Last update date." }),
+    expiresAt: Type.String({
+      format: "date-time",
+      description: "Expiry date.",
+    }),
+    createdAt: Type.String({
+      format: "date-time",
+      description: "Creation date.",
+    }),
+    updatedAt: Type.String({
+      format: "date-time",
+      description: "Last update date.",
+    }),
     ipAddress: Nullable(Type.String({ description: "Client IP address." })),
     userAgent: Nullable(Type.String({ description: "Client user agent." })),
   },
