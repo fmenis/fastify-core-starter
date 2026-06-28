@@ -5,13 +5,11 @@ import { fromNodeHeaders } from "better-auth/node";
 import { auth } from "../../../lib/auth.js";
 import { buildRouteFullDescription } from "../../../utils/utils.js";
 import {
-  baAuthResponseSchema,
   baErrorSchema,
-  // baGetSessionResponseSchema,
-  // baJwksResponseSchema,
-  // baSignOutResponseSchema,
-  // baTokenResponseSchema,
-  signInEmailBodySchema,
+  baGetSessionResponseSchema,
+  baJwksResponseSchema,
+  baSignOutResponseSchema,
+  baTokenResponseSchema,
 } from "../auth.schema.js";
 
 /**
@@ -24,93 +22,74 @@ export default fp(async function betterAuthApi(
   fastify: FastifyInstance,
 ): Promise<void> {
   fastify.route({
-    url: "/auth/sign-in/email",
+    url: "/auth/sign-out",
     method: "POST",
     config: { public: true, disableVersioning: true },
     schema: {
       description: buildRouteFullDescription({
-        api: "sign-in",
+        api: "sign-out",
         description:
-          "Sign in with email and password. Sets a session cookie (30 days).",
+          "Invalidate the current session. Requires the session cookie.",
         errors: [],
       }),
-      body: signInEmailBodySchema,
       response: {
-        200: baAuthResponseSchema,
+        200: baSignOutResponseSchema,
+      },
+    },
+    handler: proxyToBA,
+  });
+  fastify.route({
+    url: "/auth/token",
+    method: "GET",
+    config: { public: true, disableVersioning: true },
+    schema: {
+      description: buildRouteFullDescription({
+        api: "get token",
+        description:
+          "Exchange a valid session cookie for a short-lived JWT access token (15 min, EdDSA).",
+        errors: [],
+      }),
+      response: {
+        200: baTokenResponseSchema,
         401: baErrorSchema,
       },
     },
     handler: proxyToBA,
   });
-  // fastify.route({
-  //   url: "/auth/sign-out",
-  //   method: "POST",
-  //   config: { public: true, disableVersioning: true },
-  //   schema: {
-  //     description: buildRouteFullDescription({
-  //       api: "sign-out",
-  //       description:
-  //         "Invalidate the current session. Requires the session cookie.",
-  //       errors: [],
-  //     }),
-  //     response: {
-  //       200: baSignOutResponseSchema,
-  //     },
-  //   },
-  //   handler: proxyToBA,
-  // });
-  // fastify.route({
-  //   url: "/auth/token",
-  //   method: "GET",
-  //   config: { public: true, disableVersioning: true },
-  //   schema: {
-  //     description: buildRouteFullDescription({
-  //       api: "get token",
-  //       description:
-  //         "Exchange a valid session cookie for a short-lived JWT access token (15 min, EdDSA).",
-  //       errors: [],
-  //     }),
-  //     response: {
-  //       200: baTokenResponseSchema,
-  //       401: baErrorSchema,
-  //     },
-  //   },
-  //   handler: proxyToBA,
-  // });
-  // fastify.route({
-  //   url: "/auth/jwks",
-  //   method: "GET",
-  //   config: { public: true, disableVersioning: true },
-  //   schema: {
-  //     description: buildRouteFullDescription({
-  //       api: "jwks",
-  //       description:
-  //         "Return the JSON Web Key Set (EdDSA/Ed25519 public keys) used to verify JWT tokens.",
-  //       errors: [],
-  //     }),
-  //     response: {
-  //       200: baJwksResponseSchema,
-  //     },
-  //   },
-  //   handler: proxyToBA,
-  // });
-  // fastify.route({
-  //   url: "/auth/get-session",
-  //   method: "GET",
-  //   config: { public: true, disableVersioning: true },
-  //   schema: {
-  //     description: buildRouteFullDescription({
-  //       api: "get session",
-  //       description:
-  //         "Return the active session and user for the current session cookie.",
-  //       errors: [],
-  //     }),
-  //     response: {
-  //       200: baGetSessionResponseSchema,
-  //     },
-  //   },
-  //   handler: proxyToBA,
-  // });
+  fastify.route({
+    url: "/auth/jwks",
+    method: "GET",
+    config: { public: true, disableVersioning: true },
+    schema: {
+      description: buildRouteFullDescription({
+        api: "jwks",
+        description:
+          "Return the JSON Web Key Set (EdDSA/Ed25519 public keys) used to verify JWT tokens.",
+        errors: [],
+      }),
+      response: {
+        200: baJwksResponseSchema,
+      },
+    },
+    handler: proxyToBA,
+  });
+  fastify.route({
+    url: "/auth/get-session",
+    method: "GET",
+    config: { public: true, disableVersioning: true },
+    schema: {
+      description: buildRouteFullDescription({
+        api: "get session",
+        description:
+          "Return the active session and user for the current session cookie.",
+        errors: [],
+      }),
+      response: {
+        200: baGetSessionResponseSchema,
+      },
+    },
+    handler: proxyToBA,
+  });
 });
 
 async function proxyToBA(
