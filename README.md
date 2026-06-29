@@ -47,6 +47,7 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [ ] Async localStorage
 - [ ] Request sanitization
 - [ ] Release please
+- [x] Github actions
 - [ ] Advanced env variables management ([infisical](https://infisical.com/))
 
 ## 🛠️ Installation
