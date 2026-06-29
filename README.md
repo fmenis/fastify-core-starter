@@ -11,8 +11,6 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 
 ## 🚀 Features
 
-### Base
-
 - [x] Modern Node.js features
 - [x] TypeScript ready
 - [x] Postgres ready
@@ -26,26 +24,25 @@ A production-ready Fastify boilerplate with TypeScript, designed to kickstart mo
 - [x] Local development environment with Docker
 - [x] Dockerizing application
 - [x] Valid OpenAPI documentation
-- [x] Proper error handling (structured http errors and domainErrors)
+- [x] Proper error handling (structured http errors and domain errors)
 - [x] Linting (ESLint)
 - [x] Graceful Shutdown
 - [x] Proper logging
-- [ ] Basic authentication with refresh token
+- [ ] Authentication with refresh token
 - [ ] Basic authorization (Casl)
 - [x] Unit tests
 - [x] Integration tests
 - [x] Base security features
 - [x] Sentry integration
+- [ ] Email sending
 - [x] Api versioning
 - [x] Correlation ID for every response
-
-### Advanced
-
-- [x] Execute commands
+- [x] Execute standalone commands
 - [x] Rate limiting
 - [ ] Distributed Tracing
 - [x] Server and db timeouts
 - [x] Queue management (BullMQ)
+- [x] Scheduled jobs (BullMQ)
 - [x] Activity log
 - [ ] Async localStorage
 - [ ] Request sanitization
